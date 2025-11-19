@@ -1,0 +1,301 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DevGuild.AspNetCore.Controls.HybridForms
+@model DentalDrill.CRM.Models.ViewModels.JobEditModel
+@{
+    ViewBag.Title = $"{Model.Original.JobType.Name} #{Model.Original.JobNumber}";
+    Layout = "_FullLayout";
+    var acl = Model.AccessControl;
+}
+
+<div class="editor mb-2">
+    <div class="editor__header" ajax-rendering="NormalOnly">
+        <div class="editor__title">
+            <h1>@Model.Original.JobType.Name #@Model.Original.JobNumber</h1>
+        </div>
+        <div class="editor__status">
+            <job-status-indicator entity="@Model.Original" description="true" style="width: 150px;" />
+        </div>
+        <div class="editor__actions">
+            <a class="editor__action" asp-action="Index"><span class="fas fa-list"></span> List</a>
+            @if (Model.Original.Status == JobStatus.Received)
+            {
+                <a class="editor__action details__action_color_red" asp-action="Delete" asp-route-id="@Model.Original.Id"><span class="fas fa-trash-alt"></span> Delete</a>
+            }
+        </div>
+    </div>
+    
+    @if (Model.ActionsList.Actions.Any())
+    {
+        <div class="row mb-3">
+            <div class="col-12 col-md-6">
+                @foreach (var action in Model.ActionsList.Actions)
+                {
+                    if (action.Enabled)
+                    {
+                        <form action="@HtmlEncoder.Encode(action.Url)" method="post" class="d-inline mr-2">
+                            <button class="btn btn-primary">@action.Title</button>
+                            @Html.AntiForgeryToken()
+                        </form>
+                    }
+                    else
+                    {
+                        <button class="btn btn-secondary mr-2" disabled="disabled">@action.Title</button>
+                    }
+                }
+            </div>
+        </div>
+    }
+
+    <form asp-action="Edit" asp-route-id="@Model.Original.Id" method="post" hybrid-form-id="JobsEdit">
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+
+        <div class="row">
+            <div class="col-md-6 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        @Html.LabelFor(x => x.JobNumber, labelText: $"{Model.JobType.ShortName} #")
+                    </div>
+                    <div class="col-sm-7">
+                        <p class="form-control-plaintext">@Model.JobNumber</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">@Html.LabelFor(x => x.WorkshopId)</div>
+                    <div class="col-sm-7">
+                        <p class="form-control-plaintext">@Model.Original.Workshop.Name</p>
+                        @if (acl.For(x => x.ClientId).CanUpdate)
+                        {
+                            <a class="btn btn-outline-secondary" style="position: absolute; right: 15px; top: 0;" asp-action="ChangeWorkshop" asp-route-id="@Model.Original.Id"><span class="fas fa-pencil-alt"></span></a>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 mb-2">
+                <div class="row">
+                    <div class="col-sm-2_5">
+                        <label asp-for="ClientId"></label>
+                    </div>
+                    @if (acl.For(x => x.ClientId).CanUpdate || acl.For(x => x.ClientId).CanDisplay)
+                    {
+                        <div class="col-sm-9_5" data-toggle="tooltip" data-html="true" data-placement="left" data-offset="0px"
+                             title="&lt;b&gt;Surgery Name:&lt;/b&gt; @Model.Original.Client.FullName&lt;br&gt;&lt;b&gt;Contact Name:&lt;/b&gt; @Model.Original.Client.PrincipalDentist&lt;br&gt;&lt;b&gt;Phone:&lt;/b&gt; @Model.Original.Client.Phone &lt;br&gt;&lt;b&gt;Email:&lt;/b&gt; @Model.Original.Client.Email">
+                            @if (Model.Access.CanAccessClients())
+                            {
+                                <p class="form-control-plaintext"><a asp-controller="Clients" asp-action="Details" asp-route-id="@Model.ClientId">@Model.Original.Client.FullName</a></p>
+                            }
+                            else
+                            {
+                                <p class="form-control-plaintext">@Model.Original.Client.FullName</p>
+                            }
+                            @if (acl.For(x => x.ClientId).CanUpdate)
+                            {
+                                <a class="btn btn-outline-secondary" style="position: absolute; right: 15px; top: 0;" asp-action="ChangeClient" asp-route-id="@Model.Original.Id"><span class="fas fa-pencil-alt"></span></a>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-sm-9_5">
+                            <p class="form-control-plaintext">(hidden)</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-2">
+                <div class="row">
+                    @if (acl.For(x => x.HasWarning).CanDisplay || acl.For(x => x.HasWarning).CanUpdate)
+                    {
+                        <div class="col-12 d-flex justify-content-between align-items-center job-warning @(Model.HasWarning ? "job-warning--has-warning" : "")">
+                            <label asp-for="HasWarning" class="job-warning__label"><span class="job-warning__alert">Warning!</span> Not sterilized<span class="job-warning__alert">!</span></label>
+                            @if (acl.For(x => x.HasWarning).CanUpdate)
+                            {
+                                @Html.Kendo().CheckBoxFor(x => x.HasWarning).Label(String.Empty)
+                            }
+                            else
+                            {
+                                <input type="checkbox" checked="@(Model.HasWarning ? "checked" : null)" class="k-checkbox" id="HasWarning" disabled="disabled" />
+                                <label class="k-checkbox-label" for="HasWarning"></label>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-sm-5">
+                            <label asp-for="HasWarning">Not sterilized</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <p class="form-control-plaintext">(hidden)</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="Received"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        @if (acl.For(x => x.Received).CanUpdate)
+                        {
+                            @Html.Kendo().DatePickerFor(x => x.Received).HtmlAttributes(new { @class = "w-100" })
+                            <span asp-validation-for="Received" class="text-danger"></span>
+                        }
+                        else if (acl.For(x => x.Received).CanDisplay)
+                        {
+                            <p class="form-control-plaintext">@Model.Received.ToString("d")</p>
+                        }
+                        else
+                        {
+                            <p class="form-control-plaintext">(hidden)</p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label>Received By</label>
+                    </div>
+                    <div class="col-sm-7">
+                        @if (acl.For(x => x.CreatorId).CanDisplay)
+                        {
+                            <p class="form-control-plaintext">@Model.Original.Creator.GetFullName()</p>
+                        }
+                        else
+                        {
+                            <p class="form-control-plaintext">(hidden)</p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="ApprovedOn"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        @if (acl.For(x => x.ApprovedOn).CanUpdate)
+                        {
+                            @Html.Kendo().DatePickerFor(x => x.ApprovedOn).HtmlAttributes(new { @class = "w-100" })
+                            <span asp-validation-for="ApprovedOn" class="text-danger"></span>
+                        }
+                        else if (acl.For(x => x.ApprovedOn).CanDisplay)
+                        {
+                            <p class="form-control-plaintext">@Model.ApprovedOn?.ToString("d")</p>
+                        }
+                        else
+                        {
+                            <p class="form-control-plaintext">(hidden)</p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="ApprovedBy"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        @if (acl.For(x => x.ApprovedBy).CanUpdate)
+                        {
+                            @Html.Kendo().TextBoxFor(x => x.ApprovedBy)
+                            <span asp-validation-for="ApprovedBy" class="text-danger"></span>
+                        }
+                        else if (acl.For(x => x.ApprovedBy).CanDisplay)
+                        {
+                            <p class="form-control-plaintext">@Model.ApprovedBy</p>
+                        }
+                        else
+                        {
+                            <p class="form-control-plaintext">(hidden)</p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="RatePlan"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        @if (acl.For(x => x.RatePlan).CanUpdate)
+                        {
+                            @(Html.Kendo().DropDownListFor(x => x.RatePlan)
+                                                  .BindTo(JobRatePlanHelper.MakeSelectList())
+                                                  .Value(Model.RatePlan.ToString()))
+                            <span asp-validation-for="RatePlan" class="text-danger"></span>
+                        }
+                        else if (acl.For(x => x.RatePlan).CanDisplay)
+                        {
+                            <p class="form-control-plaintext">@Model.RatePlan.ToDisplayString()</p>
+                        }
+                        else
+                        {
+                            <p class="form-control-plaintext">(hidden)</p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-2">
+                <div class="row mb-2">
+                    <div class="col-5">
+                        @if (String.IsNullOrEmpty(Model.Comment))
+                        {
+                            <label asp-for="Comment" class="mb-0"></label>
+                        }
+                        else
+                        {
+                            <label asp-for="Comment" class="mb-0 job-success__label"><span class="job-warning__alert">Has</span> Comment</label>
+                        }
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        @Html.TextAreaFor(x => x.Comment, new { @class = "k-textbox" })
+                        <span asp-validation-for="Comment" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+
+        </div>
+
+        <div class="row last">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a asp-action="Index" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+
+    <kendo-tabstrip name="JobDetailsTabStrip">
+        <items>
+            <tabstrip-item selected="true" data-tabname="Handpieces" text="Handpieces" asp-action="DetailsTabHandpieces" asp-route-id="@Model.Original.Id"></tabstrip-item>
+            @if (User.IsInRole(ApplicationRoles.Administrator) || User.IsInRole(ApplicationRoles.CompanyAdministrator) || User.IsInRole(ApplicationRoles.OfficeAdministrator))
+            {
+                <tabstrip-item selected="false" data-tabname="Invoices" text="Invoices" asp-action="DetailsTabInvoices" asp-route-id="@Model.Original.Id"></tabstrip-item>
+            }
+            <tabstrip-item selected="false" data-tabname="Changes" text="History" asp-action="Index" asp-controller="JobChanges" asp-route-parentId="@Model.Original.Id"></tabstrip-item>
+        </items>
+    </kendo-tabstrip>
+</div>
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/app/pages/handpieceRequiredParts/index.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/js/app/pages/handpieces/edit.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/js/app/pages/jobs/edit.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/js/app/pages/jobs/details.js" asp-append-version="true"></script>
+}

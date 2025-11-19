@@ -1,0 +1,50 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DevGuild.AspNetCore.Controls.HybridForms
+@model DentalDrill.CRM.Models.ViewModels.JobInvoiceCreateModel
+@{
+    ViewBag.Title = "Upload invoice";
+    this.ConfigureHybridPage("JobInvoicesCreate");
+}
+
+<div class="editor mb-2">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Upload invoice for estimate @Model.Parent.JobNumber</h1>
+            </div>
+            <div class="editor__actions">
+                <a class="editor__action" asp-action="Edit" asp-controller="Jobs" asp-route-id="@Model.Parent.Id" asp-route-Tab="Invoices"><span class="fa fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+
+    <form asp-action="Create" asp-route-parentId="@Model.Parent.Id" hybrid-form-id="JobInvoicesCreate">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="row">
+            <div class="col-12 mt-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="FileId" class="col-form-label editor__label">File</label>
+                    </div>
+                    <div class="col-sm-7">
+                        <file-uploader asp-for="FileId" configuration="Attachments" />
+                        <span asp-validation-for="FileId" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a asp-action="Edit" asp-controller="Jobs" asp-route-id="@Model.Parent.Id" asp-route-Tab="Invoices" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+    @if (this.Context.IsAjaxRequest())
+    {
+        <script type="text/javascript">$.validator.unobtrusive.parse("#JobInvoicesCreate form");</script>
+    }
+</div>

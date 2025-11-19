@@ -1,0 +1,17 @@
+{
+  "name": "devguild.utilities",
+  "authors": [
+    "DevGuild <info@devguild.ru>"
+  ],
+  "description": "Contains various utilities.",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "homepage": "https://devguild.ru/",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

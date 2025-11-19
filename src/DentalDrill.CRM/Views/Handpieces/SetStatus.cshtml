@@ -1,0 +1,44 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DevGuild.AspNetCore.Controls.HybridForms
+@model DentalDrill.CRM.Models.ViewModels.JobHandpieceChangeStatusModel
+@{
+    ViewBag.Title = $"Set Handpiece {Model.Original.Serial} Status";
+    this.ConfigureHybridPage("HandpiecesSetStatus");
+}
+
+<div class="editor">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Set Handpiece @Model.Original.Serial Status</h1>
+            </div>
+            <div class="editor__actions">
+                <a class="editor__action" asp-action="Details" asp-route-id="@Model.Original.Id"><span class="fas fa-external-link-alt"></span> Details</a>
+                <a class="details__action" asp-action="Edit" asp-route-id="@Model.Original.Id"><span class="fas fa-pencil-alt"></span> Edit</a>
+                <a class="editor__action editor__action_color_red" asp-action="Delete" asp-route-id="@Model.Original.Id"><span class="fas fa-trash-alt"></span> Delete</a>
+            </div>
+        </div>
+    }
+
+    <form asp-action="SetStatus" asp-route-id="@Model.Original.Id" method="post" hybrid-form-id="HandpiecesSetStatus">
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+
+        <div class="row">
+            <div class="col-sm-5">
+                @Html.LabelFor(x => x.HandpieceStatus)
+            </div>
+            <div class="col-sm-7">
+                @Html.Kendo().DropDownListFor(x => x.HandpieceStatus).BindTo(HandpieceStatusHelper.MakeSelectList()).Value(Model.HandpieceStatus.ToString())
+                @Html.ValidationMessageFor(x => x.HandpieceStatus)
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a asp-action="Details" asp-route-id="@Model.Original.Id" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

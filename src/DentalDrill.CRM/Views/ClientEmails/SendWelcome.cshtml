@@ -1,0 +1,189 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DevGuild.AspNetCore.Controls.HybridForms
+@model DentalDrill.CRM.Models.ViewModels.ClientEmails.ClientEmailSendWelcomeModel
+@{
+    ViewBag.Title = "Send Welcome Email";
+    this.ConfigureHybridPage("ClientEmailsSendWelcome");
+}
+
+<div class="editor mb-2">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Send Welcome Email</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Details" asp-controller="Clients" asp-route-id="@Model.Client.Id" asp-route-Tab="Emails" class="editor__action"><span class="fa fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+
+    <form asp-action="SendWelcome" method="post" hybrid-form-id="ClientEmailsSendWelcome">
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-12 mb-2">
+                        <div class="row">
+                            <div class="col-3">
+                                <label asp-for="To"></label>
+                            </div>
+                            <div class="col-9">
+                                @{
+                                    var emails = new List<String>();
+                                    emails.Add(Model.Client.Email);
+                                    emails.AddRange(Model.Client.ParseSecondaryEmails());
+                                }
+                                @Html.Kendo().DropDownListFor(x => x.To).BindTo(new SelectList(emails.Select(x => new { Email = x }), "Email", "Email"))
+                                <span class="text-danger" asp-validation-for="To"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-2">
+                        <div class="row">
+                            <div class="col-3">
+                                <label>Subject</label>
+                            </div>
+                            <div class="col-9">
+                                <p class="form-control-plaintext">Welcome to Handpiece Hub</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-2">
+                        <div class="row">
+                            <div class="col-12">
+                                <label>Text</label>
+                            </div>
+                            <div class="col-12">
+                                <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                    <tr>
+                                        <td align="center">
+                                            <table border="0" cellpadding="0" cellspacing="0" width="600">
+                                                <tr>
+                                                    <td>
+                                                        <div>
+                                                            <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td align="center"><a href="https://www.dds11.au/"><img alt="Dental Drill Solutions" src="~/img/email/dds-logo.jpg" width="300" /></a></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td align="center">
+                                                                            <h2>Welcome to Handpiece Hub!</h2></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td align="center"><a href="https://hub.dds11.au/"><img alt="Handpiece Hub" src="~/img/email/dds-handpiece-hub.jpg" width="300" /></a></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                                </table>
+                                                            <p>Handpiece Hub is the home of your handpiece repair history &#x2013; any time, any place, anywhere.</p>
+                                                            <p>By entering in your personal login and password, not only can you open the history file of all your previously repaired handpieces with DDS, but you can check-in 24/7 from any computer in any location, and monitor the status of your current repairs in the workshop.</p>
+                                                            <p>Our easy to use Hub allows you to access all of the assessment notes made by our technicians in the workshop, backed up by images of each handpiece, their serial numbers, makes and models. You can also run reports and identify the problem handpieces within your inventory.</p>
+                                                            <p>Please click on this link: <b><a href="https://hub.dds11.au/" style="color: #000000">https://hub.dds11.au/</a></b> (and save it to your browser favourites)</p>
+                                                            <p>&nbsp;</p>
+                                                            <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                                                <tbody>
+                                                                    <tr><td align="center"><div>Login: <b style="color: #00b0f0;">@Model.Username</b></div></td></tr>
+                                                                    <tr><td align="center"><div>Temporary Password: <b style="color: #00b0f0;"><input asp-for="Password" /></b></div></td></tr>
+                                                                    <tr><td align="center"><div>(upon first opening the Hub you will be asked to change this password<br/> to something you and your staff members can all remember)</div></td></tr>
+                                                                </tbody>
+                                                            </table>
+                                                            <p>&nbsp;</p>
+                                                            <table align="center" border="3" cellpadding="10" cellspacing="0" style="border-color: #e61e1e; border-style: solid; border-width: 3px;" width="100%">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td align="center">
+                                                                            <div>
+                                                                                <div style="font-size: 1.5em; font-weight: bold;">Book your FREE Pick-Up by calling</div>
+                                                                                <div style="font-size: 1.75em; font-weight: bold; color: #1584d9">1300 337 300</div>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                            <p>&nbsp;</p>
+                                                            <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td align="center">
+                                                                            <div style="font-size: 1.5em; font-weight: bold;">
+                                                                                <div>Don&#x27;t forget to open up our Facebook page, <br/>&quot;Like&quot; us to get our regular posts on info, tips <br/>and specials to appear on your news feed</div>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td align="center"><div style="font-weight: bold;">(click on the link below)</div></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td align="center"><p>&nbsp;</p></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td align="center"><a href="https://www.facebook.com/dentaldrillsolutions"><img alt="Like us on Facebook" src="~/img/email/dds-fb-like.jpg" width="300" /></a></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td align="center">
+                                                                            <p>&nbsp;</p>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td align="center">
+                                                                            <p>For details about our service, handpiece sales and other information please visit our website <b><a href="https://www.dds11.au/" style="color: #000000">www.dds11.au</a></b></p>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td align="center">
+                                                                            <p>&nbsp;</p>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div>
+                                                            <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td align="center">
+                                                                            <div style="font-weight: bold">
+                                                                                <div>
+                                                                                    <div>Dental Drill Solutions</div>
+                                                                                    <div>P: 1300 337 300</div>
+                                                                                    <div>A: 2/11 Turbo Road, Kings Park NSW 2148 Australia</div>
+                                                                                    <div>E: <a href="mailto:info@dds11.au" style="color: #000000">info@dds11.au</a></div>
+                                                                                    <div>W: <a href="https://www.dds11.au/" style="color: #000000">www.dds11.au</a></div>
+                                                                                    <div>ABN: 25 150 633 515</div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <h5>Attachments</h5>
+                <file-uploader-list asp-for="Attachments" configuration="EmailAttachments" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-primary">Send</button>
+                <a asp-action="Details" asp-controller="Clients" asp-route-id="@Model.Client.Id" asp-route-Tab="Emails" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,97 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DevGuild.AspNetCore.Controls.HybridForms
+@model DentalDrill.CRM.Models.ViewModels.UserCreateViewModel
+@{
+    ViewBag.Title = "Create user";
+    this.ConfigureHybridPage("UsersCreate");
+}
+
+<div class="editor">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Create user</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Index" class="editor__action"><span class="fas fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+    <form asp-action="Create" hybrid-form-id="UsersCreate" id="UsersCreateForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row mb-2">
+                    <div class="col-sm-5">
+                        <label asp-for="UserName"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        <input asp-for="UserName" class="k-textbox"/>
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-2">
+                    <div class="col-sm-5">
+                        <label asp-for="Email"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        <input asp-for="Email" class="k-textbox"/>
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-2">
+                    <div class="col-sm-5">
+                        <label asp-for="Password"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        <input asp-for="Password" type="password" class="k-textbox"/>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-2">
+                    <div class="col-sm-5">
+                        <label asp-for="ConfirmPassword"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        <input asp-for="ConfirmPassword" type="password" class="k-textbox"/>
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="row mb-2">
+                    <div class="col-sm-5">
+                        <label asp-for="RoleId"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        <kendo-dropdownlist for="RoleId" bind-to="@(new SelectList(Model.Roles, "Id", "Name"))"/>
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-2">
+                    <div class="col-sm-5">
+                        <label asp-for="LockoutEnabled"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        @(Html.Kendo().CheckBoxFor(x => x.LockoutEnabled).Label(""))
+                        <span asp-validation-for="LockoutEnabled" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a asp-action="Index" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

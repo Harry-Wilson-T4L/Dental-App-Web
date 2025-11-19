@@ -1,0 +1,82 @@
+﻿@using DentalDrill.CRM.Models.ViewModels
+@model DentalDrill.CRM.Models.ViewModels.FeedbackFormFillModel
+@{
+    ViewBag.Title = "Feedback";
+    Layout = "_FeedbackLayout";
+}
+
+<div class="feedback-wrapper">
+    <form class="feedback-form" asp-action="Form" asp-controller="Feedback" asp-route-id="@Model.Form.Id">
+        <div class="feedback-form__title">
+            <img class="feedback-form__title__logo" src="/img/dds-logo.jpg" alt="Dental Drill Solutions" />
+            <h1 class="feedback-form__title__heading">We value your feedback</h1>
+        </div>
+
+        <div class="feedback-form__greeting">
+            We would like your feedback to improve our service
+        </div>
+        <div class="feedback-form__offer">
+            As a Thank You for your recent custom and feedback we will apply a further <span class="feedback-form__offer__highlight">5%&nbsp;Discount&nbsp;Off</span> your next handpiece repair bill!<sup class="feedback-form__offer__highlight">*</sup>
+        </div>
+
+        <div class="feedback-form__questions">
+            @foreach (var answer in Model.Answers)
+            {
+                var modifierClass = $"feedback-form__question--{answer.Question.Type.ToString().ToLowerInvariant()}";
+                <div class="feedback-form__question @modifierClass">
+                    <div class="feedback-form__question__text">
+                        @answer.Question.Name
+                    </div>
+                    <div class="feedback-form__question__answer">
+                        @switch (answer.Question.Type)
+                        {
+                            case FeedbackFormQuestionType.Rating:
+                                var ratingValue = Model.Answer.TryGetValue(answer.QuestionId, out var answerModel) && answerModel is FeedbackFormFillModelRatingAnswer ratingAnswerModel ? ratingAnswerModel.Value : null;
+                                <input type="hidden" name="Answer[@answer.QuestionId].__Type" value="Rating" />
+                                <div>
+                                    <label for="Answer_@answer.QuestionId.ToString("N")_1" class="feedback-form__rating">
+                                        <input type="radio" class="feedback-form__rating__input" name="Answer[@answer.QuestionId].Value" id="Answer_@answer.QuestionId.ToString("N")_1" value="1" checked="@(ratingValue == 1 ? "checked" : null)" />
+                                        <span class="far fa-angry feedback-form__rating__image"></span>
+                                    </label>
+                                    <label for="Answer_@answer.QuestionId.ToString("N")_2" class="feedback-form__rating">
+                                        <input type="radio" class="feedback-form__rating__input" name="Answer[@answer.QuestionId].Value" id="Answer_@answer.QuestionId.ToString("N")_2" value="2" checked="@(ratingValue == 2 ? "checked" : null)" />
+                                        <span class="far fa-frown feedback-form__rating__image"></span>
+                                    </label>
+                                    <label for="Answer_@answer.QuestionId.ToString("N")_3" class="feedback-form__rating">
+                                        <input type="radio" class="feedback-form__rating__input" name="Answer[@answer.QuestionId].Value" id="Answer_@answer.QuestionId.ToString("N")_3" value="3" checked="@(ratingValue == 3 ? "checked" : null)" />
+                                        <span class="far fa-meh feedback-form__rating__image"></span>
+                                    </label>
+                                    <label for="Answer_@answer.QuestionId.ToString("N")_4" class="feedback-form__rating">
+                                        <input type="radio" class="feedback-form__rating__input" name="Answer[@answer.QuestionId].Value" id="Answer_@answer.QuestionId.ToString("N")_4" value="4" checked="@(ratingValue == 4 ? "checked" : null)" />
+                                        <span class="far fa-smile feedback-form__rating__image"></span>
+                                    </label>
+                                    <label for="Answer_@answer.QuestionId.ToString("N")_5" class="feedback-form__rating">
+                                        <input type="radio" class="feedback-form__rating__input" name="Answer[@answer.QuestionId].Value" id="Answer_@answer.QuestionId.ToString("N")_5" value="5" checked="@(ratingValue == 5 ? "checked" : null)" />
+                                        <span class="far fa-grin feedback-form__rating__image"></span>
+                                    </label>
+                                </div>
+                                <span asp-validation-for="@Model.Answer[answer.QuestionId]"></span>
+                                break;
+                            case FeedbackFormQuestionType.MultilineText:
+                                var multilineTextValue = Model.Answer.TryGetValue(answer.QuestionId, out var answerModel2) && answerModel2 is FeedbackFormFillModelMultilineTextAnswer multilineTextAnswer ? multilineTextAnswer.Value : null;
+                                <input type="hidden" name="Answer[@answer.QuestionId].__Type" value="MultilineText" />
+                                <textarea class="form-control" name="Answer[@answer.QuestionId].Value" id="Answer_@answer.QuestionId.ToString("N")">@multilineTextValue</textarea>
+                                <span asp-validation-for="@Model.Answer[answer.QuestionId]"></span>
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+        
+        <div class="feedback-form__discount-note">
+            *Discount is not applicable to new parts service/sales
+        </div>
+
+        <div class="text-center">
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </div>
+    </form>
+</div>

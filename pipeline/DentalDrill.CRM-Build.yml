@@ -1,0 +1,81 @@
+# Agent Queue 'Azure Pipelines' was used with unrecognized Agent Specification, vmImage property must be specified to determine image - https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azure-devops&tabs=yaml#software
+variables:
+- name: BuildParameters.RestoreBuildProjects
+  value: '**/*.csproj'
+- name: BuildParameters.TestProjects
+  value: '**/*[Tt]ests/*.csproj'
+trigger:
+  branches:
+    include:
+    - refs/heads/master
+name: $(date:yyyyMMdd)$(rev:.r)
+jobs:
+- job: Phase_1
+  displayName: Build
+  cancelTimeoutInMinutes: 1
+  pool:
+    name: Azure Pipelines
+  steps:
+  - checkout: self
+  - task: UseDotNet@2
+    displayName: Use .NET Core sdk 6.x
+    inputs:
+      version: 6.x
+  - task: DotNetCoreCLI@2
+    displayName: Restore
+    inputs:
+      command: restore
+      projects: $(BuildParameters.RestoreBuildProjects)
+      feedRestore: 62afafdc-977a-45d2-a1b6-6eb8921c31ea
+      verbosityRestore: Detailed
+      verbosityPack: Detailed
+  - task: Npm@1
+    displayName: npm install
+    inputs:
+      workingDir: DentalDrill.CRM
+      verbose: false
+  - task: DotNetCoreCLI@2
+    displayName: Build
+    inputs:
+      projects: $(BuildParameters.RestoreBuildProjects)
+      arguments: --configuration $(BuildConfiguration)
+      verbosityRestore: Detailed
+      verbosityPack: Detailed
+  - task: gulp@0
+    displayName: gulp build
+    inputs:
+      gulpFile: DentalDrill.CRM/gulpfile.js
+      targets: build
+      cwd: DentalDrill.CRM
+      gulpjs: node_modules/gulp/.bin/gulp.js
+  - task: DotNetCoreCLI@2
+    displayName: Test
+    inputs:
+      command: test
+      projects: $(BuildParameters.TestProjects)
+      arguments: --configuration $(BuildConfiguration)
+      verbosityRestore: Detailed
+      verbosityPack: Detailed
+  - task: DotNetCoreCLI@2
+    displayName: Publish
+    inputs:
+      command: publish
+      publishWebProjects: True
+      projects: $(BuildParameters.RestoreBuildProjects)
+      arguments: --configuration $(BuildConfiguration) /p:PublishProfile=Properties\PublishProfiles\Package.pubxml /p:DesktopBuildPackageLocation=$(build.artifactstagingdirectory)
+      zipAfterPublish: True
+      verbosityRestore: Detailed
+      verbosityPack: Detailed
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: drop'
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      TargetPath: '\\my\share\$(Build.DefinitionName)\$(Build.BuildNumber)'
+      FileCopyOptions: ''
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: build'
+    inputs:
+      PathtoPublish: $(Build.SourcesDirectory)\build
+      ArtifactName: build
+      FileCopyOptions: ''
+...

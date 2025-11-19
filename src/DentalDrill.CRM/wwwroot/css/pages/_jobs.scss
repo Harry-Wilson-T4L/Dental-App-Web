@@ -1,0 +1,341 @@
+﻿#JobsGrid {
+    .k-detail-row {
+        > .k-hierarchy-cell {
+            display: none;
+        }
+
+        > .k-detail-cell {
+            column-span: all;
+        }
+    }
+
+    .k-detail-cell {
+        padding: 0;
+
+        .k-tabstrip > .k-content {
+            padding: 0;
+        }
+    }
+}
+
+.badge.warning-badge {
+    font-size: 1.1rem;
+    white-space: unset;
+}
+
+.job-handpieces-grid {
+    .k-dropdown {
+        font-size: 0.75rem;
+    }
+}
+
+#ClientId-list.k-list-container {
+    /*width: 500px !important;*/
+}
+
+#ClientFilter-list.k-list-container {
+    /*width: 500px !important;*/
+}
+
+.job-warning {
+    &__alert {
+        display: none;
+    }
+
+    &--has-warning {
+        .job-warning__alert {
+            display: inline;
+        }
+
+        .job-warning__label {
+            text-transform: uppercase;
+            background-color: #dc3545;
+            color: white;
+            font-weight: bold;
+            padding-left: 0.4em;
+            padding-right: 0.4em;
+            border-radius: 0.25rem;
+        }
+    }
+}
+
+.job-success__label {
+    background-color: #28a745;
+    color: white;
+    font-weight: bold;
+    padding-left: 0.4em;
+    padding-right: 0.4em;
+    border-radius: 0.25rem;
+
+    .job-warning__alert {
+        display: inline;
+    }
+}
+
+.handpiece-parts {
+    &--in-stock {
+        background-color: #28a745;
+        color: #ffffff;
+    }
+
+    &--out-of-stock {
+        background-color: #ffc107;
+        color: #212529;
+    }
+}
+
+.handpiece-diagnostics {
+    .k-tabstrip-wrapper {
+        width: 100%;
+    }
+}
+
+.handpiece-thumbnail {
+    width: 100%;
+}
+
+.handpiece-assistant {
+
+    .handpiece-assistant-list {
+        justify-content: space-between;
+        padding: 0.25rem;
+        height: 32rem;
+
+        .handpiece-assistant-schematic {
+            width: 10rem;
+            height: 16rem;
+            cursor: pointer;
+
+            img {
+                display: block;
+                width: auto;
+                height: auto;
+                margin-left: auto;
+                margin-right: auto;
+                max-width: 10rem;
+                max-height: 10rem;
+            }
+        }
+    }
+
+    .handpiece-assistant-window {
+        /* Empty */
+    }
+}
+
+.handpiece-assistant-scrollview {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+
+    .k-scrollview-wrap {
+        font-size: 0;
+    }
+
+    .k-scrollview-prev, .k-scrollview-next {
+        color: #212529 !important;
+    }
+
+    .handpiece-assistant-schematic-page {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        font-size: 1rem;
+        background-color: #eeeeee;
+
+        > .k-pdf-viewer {
+            margin: 0 auto;
+        }
+
+        > img {
+            display: block;
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        &__text {
+            background-color: white;
+            color: #212529;
+            height: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 4rem;
+            border-left: 1px solid rgba(33, 37, 41, 0.125);
+            border-right: 1px solid rgba(33, 37, 41, 0.125);
+        }
+    }
+}
+
+.handpiece-shop-image-scrollview {
+    width: 100%;
+    height: 400px;
+    box-sizing: border-box;
+
+    .k-scrollview-wrap {
+        font-size: 0;
+    }
+
+    .k-scrollview-prev, .k-scrollview-next {
+        color: #212529 !important;
+    }
+
+    .handpiece-shop-image-scrollview__page {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        font-size: 1rem;
+        background-color: #eeeeee;
+
+        > img {
+            display: block;
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+            max-width: 100%;
+            max-height: 100%;
+        }
+    }
+}
+
+.handpiece-thumbnail {
+    cursor: pointer;
+}
+
+.handpiece-images-scrollview {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+
+    .k-scrollview-wrap {
+        font-size: 0;
+    }
+
+    .k-scrollview-prev, .k-scrollview-next {
+        color: #212529 !important;
+        height: 30% !important;
+        top: 35% !important;
+    }
+
+    .handpiece-images-preview-page {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        font-size: 1rem;
+        background-color: #eeeeee;
+
+        > img {
+            display: block;
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        > video {
+            display: block;
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+            max-width: 100%;
+            max-height: 100%;
+        }
+    }
+}
+
+.handpiece-brand-model-serial {
+    &__brand {
+        @media (min-width: 1200px) {
+            flex-basis: 30%;
+            max-width: 30%;
+        }
+    }
+
+    &__model {
+        @media (min-width: 1200px) {
+            flex-basis: 30%;
+            max-width: 30%;
+        }
+    }
+
+    &__serial {
+        @media (min-width: 1200px) {
+            flex-basis: 40%;
+            max-width: 40%;
+        }
+    }
+
+    &__add-component, &__remove-component {
+        position: absolute;
+        top: 0.25rem;
+        bottom: 0;
+        right: 15px;
+        height: 1.75rem;
+        width: 1.75rem;
+
+        @media (min-width: 576px) {
+            right: 0;
+        }
+    }
+}
+
+.handpiece-editor-control {
+    &__add-component, &__remove-component {
+        position: absolute;
+        top: 0.25rem;
+        bottom: 0;
+        right: -5px;
+        height: 1.75rem;
+        width: 1.75rem;
+    }
+}
+
+#ExistingClientHandpiece-list, #ClientHandpieceId-list {
+    .k-list-filter {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .k-footer {
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+    }
+}
+
+#ExistingClientHandpiece_listbox, #ClientHandpieceId_listbox {
+    .k-item {
+        display: block;
+        /*flex-direction: column;
+        flex-wrap: nowrap;*/
+
+        .existing-client-handpiece-main {
+        }
+
+        .existing-client-handpiece-info {
+            font-size: 0.75rem;
+        }
+    }
+}
+
+.handpiece-diagnostic-report {
+    &__item:last-child &__item__separator {
+        display: none;
+    }
+}
+
+.form-check.diagnostic-check > label {
+    white-space: normal;
+}

@@ -1,0 +1,160 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DevGuild.AspNetCore.Controls.HybridForms
+@model DentalDrill.CRM.Models.ViewModels.ClientEmails.ClientEmailSendScalerInformationModel
+@{
+    ViewBag.Title = "Send Scaler Information";
+    this.ConfigureHybridPage("ClientEmailsSendScalerInformation");
+}
+
+<div class="editor mb-2">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Send Scaler Information</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Details" asp-controller="Clients" asp-route-id="@Model.Client.Id" asp-route-Tab="Emails" class="editor__action"><span class="fa fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+
+    <form asp-action="SendScalerInformation" method="post" hybrid-form-id="ClientEmailsSendScalerInformation">
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-12 mb-2">
+                        <div class="row">
+                            <div class="col-3">
+                                <label asp-for="To"></label>
+                            </div>
+                            <div class="col-9">
+                                @{
+                                    var emails = new List<String>();
+                                    emails.Add(Model.Client.Email);
+                                    emails.AddRange(Model.Client.ParseSecondaryEmails());
+                                }
+                                @Html.Kendo().DropDownListFor(x => x.To).BindTo(new SelectList(emails.Select(x => new { Email = x }), "Email", "Email"))
+                                <span class="text-danger" asp-validation-for="To"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-2">
+                        <div class="row">
+                            <div class="col-3">
+                                <label>Subject</label>
+                            </div>
+                            <div class="col-9">
+                                <p class="form-control-plaintext">DDS Scaler Information & Prices</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-2">
+                        <div class="row">
+                            <div class="col-12">
+                                <label>Text</label>
+                            </div>
+                            <div class="col-12">
+                                <p>
+                                    Hi <input asp-for="Greeting" class="k-textbox py-0 px-1 d-inline" style="width: 400px; height: 1.5rem;" />, <br />
+                                </p>
+                                <p>
+                                    As discussed on the phone, please find the info below on scalers that may help. <br />
+                                    We sell replacement MK-Dent scalers which are far more economical and ‘disposably priced’ in comparison
+                                    to buying EMS/Aceton/Satelec/NSK/Kavo branded scalers at $1000+. It may work out cheaper changing
+                                    over any current scaler chair line fittings if they are not EMS or Aceton /Satelec, so that you can use
+                                    these cheaper priced scalers in the future and save more money in the long term. <br />
+                                    But as I mentioned it all depends upon how the tip goes on correctly as to how long they are likely to last too!
+                                </p>
+                                <p>
+                                    For most scalers on which the thread has gone or has lost vibration etc. it’s not possible to repair as the main 
+                                    body inside is glued together during the manufacturing process so it’s impossible to get inside to replace damaged parts, 
+                                    hence being unrepairable. Some Kavo scalers are repairable but you are looking at in excess of $650+ to repair, 
+                                    so you would need to consider its age also against repairing or replacing it.
+                                </p>
+                                <p>
+                                    Our MK-dent scalers are priced as below: <br />
+                                    Do call me if you have any further questions about the scalers available or want to place an order. <br />
+                                    Payment is required upfront to confirm the order and it usually takes 2 days delivery direct from manufacturer.
+                                </p>
+                                <p><image-uploader asp-for="ScalersPricesImage" configuration="EmailImage" preview-variation="Original"></image-uploader></p>
+                                <p><b>Scaler Troubleshooting:</b></p>
+                                <p>
+                                    With scalers and any other instruments with a thread on it, always do a half turn in the opposite direction to ensure you line up the thread, 
+                                    you may feel a slight click and that usually means it has fallen into its correct groove and should then be easy to screw on. If it’s ever hard 
+                                    to screw on then it’s definitely not sat on square and you are doing more harm by forcing it to realign itself.
+                                </p>
+                                <p>
+                                    Always ensure that you are using the correct tip for the correct brand too!! <br />
+                                    The thread pitch is finer on the EMS (4 flat planes) and coarser on the Satelec Scalers (2 flat planes) see photos. <br />
+                                    If you purchase the wrong tips by mistake, they will only go on about half way. If you use the tip wrench you can force it on,
+                                    but stripping the threads in the process. <br />
+                                    If the threads are stripped then the scaler is ready for the bin (as in this case!). <br />
+                                    If a tip has got stuck or caused damage to the scaler, then the tip should be discarded too.
+                                </p>
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td><img src="~/img/email/scaler-troubleshooting-1.jpg" alt="Scaler Troubleshooting" /></td>
+                                            <td><img src="~/img/email/scaler-troubleshooting-2.jpg" alt="Scaler Troubleshooting" /></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <p>In addition to the notes above this explains threads:</p>
+                                <p>
+                                    Scaler usually has male thread <br />
+                                    Scaler tips usually have female thread <br />
+                                    Both need to line up to make sure that the tip screws on properly. <br />
+                                    If either of the threads are damaged then you can risk damaging the other in the process of trying to force it on,
+                                    wearing away the thread that keeps the tip held onto the scaler. <br />
+                                    (In a similar way that if you try and screw a water bottle to on that’s not lined up properly it will go on
+                                    at an angle and can eventually break the plastic thread of the bottle, and the lid won’t fit on and water will spill out etc.) <br />
+                                    The photo below shows the thread that has worn away, you can see a distinct line between the top area where the tip screws on and has worn away.
+                                </p>
+                                <p><img src="~/img/email/scaler-troubleshooting-3.jpg" alt="Scaler Troubleshooting" /></p>
+                                <table align="center" style="margin-top: 1em;">
+                                    <tbody><tr>
+                                        <td>
+                                            <a href="https://facebook.com/dentaldrillsolutions">
+                                                <img alt="Facebook" src="/img/email/dds-fb-like.jpg" height="71" width="239">
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="https://instagram.com/dentaldrillsolutions">
+                                                <img alt="Instagram" src="/img/email/dds-instagram.png" height="71" width="71">
+                                            </a>
+                                        </td>
+                                    </tr></tbody>
+                                </table>
+                                <center style="margin-top: 1em;">
+                                    <b>Check out our DDS Facebook &amp; Instagram pages &amp; LIKE US</b><br>
+                                    <b>for regular maintenance tips, specials and updates!</b>
+                                </center>
+                                <center style="font-size: 0.8em; margin-top: 1em;">
+                                    <b>Click on the images above or go to:</b><br>
+                                    <b><a href="https://facebook.com/dentaldrillsolutions">www.facebook.com/dentaldrillsolutions</a></b><br>
+                                    <b><a href="https://instagram.com/dentaldrillsolutions">www.instagram.com/dentaldrillsolutions</a></b>
+                                </center>
+                                <center style="font-size: 0.8em; margin-top: 1em;">
+                                    <b>Or visit our website:</b><br>
+                                    <b><a href="https://www.dds11.au/">www.dds11.au</a></b>
+                                </center>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <h5>Attachments</h5>
+                <file-uploader-list asp-for="Attachments" configuration="EmailAttachments" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-primary">Send</button>
+                <a asp-action="Details" asp-controller="Clients" asp-route-id="@Model.Client.Id" asp-route-Tab="Emails" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

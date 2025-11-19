@@ -1,0 +1,67 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DevGuild.AspNetCore.Controls.HybridForms
+@model DentalDrill.CRM.Models.ViewModels.HandpieceModelSchematicEditAttachmentModel
+@{
+    ViewBag.Title = $"Add pdf schematic";
+    this.ConfigureHybridPage("HandpieceModelSchematicCreateAttachment");
+}
+
+<div class="editor">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Add image schematic</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Details" asp-route-id="@Model.Parent.Id" asp-controller="HandpieceModels" class="editor__action"><span class="fas fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+
+    <form asp-action="CreateAttachment" asp-route-parentId="@Model.Parent.Id" hybrid-form-id="HandpieceModelSchematicCreateAttachment" id="HandpieceModelSchematicCreateAttachmentForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="row">
+            <div class="col-12 col-sm-7 col-md-8 mb-2">
+                <div class="row">
+                    <div class="col-3">
+                        <label asp-for="Title"></label>
+                    </div>
+                    <div class="col-9">
+                        <input asp-for="Title" class="k-textbox w-100" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-5 col-md-4 mb-2">
+                <div class="row">
+                    <div class="col-5">
+                        <label asp-for="Display"></label>
+                    </div>
+                    <div class="col-7 col-checkbox">
+                        @(Html.Kendo().CheckBoxFor(x => x.Display).HtmlAttributes(new { @class = "form-control" }).Label(""))
+                        <span asp-validation-for="Display" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-12">
+                <label asp-for="AttachmentId"></label>
+            </div>
+            <div class="col-12">
+                <file-uploader asp-for="AttachmentId" configuration="HandpieceModelSchematic"></file-uploader>
+                <span asp-validation-for="AttachmentId" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a asp-action="Details" asp-route-id="@Model.Parent.Id" asp-controller="HandpieceModels" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,586 @@
+﻿@using DentalDrill.CRM.Extensions
+@model DentalDrill.CRM.Models.ViewModels.JobsIndexViewModel
+@{
+    Layout = "_FullLayout";
+    ViewBag.Title = "Repairs";
+}
+
+<div id="JobsIndexPage" class="grid-wrapper">
+    <div class="grid-wrapper__header mt-3">
+        <div class="row">
+            <div class="col-md-6 col-lg-8">
+                <h1 class="header">Repairs</h1>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="row mt-md-2 mb-2 mb-md-0">
+                    <div class="col-4">
+                        @Html.Label("WorkshopFilter", "Workshop")
+                    </div>
+                    <div class="col-8">
+                        @(Html.Kendo().DropDownList()
+                            .Name("WorkshopFilter")
+                            .HtmlAttributes(new { @class = "w-100" })
+                            .BindTo(Model.Workshops.Count > 1 ? new SelectList(Model.Workshops, "Id", "Name").WithNull("Any") : new SelectList(Model.Workshops, "Id", "Name"))
+                            .ValuePrimitive(true)
+                            .Value(Model.Filters.Workshop?.ToString()))
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="filters__jobs grid-wrapper__content">
+        <div class="row">
+            <div class="col-lg-4 col-md-6 order-0 order-lg-0">
+                <div class="row">
+                    <div class="col-4">
+                        @Html.Label("JobNumberFilter", "Estimate/Sale #")
+                    </div>
+                    <div class="col-8">
+                        <div class="row ml-0 mr-0">
+                            <div class="col-6 p-0 pr-1">
+                                @Html.Kendo().DropDownList().Name("JobTypeFilter").HtmlAttributes(new { @class = "w-100" }).BindTo(new SelectList(Model.JobTypes, "Id", "Name").WithNull("Any"))
+                            </div>
+                            <div class="col-6 p-0 pl-1">
+                                @(Html.Kendo().TextBox()
+                                    .Name("JobNumberFilter")
+                                    .HtmlAttributes(new { placeholder = "Enter #", @class = "w-100" }))
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 order-2 order-lg-1">
+                <div class="row">
+                    <div class="col-4">
+                        @Html.Label("ClientFilter", "Client")
+                    </div>
+                    <div class="col-8">
+                        <style type="text/css">
+                            #ClientFilter-list {
+                                min-width: 400px !important;
+                            }
+
+                            @@media (min-width: 576px) {
+                                #ClientFilter-list {
+                                    min-width: 500px !important;
+                                }
+                            }
+                        </style>
+                        @(Html.Kendo().DropDownList()
+                            .Name("ClientFilter")
+                            .HtmlAttributes(new { @class = "w-100 dropdown-wide" })
+                            .DataTextField("FullName")
+                            .DataValueField("Id")
+                            .Filter("contains")
+                            .OptionLabel("Any")
+                            .MinLength(3)
+                            .EnforceMinLength(true)
+                            .Height(480)
+                            .AutoWidth(true)
+                            .Value(Model.Filters.Client?.ToString())
+                            .Virtual(v => v.ItemHeight(32).MapValueTo("dataItem").ValueMapper("DentalDrill.CRM.Controls.ClientSelectorControl.valueMapper"))
+                            .Template("<span title=\"#: FullName#\">#: FullName#</span>")
+                            .Popup(popup => popup.Origin("bottom right").Position("top right"))
+                            .DataSource(dataSource => dataSource
+                                .Ajax()
+                                .Read(read => read.Action("ClientsAutoComplete", "Jobs", new { }))
+                                .Sort(sort => sort.Add("FullName"))
+                                .PageSize(15)
+                                .ServerOperation(true)))
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 order-6 order-lg-2">
+                <div class="row">
+                    <div class="col-4">
+                        @Html.Label("ReceivedFromFilter", "Date in")
+                    </div>
+                    <div class="col-8">
+                        <div class="row ml-0 mr-0">
+                            <div class="col-6 p-0 pr-1">
+                                @Html.Kendo().DatePicker().Name("ReceivedFromFilter").HtmlAttributes(new { style = "width: 100%", placeholder = "From" })
+                            </div>
+                            <div class="col-6 p-0 pl-1">
+                                @Html.Kendo().DatePicker().Name("ReceivedToFilter").HtmlAttributes(new { style = "width: 100%", placeholder = "To" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 order-1 order-lg-3">
+                <div class="row">
+                    <div class="col-4">
+                        @Html.Label("SerialFilter", "Serial #")
+                    </div>
+                    <div class="col-8">
+                        @Html.Kendo().TextBox().Name("SerialFilter").HtmlAttributes(new { placeholder = "Enter Serial #", @class = "w-100" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 order-3 order-lg-4">
+                <div class="row">
+                    <div class="col-4">
+                        @Html.Label("MakeAndModelFilter", "Model")
+                    </div>
+                    <div class="col-8">
+                        @(Html.Kendo().DropDownList()
+                            .Name("MakeAndModelFilter")
+                            .HtmlAttributes(new { @class = "w-100" })
+                            .BindTo(new SelectList(Model.Models.Select(x => new { Value = $"{x.Brand}||{x.Model}", Text = x.ToString() }), "Value", "Text").WithNull("Any")))
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 order-4 order-lg-6">
+                <div class="row">
+                    <div class="col-4">
+                        @Html.Label("TypeFilter", "Type")
+                    </div>
+                    <div class="col-8">
+                        @Html.Kendo().DropDownList().Name("TypeFilter").HtmlAttributes(new { @class = "w-100" }).BindTo(HandpieceSpeedHelper.MakeSelectList().WithNull("All"))
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 order-4 order-lg-6">
+                <div class="row">
+                    <div class="col-4">
+                        @Html.Label("JobStatusFilter", "Estimate status")
+                    </div>
+                    <div class="col-8">
+                        @Html.Kendo().DropDownList().Name("JobStatusFilter").HtmlAttributes(new { @class = "w-100" }).BindTo(JobStatusHelper.MakeSelectList().Prepend("All", "All").Prepend("Workshop", "Workshop").Prepend("Active", "Active"))
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 order-4 order-lg-6">
+                <div class="row">
+                    <div class="col-4">
+                        @Html.Label("HandpieceStatusFilter", "H/P status")
+                    </div>
+                    <div class="col-8">
+                        @Html.Kendo().DropDownList().Name("HandpieceStatusFilter").HtmlAttributes(new { @class = "w-100" }).BindTo(HandpieceStatusHelper.MakeSelectList().Rename("BeingRepaired", "Being repaired only").Prepend("Active", "Active").Prepend("BeingRepairedEx", "Being repaired").Prepend("Workshop", "Workshop").Prepend("All", "All"))
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 order-4 order-lg-6">
+                <div class="row">
+                    <div class="col-4">
+                        @Html.Label("PartsOutOfStockFilter", "Parts")
+                    </div>
+                    <div class="col-8">
+                        @(Html.Kendo().DropDownList().Name("PartsOutOfStockFilter").HtmlAttributes(new { @class = "w-100" })
+                            .BindTo(new SelectList(new [] { Tuple.Create("OutOfStock", "Out of stock"), Tuple.Create("InStock", "In stock"), Tuple.Create("PartialStock", "Partial stock") }, "Item1", "Item2").WithNull("Any")))
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-12 col-md-6 order-9 order-lg-7">
+                <div class="row filter__buttons">
+                    <div class="col-12 editor__submit">
+                        @(Html.Kendo().Button()
+                            .Name("SearchFilters")
+                            .Icon("")
+                            .Content("Search")
+                            .HtmlAttributes(new { type = "button", @class = "k-button-solid-primary", style = "width: 10rem;" })
+                            .Events(ev => ev.Click("DentalDrill.CRM.Pages.Jobs.Index.JobsFilters.clickSearch")))
+                        @(Html.Kendo().Button()
+                            .Name("ClearFilters")
+                            .Icon("")
+                            .Content("Clear")
+                            .HtmlAttributes(new { type = "button", @class = "ml-2" })
+                            .Events(ev => ev.Click("DentalDrill.CRM.Pages.Jobs.Index.JobsFilters.clickCancel")))
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-switcher__jobs collapse show grid-wrapper__grid">
+        <kendo-grid name="JobsGrid" detail-template-id="JobsGridDetails" class="k-grid-commandicons2 k-grid--dense k-grid--small-text">
+            <columns>
+                <column field="JobNumber" title="Est./Sale #" width="100" template="#: data.JobTypeName # #: data.JobNumber #" />
+                <column field="WorkshopId" title="Workshop" width="100" template="#: data.WorkshopName #" />
+                <column field="ClientId" title="Client" width="300" template="#: data.ClientName #" />
+                <column field="Received" title="Received" width="100" template="@("#: kendo.toString(data.Received, \"d\") #")" />
+                <column field="JobStatus" title="Status" width="150" template="#= DentalDrill.CRM.Pages.Jobs.Index.JobsGrid.renderStatusIndicator(data) #" />
+                <column field="JobStatusName" title="Status name" width="100" />
+                <column field="HandpiecesCount" title="# of HPs" width="100" />
+                <column width="100">
+                    <commands>
+                        <column-command name="CustomEdit" click="DentalDrill.CRM.Pages.Jobs.Index.JobsGrid.handleEdit" text="@("<span class=\"fas fa-fw fa-pencil-alt\"></span>")"></column-command>
+                    </commands>
+                </column>
+            </columns>
+            <toolbar>
+                <toolbar-button name="CustomCreateEstimate" text="@("<span class=\"fas fa-fw fa-plus\"></span> New Estimate")"></toolbar-button>
+                <toolbar-button name="CustomCreateSale" text="@("<span class=\"fas fa-fw fa-plus\"></span> New Sale")"></toolbar-button>
+            </toolbar>
+            <column-menu enabled="false" />
+            <editable enabled="false" />
+            <pageable enabled="true" />
+            <scrollable enabled="true" />
+            <sortable enabled="true" allow-unsort="true" mode="multiple" />
+            <datasource type="DataSourceTagHelperType.Ajax" page-size="50">
+                <transport>
+                    <read url="@Url.Action("ReadJobs", "Jobs")" />
+                </transport>
+                <schema>
+                    <model id="Id">
+                        <fields>
+                            <field name="JobNumber" type="number"></field>
+                            <field name="ClientId"></field>
+                            <field name="ClientName"></field>
+                            <field name="Received" type="Date"></field>
+                        </fields>
+                    </model>
+                </schema>
+                <sorts>
+                    <sort field="Received" direction="asc" />
+                    <sort field="JobStatus" direction="asc" />
+                </sorts>
+                <filters>
+                    <datasource-filter field="JobStatus" operator="neq" value="JobStatus.SentComplete" />
+                    <datasource-filter field="JobStatus" operator="neq" value="JobStatus.Cancelled" />
+                    @if (Model.Filters.Workshop != null)
+                    {
+                        <datasource-filter field="WorkshopId" operator="eq" value="@Model.Filters.Workshop"/>
+                    }
+                
+                    @if (Model.Filters.Client != null)
+                    {
+                        <datasource-filter field="ClientId" operator="eq" value="@Model.Filters.Client"/>
+                    }
+                </filters>
+            </datasource>
+        </kendo-grid>
+    </div>
+    <div class="grid-switcher__handpieces collapse grid-wrapper__grid">
+        <kendo-grid name="JobsHandpiecesGrid" 
+                    class="k-grid-commandicons2 k-grid--dense k-grid--dense-commands k-grid--small-text"
+                    on-data-bound="DentalDrill.CRM.Pages.Jobs.Index.JobsHandpiecesGrid.handleDataBound"
+                    row-template-id="JobsHandpiecesGrid-RowTemplate"
+                    alt-row-template-id="JobsHandpiecesGrid-RowTemplateAlt">
+            <columns>
+                <column field="JobNumber" title="E/S #" width="40" template="#: data.JobTypeName # #: data.JobNumber #" />
+                <column field="WorkshopId" title="Workshop" width="60" template="#: data.WorkshopName #" />
+                <column field="ClientId" title="Client" template="#: data.ClientName #" width="80" />
+                <column field="Brand" title="Brand" width="60" />
+                <column field="MakeAndModel" title="Model" width="60" />
+                <column field="Serial" title="Serial" width="80" />
+                <column field="DiagnosticReport" title="Diagnostic" width="150" />
+                <column field="ServiceLevelName" title="Service" width="70" />
+                <column field="HandpieceStatus" title="Status" width="70" template="#: data.HandpieceStatusName #" />
+                <column field="Parts" title="Parts" width="75" template="@(@"# if (data.PartsOutOfStock === 1) { # <span class=""badge badge-danger"">Out of stock</span> # } else if (data.PartsOutOfStock === 2) { # <span class=""badge badge-warning"">Partial stock</span> # } else { # <span class=""badge badge-success"">In stock</span> # } # # if (data.Parts) { # <br/><span data-toggle=""tooltip"" data-placement=""left"" title=""#: data.Parts #"">#: data.Parts #</span> # } #")" />
+                @if (!User.IsInRole(ApplicationRoles.OfficeAdministrator))
+                {
+                    <column field="EstimatedBy" title="Est. by" width="65" template="@(@"# if (data.EstimatedBy) { # <span data-toggle=""tooltip"" data-placement=""left"" title=""#: data.EstimatedByFullName #"">#: data.EstimatedBy #</span> # } #")" />
+                }
+                <column field="RepairedBy" title="Rep. by" width="65" template="@(@"# if (data.RepairedBy) { # <span data-toggle=""tooltip"" data-placement=""left"" title=""#: data.RepairedByFullName #"">#: data.RepairedBy #</span> # } #")" />
+                <column field="CostOfRepair" title="Cost" width="50" />
+                <column field="InternalComment" title="Int. comment" width="120" />
+                <column field="Received" title="Received" template="@("#: data.Received ? kendo.toString(data.Received, \"d\"): \"\" #")" width="75" />
+                <column width="35">
+                    <commands>
+                        <column-command name="CustomEdit" click="DentalDrill.CRM.Pages.Jobs.Index.JobsHandpiecesGrid.handleEdit" text="@("<span class=\"fas fa-fw fa-pencil-alt\"></span>")" />
+                    </commands>
+                </column>
+            </columns>
+            <toolbar>
+                <toolbar-button name="CustomCreateEstimate" text="@("<span class=\"fas fa-fw fa-plus\"></span> New Estimate")"></toolbar-button>
+                <toolbar-button name="CustomCreateSale" text="@("<span class=\"fas fa-fw fa-plus\"></span> New Sale")"></toolbar-button>
+            </toolbar>
+            <column-menu enabled="false" />
+            <editable enabled="false" />
+            <pageable enabled="true" />
+            <scrollable enabled="true" />
+            <sortable enabled="true" allow-unsort="true" mode="multiple" />
+            <datasource type="DataSourceTagHelperType.Ajax" page-size="50">
+                <transport>
+                    <read url="@Url.Action("ReadHandpieces", "Jobs")" />
+                </transport>
+                <schema>
+                    <model id="Id">
+                        <fields>
+                            <field name="JobNumber" type="number" />
+                            <field name="JobNumberString" />
+                            <field name="ClientId" />
+                            <field name="ClientName" />
+                            <field name="MakeAndModel" />
+                            <field name="Serial" />
+                            <field name="DiagnosticReport" />
+                            <field name="ServiceLevelId" />
+                            <field name="ServiceLevelName" />
+                            <field name="Status" />
+                            <field name="EstimatedBy" />
+                            <field name="RepairedBy" />
+                            <field name="PartsOutOfStock" type="number" />
+                            <field name="Rating" type="number" />
+                            <field name="Received" type="Date" />
+                            <field name="CostOfRepair" type="number" />
+                            <field name="InternalComment" />
+                        </fields>
+                    </model>
+                </schema>
+                <sorts>
+                    <sort field="Received" direction="asc" />
+                    <sort field="HandpieceStatus" direction="asc" />
+                </sorts>
+                <filters>
+                    @if (Model.Filters.Workshop != null)
+                    {
+                        <datasource-filter field="WorkshopId" operator="eq" value="@Model.Filters.Workshop"/>
+                    }
+                    
+                    @if (Model.Filters.Client != null)
+                    {
+                        <datasource-filter field="ClientId" operator="eq" value="@Model.Filters.Client"/>
+                    }
+                </filters>
+            </datasource>
+        </kendo-grid>
+    <script type="text/html" id="JobsHandpiecesGrid-RowTemplate">
+        <tr data-uid="#:uid#">
+                <td role="gridcell">#: data.JobTypeName # #: data.JobNumber #</td>
+                <td role="gridcell">
+                    # if (data.WorkshopName !== undefined && data.WorkshopName !== null) { #
+                    <span>#: data.WorkshopName #</span>
+                    # } #
+                </td>
+                <td role="gridcell">
+                    # if (data.ClientName !== undefined && data.ClientName !== null) { #
+                    <span>#: data.ClientName #</span>
+                    # } #
+                </td>
+                <td colspan="3" class="p-0" style="height: 1px;">
+                    <table style="border-collapse: collapse; height: 100%;">
+                        <colgroup>
+                            <col style="width: 60px" />
+                            <col style="width: 60px" />
+                            <col style="width: 80px" />
+                        </colgroup>
+                        <tr>
+                            <td class="p-1" role="gridcell">
+                                # if (data.Brand !== undefined && data.Brand !== null) { #
+                                <span>#: data.Brand #</span>
+                                # } #
+                            <td class="p-1" role="gridcell">
+                                # if (data.MakeAndModel !== undefined && data.MakeAndModel !== null) { #
+                                <span>#: data.MakeAndModel #</span>
+                                # } #
+                            <td class="p-1" role="gridcell">
+                                # if (data.Serial !== undefined && data.Serial !== null) { #
+                                <span>#: data.Serial #</span>
+                                # } #
+                        </tr>
+                        # if (data.Components && data.Components.length) { for (var ci = 0; ci < data.Components.length; ci++) { #
+                        <tr style="border-top: 1px solid rgba(33,37,41,.125);">
+                            <td class="p-1" >
+                                # if (data.Components[ci] && data.Components[ci].Brand !== undefined && data.Components[ci].Brand !== null) { #
+                                <span>#: data.Components[ci].Brand #</span>
+                                # } #
+                            <td class="p-1" >
+                                # if (data.Components[ci] && data.Components[ci].Model !== undefined && data.Components[ci].Model !== null) { #
+                                <span>#: data.Components[ci].Model #</span>
+                                # } #
+                            <td class="p-1" >
+                                # if (data.Components[ci] && data.Components[ci].Serial !== undefined && data.Components[ci].Serial !== null) { #
+                                <span>#: data.Components[ci].Serial #</span>
+                                # } #
+                        </tr>
+                        # } } #
+                    </table>
+                </td>
+                <td role="gridcell">
+                    # if (data.DiagnosticReport !== undefined && data.DiagnosticReport !== null) { #
+                    <span>#: data.DiagnosticReport #</span>
+                    # } #
+                </td>
+                <td role="gridcell">
+                    # if (data.ServiceLevelName !== undefined && data.ServiceLevelName !== null) { #
+                    <span>#: data.ServiceLevelName #</span>
+                    # } #
+                </td>
+                <td role="gridcell">
+                    # if (data.HandpieceStatusName !== undefined && data.HandpieceStatusName !== null) { #
+                    <span>#: data.HandpieceStatusName #</span>
+                    # } #
+                <td role="gridcell">
+                    # if (data.PartsOutOfStock === 1) { #
+                    <span class="badge badge-danger">Out of stock</span>
+                    # } else if (data.PartsOutOfStock === 2) { #
+                    <span class="badge badge-warning">Partial stock</span>
+                    # } else { #
+                    <span class="badge badge-success">In stock</span>
+                    # } #
+                    # if (data.Parts) { #
+                    <br/><span data-toggle="tooltip" data-placement="left" title="#: data.Parts #">#: data.Parts #</span>
+                    # } #
+                </td>
+                @if (!User.IsInRole(ApplicationRoles.OfficeAdministrator))
+                {
+                    <td role="gridcell">
+                        # if (data.EstimatedBy !== undefined && data.EstimatedBy !== null) { #
+                        <span data-toggle="tooltip" data-placement="left" title="#: data.EstimatedByFullName #">#: data.EstimatedBy #</span>
+                        # } #
+                    </td>
+                }
+                <td role="gridcell">
+                    # if (data.RepairedBy !== undefined && data.RepairedBy !== null) { #
+                    <span data-toggle="tooltip" data-placement="left" title="#: data.RepairedByFullName #">#: data.RepairedBy #</span>
+                    # } #
+                </td>
+                <td role="gridcell">
+                    # if (data.CostOfRepair !== undefined && data.CostOfRepair !== null) { #
+                    <span>#: data.CostOfRepair #</span>
+                    # } #
+                </td>
+                <td role="gridcell">
+                    # if (data.InternalComment !== undefined && data.InternalComment !== null) { #
+                    <span>#: data.InternalComment #</span>
+                    # } #
+                </td>
+                <td role="gridcell">#: data.Received ? kendo.toString(data.Received, "d") : "" #</td>
+                <td class="k-command-cell" role="gridcell">
+                    <a role="button" class="k-button k-button-icontext k-grid-CustomEdit" href="\#" onclick="DentalDrill.CRM.Pages.Jobs.Index.JobsHandpiecesGrid.handleEdit">
+                        <span class="fas fa-fw fa-pencil-alt"></span>
+                    </a>
+                </td>
+            </tr>
+        </script>
+        <script type="text/html" id="JobsHandpiecesGrid-RowTemplateAlt">
+            <tr data-uid="#:uid#" class="k-alt">
+                <td role="gridcell">#: data.JobTypeName # #: data.JobNumber #</td>
+                <td role="gridcell">
+                    # if (data.WorkshopName !== undefined && data.WorkshopName !== null) { #
+                    <span>#: data.WorkshopName #</span>
+                    # } #
+                </td>
+                <td role="gridcell">
+                    # if (data.ClientName !== undefined && data.ClientName !== null) { #
+                    <span>#: data.ClientName #</span>
+                    # } #</td>
+                <td colspan="3" class="p-0" style="height: 1px;">
+                    <table style="border-collapse: collapse; height: 100%;">
+                        <colgroup>
+                            <col style="width: 60px" />
+                            <col style="width: 60px" />
+                            <col style="width: 80px" />
+                        </colgroup>
+                        <tr>
+                            <td class="p-1" role="gridcell">
+                                # if (data.Brand !== undefined && data.Brand !== null) { #
+                                <span>#: data.Brand #</span>
+                                # } #
+                            <td class="p-1" role="gridcell">
+                                # if (data.MakeAndModel !== undefined && data.MakeAndModel !== null) { #
+                                <span>#: data.MakeAndModel #</span>
+                                # } #
+                            <td class="p-1" role="gridcell">
+                                # if (data.Serial !== undefined && data.Serial !== null) { #
+                                <span>#: data.Serial #</span>
+                                # } #
+                        </tr>
+                        # if (data.Components && data.Components.length) { for (var ci = 0; ci < data.Components.length; ci++) { #
+                        <tr style="border-top: 1px solid rgba(33,37,41,.125);">
+                            <td class="p-1" >
+                                # if (data.Components[ci] && data.Components[ci].Brand !== undefined && data.Components[ci].Brand !== null) { #
+                                <span>#: data.Components[ci].Brand #</span>
+                                # } #
+                            <td class="p-1" >
+                                # if (data.Components[ci] && data.Components[ci].Model !== undefined && data.Components[ci].Model !== null) { #
+                                <span>#: data.Components[ci].Model #</span>
+                                # } #
+                            <td class="p-1" >
+                                # if (data.Components[ci] && data.Components[ci].Serial !== undefined && data.Components[ci].Serial !== null) { #
+                                <span>#: data.Components[ci].Serial #</span>
+                                # } #
+                        </tr>
+                        # } } #
+                    </table>
+                </td>
+                <td role="gridcell">
+                    # if (data.DiagnosticReport !== undefined && data.DiagnosticReport !== null) { #
+                    <span>#: data.DiagnosticReport #</span>
+                    # } #
+                </td>
+                <td role="gridcell">
+                    # if (data.ServiceLevelName !== undefined && data.ServiceLevelName !== null) { #
+                    <span>#: data.ServiceLevelName #</span>
+                    # } #
+                </td>
+                <td role="gridcell">
+                    # if (data.HandpieceStatusName !== undefined && data.HandpieceStatusName !== null) { #
+                    <span>#: data.HandpieceStatusName #</span>
+                    # } #
+                <td role="gridcell">
+                    # if (data.PartsOutOfStock === 1) { #
+                    <span class="badge badge-danger">Out of stock</span>
+                    # } else if (data.PartsOutOfStock === 2) { #
+                    <span class="badge badge-warning">Partial stock</span>
+                    # } else { #
+                    <span class="badge badge-success">In stock</span>
+                    # } #
+                    # if (data.Parts) { #
+                    <br/><span data-toggle="tooltip" data-placement="left" title="#: data.Parts #">#: data.Parts #</span>
+                    # } #
+                </td>
+                @if (!User.IsInRole(ApplicationRoles.OfficeAdministrator))
+                {
+                    <td role="gridcell">
+                        # if (data.EstimatedBy !== undefined && data.EstimatedBy !== null) { #
+                        <span data-toggle="tooltip" data-placement="left" title="#: data.EstimatedByFullName #">#: data.EstimatedBy #</span>
+                        # } #
+                    </td>
+                }
+                <td role="gridcell">
+                    # if (data.RepairedBy !== undefined && data.RepairedBy !== null) { #
+                    <span data-toggle="tooltip" data-placement="left" title="#: data.RepairedByFullName #">#: data.RepairedBy #</span>
+                    # } #
+                </td>
+                <td role="gridcell">
+                    # if (data.CostOfRepair !== undefined && data.CostOfRepair !== null) { #
+                    <span>#: data.CostOfRepair #</span>
+                    # } #
+                </td>
+                <td role="gridcell">
+                    # if (data.InternalComment !== undefined && data.InternalComment !== null) { #
+                    <span>#: data.InternalComment #</span>
+                    # } #
+                </td>
+                <td role="gridcell">#: data.Received ? kendo.toString(data.Received, "d") : "" #</td>
+                <td class="k-command-cell" role="gridcell">
+                    <a role="button" class="k-button k-button-icontext k-grid-CustomEdit" href="\#" onclick="DentalDrill.CRM.Pages.Jobs.Index.JobsHandpiecesGrid.handleEdit">
+                        <span class="fas fa-fw fa-pencil-alt"></span>
+                    </a>
+                </td>
+            </tr>
+        </script>
+    </div>
+</div>
+<script id="JobsGridDetails" type="text/kendo-tmpl">
+    @(Html.Kendo().TabStrip()
+          .Name("JobsGrid_TabStripOf_#=Id#")
+          .SelectedIndex(0)
+          .TabPosition(TabStripTabPosition.Left)
+          .Items(items =>
+          {
+              items.Add().Text("<span class=\"fas fa-fw fa-screwdriver\"></span>").LoadContentFrom("IndexItemTabHandpieces", "Jobs", new { id = "#=Id#" });
+              if (!User.IsInRole(ApplicationRoles.WorkshopTechnician))
+              {
+                  items.Add().Text("<span class=\"fas fa-fw fa-file-invoice\"></span>").LoadContentFrom("IndexItemTabInvoices", "Jobs", new { id = "#=Id#" });
+              }
+              items.Add().Text("<span class=\"fas fa-fw fa-history\"></span>").LoadContentFrom("Index", "JobChanges", new { parentId = "#=Id#" });
+          })
+          .ToClientTemplate())
+    @Html.Raw("<script type=\"text/javascript\">")
+        kendo.syncReady(function () {
+            var tabstrip = $("\\#JobsGrid_TabStripOf_#=Id#");
+            tabstrip.parents(".k-detail-cell").attr("colspan", "9");
+        });
+    @Html.Raw("<\\/script>")
+</script>
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/app/pages/jobs/index.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/js/app/pages/jobs/details.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/js/app/pages/jobs/create.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/js/app/pages/jobs/edit.js" asp-append-version="true"></script>
+}

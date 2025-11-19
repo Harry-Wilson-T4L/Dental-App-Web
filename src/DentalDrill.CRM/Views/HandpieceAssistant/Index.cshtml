@@ -1,0 +1,58 @@
+﻿@using DentalDrill.CRM.Models.ViewModels
+@model HandpieceAssistantIndexViewModel
+
+<div class="row handpiece-assistant" data-model-id="@Model.Id">
+    <div class="col-7">
+        @(Html.Kendo().ListView<HandpieceModelSchematicReadModel>()
+            .Name("AssistantSchematicsListView")
+            .TagName("div")
+            .HtmlAttributes(new { @class = "handpiece-assistant-list justify-content-between p-2", style = "height: 32rem;" })
+            .Scrollable(ListViewScrollableMode.Endless)
+            .BindTo(Model.Schematics)
+            .ClientTemplateId("AssistantSchematicsListViewTemplate"))
+        <script type="text/kendo-tmpl" id="AssistantSchematicsListViewTemplate">
+            <div class="card handpiece-assistant-schematic" data-id="#:Id#" data-model-id="@Model.Id">
+                <img src="#:ThumbnailUrl#" alt="#:Title#" class="card-img-top"  />
+                <div class="card-body">
+                    <h5 class="card-title text-center">#: Title ? Title : "" #</h5>
+                </div>
+            </div>
+        </script>
+    </div>
+    <div class="col-5">
+        <div class="handpiece-assistant-notes">
+            <div>
+                @Model.Brand.Name @Model.Model.Name notes:
+            </div>
+            <div class="border">
+                <kendo-editor name="AssistantWorkshopNotesEditor" class="handpiece-assistant-notes__editor" encoded="false" tag="div">
+                    <tools>
+                        <tool name="bold"/>
+                        <tool name="italic"/>
+                        <tool name="underline"/>
+                        <tool name="justifyLeft"/>
+                        <tool name="justifyCenter"/>
+                        <tool name="justifyRight"/>
+                        <tool name="justifyFull"/>
+                    </tools>
+                    <content>@Html.Raw(Model.Model.WorkshopNotes)</content>
+                </kendo-editor>
+            </div>
+            <div class="mt-2 d-flex flex-row justify-content-between">
+                <div class="flex-grow-0 flex-shrink-0">
+                    <a class="btn btn-outline-secondary" asp-action="Details" asp-route-id="@Model.Id" asp-controller="HandpieceModels"><span class="fas fa-fw fa-external-link-alt"></span> Go To Directory</a>
+                </div>
+                <div class="flex-grow-0 flex-shrink-0">
+                    <button class="btn btn-primary handpiece-assistant-notes__save">Save Notes</button>
+                    <button class="btn btn-outline-secondary handpiece-assistant-notes__cancel">Cancel</button>
+                </div>
+            </div>
+            <div class="handpiece-assistant-notes__alerts"></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function() {
+        DentalDrill.CRM.Pages.Handpieces.Edit.HandpieceAssistant.init($(".handpiece-assistant"));
+    });
+</script>

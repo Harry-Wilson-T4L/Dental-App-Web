@@ -1,0 +1,151 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DevGuild.AspNetCore.Controls.HybridForms
+@model DentalDrill.CRM.Models.ViewModels.ClientEmails.ClientEmailSendMaintenanceInstructionsModel
+@{
+    ViewBag.Title = "Send Sydney Clients General Email";
+    this.ConfigureHybridPage("ClientEmailsSendMaintenanceInstructions");
+}
+
+<div class="editor mb-2">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Send Maintenance Instructions</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Details" asp-controller="Clients" asp-route-id="@Model.Client.Id" asp-route-Tab="Emails" class="editor__action"><span class="fa fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+
+    <form asp-action="SendMaintenanceInstructions" method="post" hybrid-form-id="ClientEmailsSendMaintenanceInstructions">
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-12 mb-2">
+                        <div class="row">
+                            <div class="col-3">
+                                <label asp-for="To"></label>
+                            </div>
+                            <div class="col-9">
+                                @{
+                                    var emails = new List<String>();
+                                    emails.Add(Model.Client.Email);
+                                    emails.AddRange(Model.Client.ParseSecondaryEmails());
+                                }
+                                @Html.Kendo().DropDownListFor(x => x.To).BindTo(new SelectList(emails.Select(x => new { Email = x }), "Email", "Email"))
+                                <span class="text-danger" asp-validation-for="To"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-2">
+                        <div class="row">
+                            <div class="col-3">
+                                <label>Subject</label>
+                            </div>
+                            <div class="col-9">
+                                <p class="form-control-plaintext">Maintenance Instructions</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-2">
+                        <div class="row">
+                            <div class="col-12">
+                                <label>Text</label>
+                            </div>
+                            <div class="col-12">
+                                <p>Hi <input asp-for="Greeting" class="k-textbox py-0 px-1 d-inline" style="width: 400px; height: 1.5rem;" />, </p>
+                                <p>
+                                    As mentioned on the phone, please find attached our info sheets on the correct lubrication procedures to ensure handpiece
+                                    health and maintenance, especially for after repairs as the new parts need to be well lubricated to settle in.
+                                </p>
+                                <p>
+                                    Do not always rely on the correct lubrication being supplied through a machine if you have one,
+                                    as sometimes the levels are too low or it runs out without telling you. So it is important to make sure your machine is kept serviced also.<br />
+                                    We always recommend having a spray lubrication can at hand with the correct nozzle to use for the brand of high speed handpiece in question.<br />
+                                    The NSK Pana Plus spray cans are $59 ea and the different brands of nozzle are $29 each.
+                                </p>
+                                <p>
+                                    The On-The-Go Sheet is the most beneficial for you to try if a handpiece suddenly stops spinning during use.<br />
+                                    Try lubricating it to get it going again as per the directions to relieve the problem.
+                                </p>
+                                <p>
+                                    Following these directions should result in your handpieces lasting longer between repairs and running more efficiently.
+                                </p>
+                                <p>
+                                    It is a good idea to print them off and pin them to a wall for your staff’s quick reference.
+                                </p>
+                                <p>
+                                    If you would like to refer to the short step-by-step video clips please click on the thumbnail links here
+                                </p>
+                                <p>
+                                    <a href="https://video.wixstatic.com/video/13a7ed_ff955aadad6e45a19e18ca72e3303aec/480p/mp4/file.mp4">
+                                        <img src="~/img/email/maintenance-instructions-1.jpg" alt="10 Steps to handpiece Maintenance" />
+                                    </a>
+                                    <br />
+                                    <a href="https://video.wixstatic.com/video/13a7ed_ff955aadad6e45a19e18ca72e3303aec/480p/mp4/file.mp4">10 Steps to handpiece Maintenance</a>
+                                </p>
+                                <p>
+                                    <a href="https://video.wixstatic.com/video/13a7ed_a1e3d1bc9c164058b4b53ede6857f845/360p/mp4/file.mp4">
+                                        <img src="~/img/email/maintenance-instructions-2.jpg" alt="Nozzle Selection & Lubrication Guide" />
+                                    </a>
+                                    <br />
+                                    <a href="https://video.wixstatic.com/video/13a7ed_a1e3d1bc9c164058b4b53ede6857f845/360p/mp4/file.mp4">Nozzle Selection & Lubrication Guide</a>
+                                </p>
+                                <p>
+                                    Don’t forget that if you have any other questions or are sourcing new handpieces then check our sales pages on our
+                                    website or run it past me first with specific makes and models in case I can save you some $$$’s!
+                                </p>
+                                <p>
+                                    Please also find below our price list
+                                </p>
+                                <p>
+                                    <image-uploader asp-for="PriceGuideImage" configuration="EmailImage" preview-variation="Original"></image-uploader>
+                                </p>
+                                <table align="center" style="margin-top: 1em;">
+                                    <tbody><tr>
+                                        <td>
+                                            <a href="https://facebook.com/dentaldrillsolutions">
+                                                <img alt="Facebook" src="/img/email/dds-fb-like.jpg" height="71" width="239">
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="https://instagram.com/dentaldrillsolutions">
+                                                <img alt="Instagram" src="/img/email/dds-instagram.png" height="71" width="71">
+                                            </a>
+                                        </td>
+                                    </tr></tbody>
+                                </table>
+                                <center style="margin-top: 1em;">
+                                    <b>Check out our DDS Facebook &amp; Instagram pages &amp; LIKE US</b><br>
+                                    <b>for regular maintenance tips, specials and updates!</b>
+                                </center>
+                                <center style="font-size: 0.8em; margin-top: 1em;">
+                                    <b>Click on the images above or go to:</b><br>
+                                    <b><a href="https://facebook.com/dentaldrillsolutions">www.facebook.com/dentaldrillsolutions</a></b><br>
+                                    <b><a href="https://instagram.com/dentaldrillsolutions">www.instagram.com/dentaldrillsolutions</a></b>
+                                </center>
+                                <center style="font-size: 0.8em; margin-top: 1em;">
+                                    <b>Or visit our website:</b><br>
+                                    <b><a href="https://www.dds11.au/">www.dds11.au</a></b>
+                                </center>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <h5>Attachments</h5>
+                <file-uploader-list asp-for="Attachments" configuration="EmailAttachments" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-primary">Send</button>
+                <a asp-action="Details" asp-controller="Clients" asp-route-id="@Model.Client.Id" asp-route-Tab="Emails" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

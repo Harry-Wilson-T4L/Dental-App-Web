@@ -1,0 +1,101 @@
+﻿@model DentalDrill.CRM.Models.ViewModels.FeedbackConfigurationIndexModel
+@{
+    ViewBag.Title = "Feedback Configuration";
+}
+
+<div class="details">
+    <div class="details__header">
+        <div class="details__title">
+            <h1>Feedback configuration</h1>
+        </div>
+        <div class="details__actions">
+            <a asp-action="Edit" class="details__action"><span class="fas fa-pencil-alt"></span> Edit</a>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-12">
+            <div style="padding-left: 0.5rem; margin-left: 1px;">
+                <h4>Summary</h4>
+                @if (Model.Entity.AutoSendFormEnabled)
+                {
+                    <div>
+                        Automatic feedback sending is <strong class="text-success">ENABLED</strong>
+                        @if (Model.Entity.AutoSendFormDelayDays > 0)
+                        {
+                            <span><strong>@Model.Entity.AutoSendFormDelayDays @FeedbackConfigurationPeriodType.Day.FormatNameForLength(Model.Entity.AutoSendFormDelayDays)</strong> after job is complete.</span>
+                        }
+                        else
+                        {
+                            <span><strong>immediately</strong> after job is complete.</span>
+                        }
+                    </div>
+
+                    @if (Model.Entity.AutoSendSkipJobs > 0)
+                    {
+                        <div>Send after <strong>every @(Model.Entity.AutoSendSkipJobs + 1) jobs</strong>.</div>
+                    }
+
+                    @if (Model.Entity.PeriodLimitingEnabled)
+                    {
+                        <div>Send no more than <strong>@Model.Entity.PeriodLimitingQuantity @(Model.Entity.PeriodLimitingQuantity == 1 ? "time" : "times") per @Model.Entity.PeriodLimitingLength @Model.Entity.PeriodLimitingType.FormatNameForLength(Model.Entity.PeriodLimitingLength)</strong>.</div>
+                    }
+                }
+                else
+                {
+                    <div>Automatic feedback sending is <strong class="text-danger">DISABLED</strong>.</div>
+                }
+            </div>
+        </div>
+        
+        <div class="col-12">
+            <div style="padding-left: 0.5rem; margin-left: 1px; margin-top: 1rem;">
+                <h4>Details</h4>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="row details__field">
+                <div class="details__label">Automatic sending enabled</div>
+                <div class="details__value">@Model.Entity.AutoSendFormEnabled</div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="row details__field">
+                <div class="details__label">Automatic sending delay (days)</div>
+                <div class="details__value">@Model.Entity.AutoSendFormDelayDays</div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="row details__field">
+                <div class="details__label">Number of jobs to skip before sending feedback</div>
+                <div class="details__value">@Model.Entity.AutoSendSkipJobs</div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="row details__field">
+                <div class="details__label">Period limiting enabled</div>
+                <div class="details__value">@Model.Entity.PeriodLimitingEnabled</div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="row details__field">
+                <div class="details__label">Period type</div>
+                <div class="details__value">@Model.Entity.PeriodLimitingType</div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="row details__field">
+                <div class="details__label">Period length</div>
+                <div class="details__value">@Model.Entity.PeriodLimitingLength</div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="row details__field">
+                <div class="details__label">Maximum number of forms per period</div>
+                <div class="details__value">@Model.Entity.PeriodLimitingQuantity</div>
+            </div>
+        </div>
+    </div>
+</div>

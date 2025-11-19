@@ -1,0 +1,126 @@
+﻿$notifications-background-color: white !default;
+$notifications-job-created-background-color: #e5f0ff !default;
+$notifications-job-approved-background-color: #b7d4ff !default;
+
+.notifications-feed {
+    cursor: default;
+    
+    &__list-view {
+
+        .no-data {
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            margin-left: 1rem;
+            margin-right: 1rem;
+        }
+        /* Empty */
+    }
+
+    &__pager {
+        /* Empty */
+    }
+
+    &__templates {
+        display: none;
+    }
+}
+
+.notification {
+    padding: 1rem;
+    width: 100%;
+    font-size: 0.825rem;
+    background-color: $notifications-background-color;
+
+    &__date {
+        font-weight: bold;
+    }
+
+    &[data-status='0'] {
+        background-color: rgba(23,162,184,0.5);
+    }
+
+    &[data-status='1'], &[data-status='2'] {
+    }
+
+    &[data-status='0'].notification--job-created {
+        background-color: $notifications-job-created-background-color;
+        color: black;
+    }
+
+    &[data-status='0'].notification--job-approved-for-repair {
+        background-color: $notifications-job-approved-background-color;
+        color: black;
+    }
+}
+
+.notifications-indicator {
+    background-color: rgba(23,162,184,0.5);
+
+    &--has-unresolved &__icon {
+        color: white !important;
+    }
+
+    &--has-unread &__icon {
+        color: #dd0000 !important;
+    }
+
+    &--disconnected &__icon {
+        color: gray !important;
+    }
+}
+
+.callback-feed {
+    cursor: default;
+
+    &__list-view {
+
+        .no-data {
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            margin-left: 1rem;
+            margin-right: 1rem;
+        }
+        /* Empty */
+    }
+
+    &__pager {
+        /* Empty */
+    }
+}
+
+.callback {
+    padding: 1rem;
+    width: 100%;
+    background-color: $notifications-background-color;
+    min-width: 400px;
+    font-size: 0.825rem;
+
+    &__date {
+        font-weight: bold;
+    }
+
+    &__text {
+        /* Empty */
+    }
+
+    &__actions {
+        margin-top: 4px;
+        /* Empty */
+    }
+}
+
+.callback-indicator {
+    background-color: rgba(23,162,184,0.5);
+
+    &--has-unresolved &__icon {
+        color: white !important;
+    }
+
+    &--has-unread &__icon {
+        color: #dd0000 !important;
+    }
+
+    &--disconnected &__icon {
+        color: gray !important;
+    }
+}

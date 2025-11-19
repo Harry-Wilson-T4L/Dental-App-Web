@@ -1,0 +1,64 @@
+﻿@model DentalDrill.CRM.Models.ViewModels.EmptyEmployeeIndexViewModel
+@{
+    ViewBag.Title = "Handpiece Orders";
+}
+
+<div class="row">
+    <div class="col-12">
+        <h1>Handpiece Orders</h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <kendo-grid name="HandpieceStoreOrdersGrid" class="k-grid-commandicons2 k-grid--dense k-grid--small-text" height="600">
+            <columns>
+                <column field="CreatedOn" title="Date" format="{0:d}\n{0:t}" width="100" />
+                <column field="BrandModel" title="Make & Model" width="100" />
+                <column field="Status" title="Status" width="100" />
+                <column field="Coupling" title="Coupling" width="100" />
+                <column field="Notes" title="Notes" width="200" />
+                <column field="CosmeticCondition" title="Cosmetic Condition" width="100" />
+                <column field="FiberOpticBrightness" title="Fibre Optic Brightness" width="100" />
+                <column field="Warranty" title="Warranty" width="100" />
+                <column field="Price" title="Price" format="@("${0:#,##0.##}")" width="100" />
+                <column width="100">
+                    <commands>
+                        <column-command name="CustomDetails" click="DentalDrill.CRM.Pages.HandpieceStoreOrders.Index.HandpieceStoreOrdersGrid.handleDetails" text="@("<span class=\"fas fa-fw fa-external-link-alt\"></span>")" />
+                    </commands>
+                </column>
+            </columns>
+            <column-menu enabled="false" />
+            <editable enabled="false" />
+            <pageable enabled="true" />
+            <sortable enabled="false" />
+            <datasource type="DataSourceTagHelperType.Ajax">
+                <transport>
+                    <read url="@Url.Action("Read", "HandpieceStoreOrders")" />
+                </transport>
+                <schema>
+                    <model id="Id">
+                        <fields>
+                            <field name="CreatedOn" type="Date" />
+                            <field name="BrandModel" />
+                            <field name="Status" />
+                            <field name="Coupling" />
+                            <field name="Notes" />
+                            <field name="CosmeticCondition" />
+                            <field name="FiberOpticBrightness" />
+                            <field name="Warranty" />
+                            <field name="Price" />
+                        </fields>
+                    </model>
+                </schema>
+                <sorts>
+                    <sort field="CreatedOn" direction="desc" />
+                </sorts>
+            </datasource>
+        </kendo-grid>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript" src="/js/app/pages/handpieceStoreOrders/index.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="/js/app/pages/handpieceStore/listing.js" asp-append-version="true"></script>
+}

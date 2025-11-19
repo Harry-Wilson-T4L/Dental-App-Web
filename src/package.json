@@ -1,0 +1,13 @@
+{
+  "devDependencies": {
+    "@types/bootstrap": "^5.2.10",
+    "@types/jquery": "^3.5.33",
+    "@types/jqueryui": "^1.12.24",
+    "@types/kendo-ui": "^2023.2.6"
+  },
+  "dependencies": {
+    "@progress/kendo-ui": "^2025.4.1111",
+    "bootstrap": "^5.3.8",
+    "jquery-ui": "^1.14.1"
+  }
+}

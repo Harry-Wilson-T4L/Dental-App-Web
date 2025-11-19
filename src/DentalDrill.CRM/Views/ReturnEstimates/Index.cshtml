@@ -1,0 +1,53 @@
+﻿@using DentalDrill.CRM.Models.Permissions
+@model DentalDrill.CRM.Models.ViewModels.EmptyEmployeeIndexViewModel
+@{
+    ViewBag.Title = "Return estimates";
+}
+
+<h1 class="header">Return estimates</h1>
+
+@(Html.Kendo().Grid<DentalDrill.CRM.Models.ViewModels.ReturnEstimateViewModel>()
+      .Name("ReturnEstimatesGrid")
+      .HtmlAttributes(new { @class = "k-grid-commandicons2", style = "height: 630px" })
+      .Columns(columns =>
+      {
+          columns.Bound(c => c.Name);
+          columns.Command(command =>
+          {
+              if (Model.Access.Global.CanWriteComponent(GlobalComponent.ReturnEstimate))
+              {
+                  command.Edit().Text("<span></span>").IconClass("fas fa-fw fa-pencil-alt")
+                      .UpdateText("<span></span>").UpdateIconClass("fas fa-fw fa-check")
+                      .CancelText("<span></span>").CancelIconClass("fas fa-fw fa-ban");
+                  command.Destroy().Text("<span></span>").IconClass("fas fa-fw fa-trash-alt");
+              }
+          });
+      })
+      .ToolBar(toolbar =>
+      {
+          if (Model.Access.Global.CanWriteComponent(GlobalComponent.ReturnEstimate))
+          {
+              toolbar.Create();
+          }
+      })
+      .ColumnMenu(cm => cm.Enabled(false))
+      .Editable(editable => editable.Mode(GridEditMode.InLine))
+      .Pageable()
+      .Scrollable(scrollable => scrollable.Enabled(true).Height("auto"))
+      .DataSource(dataSource => dataSource
+          .Ajax()
+          .Model(model =>
+          {
+              model.Id(f => f.Id);
+              model.Field(f => f.Id).DefaultValue(default(Guid));
+              model.Field(f => f.Name);
+          })
+          .Sort(sort =>
+          {
+              sort.Add(f => f.Name);
+          })
+          .Read(read => read.Action("Read", "ReturnEstimates"))
+          .Create(create => create.Action("Create", "ReturnEstimates"))
+          .Update(update => update.Action("Update", "ReturnEstimates"))
+          .Destroy(destroy => destroy.Action("Destroy", "ReturnEstimates"))
+          .Events(events => events.Error("DevGuild.AspNet.Controls.Grids.Errors.GridErrorHandler.handleGridError").RequestStart("DevGuild.AspNet.Controls.Grids.Errors.GridErrorHandler.handleRequestStart"))))

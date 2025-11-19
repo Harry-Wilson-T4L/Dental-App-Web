@@ -1,0 +1,10 @@
+﻿@model dynamic
+@{
+    Layout = "_LandingFormLayout";
+    ViewData["Title"] = "Notifications";
+}
+
+<h1>Notifications</h1>
+<p>
+    Your token is invalid or expired. <a asp-action="Login" asp-route-returnUrl="@Url.Action("Notifications", "Manage")">Click here</a> to log in and open notifications management page.
+</p>

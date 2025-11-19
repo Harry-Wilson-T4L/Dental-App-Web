@@ -1,0 +1,108 @@
+﻿@using DevGuild.AspNetCore.Controls.HybridForms
+@using DentalDrill.CRM.Extensions
+@model InventorySKU
+@{
+    ViewBag.Title = "Delete SKU";
+    this.ConfigureHybridPage("InventoryDelete");
+}
+
+<div class="editor">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Delete SKU</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Index" asp-controller="Inventory" class="editor__action"><span class="fas fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+    
+    <form asp-action="Delete" asp-route-id="@Model.Id" hybrid-form-id="InventoryDelete" id="InventoryDeleteForm">
+        @if (this.ViewBag.ChildrenSKUCount > 0)
+        {
+            <div class="alert alert-danger">SKU with children cannot be deleted</div>
+        }
+        @if (this.ViewBag.ActiveMovementsCount > 0)
+        {
+            <div class="alert alert-danger">SKU with active orders or repairs cannot be deleted</div>
+        }
+        
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        
+        <div class="row">
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-12">
+                        <label asp-for="Name"></label>
+                    </div>
+                    <div class="col-12">
+                        <input asp-for="Name" class="k-textbox" disabled="disabled" placeholder="Enter Name of the SKU" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            
+            @if (Model.NodeType == InventorySKUNodeType.Leaf)
+            {
+                var indexWorkshopOptions = 0;
+                @foreach (var option in Model.WorkshopOptions.OrderBy(x => x.Workshop.OrderNo))
+                {
+                    var inputName = $"WorkshopOptions[{indexWorkshopOptions}].WarningQuantity";
+                    var inputId = $"WorkshopOptions_{indexWorkshopOptions}_WarningQuantity";
+                    indexWorkshopOptions++;
+
+                    <div class="col-12 col-sm-4 mb-2">
+                        <div class="row">
+                            <div class="col-12">
+                                <label for="@inputId">Warning QTY (@option.Workshop.Name)</label>
+                            </div>
+                            <div class="col-12">
+                                <input type="text" id="@inputId" name="@inputName" class="k-textbox" disabled="disabled" placeholder="Enter QTY for Warning status (@option.Workshop.Name)" />
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <div class="col-12 col-sm-4 mb-2">
+                    <div class="row">
+                        <div class="col-12">
+                            <label asp-for="AveragePrice"></label>
+                        </div>
+                        <div class="col-12">
+                            <input asp-for="AveragePrice" class="k-textbox" disabled="disabled" placeholder="Enter Average Price in AUD"/>
+                            <span asp-validation-for="AveragePrice" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-12">
+                        <label asp-for="Description"></label>
+                    </div>
+                    <div class="col-12">
+                        <textarea asp-for="Description" class="k-textbox" disabled="disabled" placeholder="Comment or note for the SKU - might be a description for the SKU (IDs, order URIs, etc)"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col editor__submit">
+                @if (this.ViewBag.ChildrenSKUCount > 0 || this.ViewBag.ActiveMovementsCount > 0)
+                {
+                    <button type="submit" class="btn btn-danger" disabled="disabled">Delete</button>
+                }
+                else
+                {
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                }
+                <a asp-action="Index" asp-controller="Inventory" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

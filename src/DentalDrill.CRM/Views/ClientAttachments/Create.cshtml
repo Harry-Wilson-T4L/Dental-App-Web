@@ -1,0 +1,57 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DevGuild.AspNetCore.Controls.HybridForms
+@model DentalDrill.CRM.Models.ViewModels.ClientAttachmentCreateModel
+@{
+    ViewBag.Title = "Upload attachment";
+    this.ConfigureHybridPage("ClientAttachmentsCreate");
+}
+
+<div class="editor">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Upload attachment for @Model.Parent.Name</h1>
+            </div>
+            <div class="editor__actions">
+                <a class="editor__action" asp-action="Details" asp-controller="Clients" asp-route-id="@Model.Parent.Id" asp-route-Tab="Attachments"><span class="fa fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+    
+    <form asp-action="Create" asp-route-parentId="@Model.Parent.Id" hybrid-form-id="ClientAttachmentsCreate">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        
+        <div class="row">
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="FileId" class="col-form-label editor__label">File</label>
+                    </div>
+                    <div class="col-sm-7">
+                        <file-uploader asp-for="FileId" configuration="Attachments" />
+                        <span asp-validation-for="FileId" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="Comment" class="col-form-label editor__label">Comment</label>
+                    </div>
+                    <div class="col-sm-7">
+                        <textarea asp-for="Comment" class="k-textbox"></textarea>
+                        <span asp-validation-for="Comment" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a asp-action="Details" asp-controller="Clients" asp-route-id="@Model.Parent.Id" asp-route-Tab="Attachments" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,27 @@
+{
+  "name": "devguild.aspnet-routing",
+  "authors": [
+    "DevGuild <info@devguild.ru>"
+  ],
+  "description": "Provides base classes for asp.net routing mirroring.",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "homepage": "https://devguild.ru/",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "version": "0.2.0",
+  "_release": "0.2.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.2.0",
+    "commit": "27a9aa8c0aa617f1b831bc624b3859466a58fb88"
+  },
+  "_source": "https://devguildltd.visualstudio.com/DevGuild.Frontend/_git/aspnet-routing",
+  "_target": "v0.2.0",
+  "_originalSource": "git+https://devguildltd.visualstudio.com/DevGuild.Frontend/_git/aspnet-routing"
+}

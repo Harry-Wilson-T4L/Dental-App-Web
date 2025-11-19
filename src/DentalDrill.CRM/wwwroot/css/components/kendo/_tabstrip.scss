@@ -1,0 +1,45 @@
+﻿.k-tabstrip-wrapper .tabstrip__floating {
+    .k-tabstrip-items {
+        flex-wrap: wrap;
+        margin-bottom: 0;
+        border: none;
+        justify-content: center;
+
+        .tabstrip__floating-button:first-of-type {
+            margin-left: 0;
+        }
+
+        .tabstrip__floating-button:last-of-type {
+            margin-right: 0;
+        }
+
+        .tabstrip__floating-button {
+            border: none;
+            margin: 0 0.5rem 1rem 0.5rem;
+            color: white;
+            background-color: #2b6ca3;
+            border-radius: 0;
+            flex-grow: 0;
+            flex-shrink: 1;
+            flex-basis: 0;
+        }
+
+        .tabstrip__floating-button.k-state-active {
+            box-shadow: 5px 5px 20px 1px rgba(255, 255, 255,0.45);
+            cursor: default;
+        }
+    }
+
+    .k-content {
+        border: 1px solid rgba(33,37,41,.125);
+        background-color: rgba(255,255,255,0.75);
+    }
+}
+
+.tab-strip-spinner {
+    position: relative;
+
+    .k-loading-image {
+        top: 10rem;
+    }
+}

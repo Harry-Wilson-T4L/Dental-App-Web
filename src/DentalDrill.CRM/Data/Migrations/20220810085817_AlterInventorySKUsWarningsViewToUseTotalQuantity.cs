@@ -1,0 +1,27 @@
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+
+namespace DentalDrill.CRM.Data.Migrations
+{
+    public partial class AlterInventorySKUsWarningsViewToUseTotalQuantity : Migration
+    {
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.Sql(@"create or alter view [InventorySKUsWarnings] ([Id], [HasWarning])
+as
+select 
+  sku.[Id],
+  case when sku.[WarningQuantity] is not null and sku.[WarningQuantity] > coalesce(q.[TotalQuantity], 0) and sku.[DeletionStatus] = 0 then 1 else 0 end as [HasWarning]
+from [InventorySKUs] sku left join [InventorySKUsQuantity] q on sku.[Id] = q.[Id]");
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.Sql(@"create or alter view [InventorySKUsWarnings] ([Id], [HasWarning])
+as
+select 
+  sku.[Id],
+  case when sku.[WarningQuantity] is not null and sku.[WarningQuantity] > coalesce(q.[ShelfQuantity], 0) and sku.[DeletionStatus] = 0 then 1 else 0 end as [HasWarning]
+from [InventorySKUs] sku left join [InventorySKUsQuantity] q on sku.[Id] = q.[Id]");
+        }
+    }
+}

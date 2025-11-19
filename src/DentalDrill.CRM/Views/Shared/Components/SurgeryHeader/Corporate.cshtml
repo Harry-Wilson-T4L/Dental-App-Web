@@ -1,0 +1,31 @@
+﻿@using DevGuild.AspNetCore.Services.Uploads.Images
+@model DentalDrill.CRM.Models.ComponentModels.CorporateSurgeryHeaderViewComponentModel
+
+@inject IImageUploadService ImageUpload
+
+<nav class="navbar navbar-expand-md navbar-light fixed-top surgery__navbar">
+    <style type="text/css">
+        .surgery__navbar {
+            background-color: @Model.CorporateAppearance.PrimaryColor;
+            color: @Model.CorporateAppearance.HeaderTextColor;
+        }
+    </style>
+    <div class="container">
+        <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">
+            <img src="/img/hub-logo.jpg" class="d-inline-block align-top" alt="Dental Drill Solutions">
+        </a>
+        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-items" aria-controls="navbar-items">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="navbar-collapse collapse" id="navbar-items">
+            <ul class="navbar-nav mr-auto surgery__navbar">
+                <li class="nav-item btn btn-outline-info"><a class="nav-link" asp-controller="Home" asp-action="HubTutorial"><i class="fas fa-book"></i> Hub tutorial</a></li>
+                <li class="nav-item btn btn-outline-info"><a class="nav-link" asp-controller="Home" asp-action="SurgeryTutorials"><i class="fas fa-screwdriver"></i> Tech tips</a></li>
+                <li class="nav-item btn btn-outline-info"><a class="nav-link" asp-controller="Pickup" asp-action="Index"><i class="fas fa-shipping-fast"></i> Book a Pick-up</a></li>
+                <li class="nav-item btn btn-outline-info"><a class="nav-link" asp-controller="HandpieceStore" asp-action="Index"><i class="fas fa-shopping-cart"></i> Handpiece Store</a></li>
+            </ul>
+            @await Html.PartialAsync("_LoginPartial")
+        </div>
+    </div>
+</nav>

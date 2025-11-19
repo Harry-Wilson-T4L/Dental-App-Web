@@ -1,0 +1,33 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "noEmitOnError": true,
+    "removeComments": false,
+    "sourceMap": true,
+    "target": "es5",
+    "jsx": "react",
+    "lib": [
+      "dom",
+      "es5",
+      "scripthost",
+      "es2015.promise",
+      "es2015.iterable",
+      "es2015.collection"
+    ],
+    "typeRoots": [
+      "node_modules/@types",
+      "node_modules/@progress" // Adding Kendo UI path for types
+    ],
+    "types": [
+      "jquery",
+      "kendo-ui" // Explicitly adding jQuery and Kendo UI types
+    ]
+  },
+  "exclude": [
+    "node_modules",
+    "bin",
+    "obj",
+    "wwwroot/lib/font-awesome"
+  ]
+}

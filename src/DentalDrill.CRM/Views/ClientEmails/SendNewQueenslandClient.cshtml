@@ -1,0 +1,160 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DevGuild.AspNetCore.Controls.HybridForms
+@model DentalDrill.CRM.Models.ViewModels.ClientEmails.ClientEmailSendNewQueenslandClientModel
+@{
+    ViewBag.Title = "Send Queensland Clients General Email";
+    this.ConfigureHybridPage("ClientEmailsSendNewClient");
+}
+
+<div class="editor mb-2">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Send Queensland Clients General Email</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Details" asp-controller="Clients" asp-route-id="@Model.Client.Id" asp-route-Tab="Emails" class="editor__action"><span class="fa fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+
+    <form asp-action="SendNewQueenslandClient" method="post" hybrid-form-id="ClientEmailsSendNewClient">
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-12 mb-2">
+                        <div class="row">
+                            <div class="col-3">
+                                <label asp-for="To"></label>
+                            </div>
+                            <div class="col-9">
+                                @{
+                                    var emails = new List<String>();
+                                    emails.Add(Model.Client.Email);
+                                    emails.AddRange(Model.Client.ParseSecondaryEmails());
+                                }
+                                @Html.Kendo().DropDownListFor(x => x.To).BindTo(new SelectList(emails.Select(x => new { Email = x }), "Email", "Email"))
+                                <span class="text-danger" asp-validation-for="To"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-2">
+                        <div class="row">
+                            <div class="col-3">
+                                <label>Subject</label>
+                            </div>
+                            <div class="col-9">
+                                <p class="form-control-plaintext">Queensland Clients General Email</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-2">
+                        <div class="row">
+                            <div class="col-12">
+                                <label>Text</label>
+                            </div>
+                            <div class="col-12">
+                                <p>
+                                    Hi <input asp-for="Greeting" class="k-textbox py-0 px-1 d-inline" style="width: 400px; height: 1.5rem;" />, <br />
+                                    Following my call today, please find some information below about DDS. 
+                                    We are very local to you and would love to help with all your handpiece repairs and servicing and save you lots of money at the same time!
+                                </p>
+                                <p style="color: #0099ff; font-size: 1.5em;">
+                                    <b><i>*Get your 10% discount today! *</i></b>
+                                </p>
+                                <p><textarea asp-for="DiscountComment" class="k-textbox p-1" style="height: 100px;"></textarea></p>
+                                <p>
+                                    <image-uploader asp-for="LocationImage" configuration="EmailImage" preview-variation="Original"></image-uploader>
+                                </p>
+                                <p><textarea asp-for="LocationText" class="k-textbox p-1" style="height: 100px;"></textarea></p>
+                                <p>Our business is to know you and what your practice requires. We focus on providing you with the personal service you deserve.</p>
+                                <p>WE WOULD LIKE TO BE YOUR LOCAL HANDPIECE REPAIR CENTRE!</p>
+                                <p>At DDS our aim is to offer a convenient and easy to use service, using only premium parts and bearings to OEM standards for most known and used makes and models of handpieces in Australia. </p>
+                                <p>Our handpieces are repaired in days – not weeks, with FREE comprehensive diagnostic estimates prior to repair.</p>
+                                <p>Please find below our current Monthly Special along with our price list. Sometimes our specials are brand specific.</p>
+                                <p><textarea asp-for="NewClientOfferText" class="k-textbox p-1"></textarea></p>
+                                <p>We will apply the best offer depending upon what mix of handpieces you give us, either high/low speed, different brands or what nature of repairs are needed etc. We also repair couplers, scalers and motors too.</p>
+                                <p>
+                                    <image-uploader asp-for="MonthlySpecialImage" configuration="EmailImage" preview-variation="Original"></image-uploader>
+                                </p>
+                                <p>
+                                    <image-uploader asp-for="PriceGuideImage" configuration="EmailImage" preview-variation="Original"></image-uploader>
+                                </p>
+                                <table align="center" border="1" cellpadding="10" cellspacing="0" style="" width="100%">
+                                    <tbody>
+                                        <tr>
+                                            <td align="left">
+                                                <div>
+                                                    <center style="float: left !important;">
+                                                        <a href="https://hub.dds11.au/">
+                                                            <img alt="Handpiece Hub" src="/img/email/dds-handpiece-hub.jpg" height="300" width="300">
+                                                        </a>
+                                                    </center>
+                                                    <div>
+                                                        <center>
+                                                            <b>Handpiece Hub is the home</b><br>
+                                                            <b>of your handpiece repair history</b><br>
+                                                            <b>– any time, any place, anywhere.</b>
+                                                        </center>
+                                                        <p>Our New <b>Handpiece Hub</b> will help you keep record of all the comings and goings of all your handpiece repairs and servicing to ensure you are on top of maintaining a smooth running practice.</p>
+                                                        <p>By entering in your personal login and password, not only can you open the history file of all your previously repaired handpieces with DDS, but you can check-in 24-7 from any computer in any location, and monitor the status of your current repairs in the workshop.</p>
+                                                        <p>The Hub is easy to use and allows you to access all the assessment notes made by our technicians in the workshop, backed up by images of each handpiece, their serial numbers, makes and models. You can also run comparison reports and identify the problem handpieces within your inventories and establish trends and problem areas within your budget analysis.</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <p>
+                                    <a href="https://www.dds11.au/"><img src="~/img/email/website.jpg" alt="https://www.dds11.au/" /></a>
+                                </p>
+                                <p>Please click on the image link to visit our website <a href="https://www.dds11.au/">www.dds11.au</a> or ‘Like Us’ on Facebook <a href="https://www.facebook.com/dentaldrillsolutions">www.facebook.com/dentaldrillsolutions</a> for more info on handpiece sales and our repair service.</p>
+                                <table align="center" style="margin-top: 1em;">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <a href="https://facebook.com/dentaldrillsolutions">
+                                                    <img alt="Facebook" src="/img/email/dds-fb-like.jpg" height="71" width="239">
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="https://instagram.com/dentaldrillsolutions">
+                                                    <img alt="Instagram" src="/img/email/dds-instagram.png" height="71" width="71">
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <center style="margin-top: 1em;">
+                                    <b>Check out our DDS Facebook &amp; Instagram pages &amp; LIKE US</b><br>
+                                    <b>for regular maintenance tips, specials and updates!</b>
+                                </center>
+                                <center style="font-size: 0.8em; margin-top: 1em;">
+                                    <b>Click on the images above or go to:</b><br>
+                                    <b><a href="https://facebook.com/dentaldrillsolutions">www.facebook.com/dentaldrillsolutions</a></b><br>
+                                    <b><a href="https://instagram.com/dentaldrillsolutions">www.instagram.com/dentaldrillsolutions</a></b>
+                                </center>
+                                <center style="font-size: 0.8em; margin-top: 1em;">
+                                    <b>Or visit our website:</b><br>
+                                    <b><a href="https://www.dds11.au/">www.dds11.au</a></b>
+                                </center>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <h5>Attachments</h5>
+                <file-uploader-list asp-for="Attachments" configuration="EmailAttachments" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-primary">Send</button>
+                <a asp-action="Details" asp-controller="Clients" asp-route-id="@Model.Client.Id" asp-route-Tab="Emails" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

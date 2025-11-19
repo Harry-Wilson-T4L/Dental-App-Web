@@ -1,0 +1,18 @@
+﻿$material-pills-color: black !default;
+$material-pills-border-color: lightgrey !default;
+$material-pills-border-color-active: black !default;
+
+.nav.nav-pills.nav-material {
+    .nav-item.nav-link {
+        background-color: transparent;
+        color: $material-pills-color;
+        border-bottom-width: 3px;
+        border-bottom-style: solid;
+        border-bottom-color: $material-pills-border-color;
+        border-radius: 0;
+    }
+
+    .nav-item.nav-link.active {
+        border-bottom-color: $material-pills-border-color-active;
+    }
+}

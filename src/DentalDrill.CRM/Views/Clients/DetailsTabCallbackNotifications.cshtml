@@ -1,0 +1,49 @@
+﻿@using DentalDrill.CRM.Models.ViewModels
+@using DentalDrill.CRM.Models.Permissions
+@model DentalDrill.CRM.Models.ViewModels.ClientDetailsViewModel
+@{
+    Layout = null;
+}
+
+
+@(Html.Kendo().Grid<ClientCallbackNotificationReadModel>()
+      .Name("ClientCallbackNotificationsGrid")
+      .HtmlAttributes(new { @class = "k-grid-commandicons", style = "height: 630px" })
+      .Columns(columns =>
+      {
+          columns.Bound(c => c.CreatedOn).Width(100).Format("{0:d} {0:t}");
+          columns.Bound(c => c.AssignedToName).Width(100);
+          columns.Bound(c => c.CallDateTime).Width(100).Format("{0:d} {0:t}").Title("Date & time");
+          columns.Bound(c => c.Note).Width(300);
+          columns.Bound(c => c.CreatedByName).Width(100);
+          columns.Command(command =>
+          {
+              if (Model.Access.CanWriteComponent(ClientEntityComponent.Callback))
+              {
+                  command.Custom("CustomEdit").Text("<span class=\"fas fa-fw fa-pencil-alt\"></span>").Click("DentalDrill.CRM.Pages.Clients.Details.ClientCallbackNotificationsGrid.handleEdit");
+                  command.Custom("CustomDelete").Text("<span class=\"fas fa-fw fa-trash-alt\"></span>").Click("DentalDrill.CRM.Pages.Clients.Details.ClientCallbackNotificationsGrid.handleDelete");
+              }
+          }).Width(100);
+      })
+      .ToolBar(toolbar =>
+      {
+          if (Model.Access.CanWriteComponent(ClientEntityComponent.Callback))
+          {
+              toolbar.Custom().Name("CustomCreate")
+                  .Text("<span class=\"k-icon k-i-add\"></span>" + "New Callback")
+                  .HtmlAttributes(new { href = Url.Action("Create", "ClientCallbackNotifications", new { parentId = Model.Id }) });
+          }
+      })
+      .ColumnMenu(cm => cm.Enabled(false))
+      .Pageable()
+      .Scrollable(scrollable => scrollable.Enabled(true).Height("auto"))
+      .DataSource(dataSource => dataSource
+          .Ajax()
+          .Model(model =>
+          {
+              model.Id(f => f.Id);
+          })
+          .Read(read => read.Action("Read", "ClientCallbackNotifications", new { parentId = Model.Id }))
+          .Events(events => events
+              .Error("DevGuild.AspNet.Controls.Grids.Errors.GridErrorHandler.handleGridError")
+              .RequestStart("DevGuild.AspNet.Controls.Grids.Errors.GridErrorHandler.handleRequestStart"))))

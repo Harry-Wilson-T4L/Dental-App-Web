@@ -1,0 +1,46 @@
+﻿@model DentalDrill.CRM.Models.ViewModels.Identity.Manage.NotificationsViewModel
+@{
+    ViewData["Title"] = "Notifications";
+    ViewData.AddActivePage(ManageNavPages.Notifications);
+}
+
+<h4>@ViewData["Title"]</h4>
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Client.Email"></label>
+                <input asp-for="Client.Email" class="form-control" readonly="readonly" />
+            </div>
+            
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" asp-for="AllowManualEmails" />
+                <label class="form-check-label" asp-for="AllowManualEmails">Allow manually sent emails</label>
+                <span asp-validation-for="AllowManualEmails" class="text-danger"></span>
+            </div>
+            
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" asp-for="AllowHandpieceNotifications" />
+                <label class="form-check-label" asp-for="AllowHandpieceNotifications">Allow handpiece received notification emails</label>
+                <span asp-validation-for="AllowHandpieceNotifications" class="text-danger"></span>
+            </div>
+            
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" asp-for="AllowFeedbackRequests" />
+                <label class="form-check-label" asp-for="AllowFeedbackRequests">Allow feedback request emails</label>
+                <span asp-validation-for="AllowFeedbackRequests" class="text-danger"></span>
+            </div>
+            
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" asp-for="AllowMaintenanceReminders" />
+                <label class="form-check-label" asp-for="AllowMaintenanceReminders">Allow maintenance reminder emails</label>
+                <span asp-validation-for="AllowMaintenanceReminders" class="text-danger"></span>
+            </div>
+            
+            <div class="mt-3">
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+        </form>
+    </div>
+</div>

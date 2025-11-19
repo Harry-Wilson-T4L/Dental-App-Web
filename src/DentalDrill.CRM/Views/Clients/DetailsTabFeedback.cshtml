@@ -1,0 +1,35 @@
+﻿@using Newtonsoft.Json
+@using DentalDrill.CRM.Models.Permissions
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model DentalDrill.CRM.Models.ViewModels.ClientFeedbackForms.ClientFeedbackFormIndexModel
+@{
+    Layout = null;
+}
+
+<div id="ClientFeedbackFormsTab">
+    @if (Model.Access.CanWriteComponent(ClientEntityComponent.Feedback))
+    {
+        <div class="row">
+            <div class="col-12">
+                <a asp-action="SendNewForm" asp-controller="ClientFeedbackForms" asp-route-clientId="@Model.Client.Id" class="btn btn-secondary client-feedback-send-button" type="button">
+                    <span class="fas fa-envelope"></span> Send New Form
+                </a>
+            </div>
+        </div>
+    }
+    <div class="grid-container k-grid-commandicons2 k-grid--dense k-grid--small-text"></div>
+</div>
+<script type="text/javascript">
+    $(function() {
+        var ClientFeedbackFormsGrid = DentalDrill.CRM.Pages.Clients.Details.ClientFeedbackFormsGrid;
+        var root = document.querySelector("#ClientFeedbackFormsTab");
+        var clientId = @Html.Raw(JsonConvert.SerializeObject(Model.Client.Id.ToString()));
+        var questions = @Html.Raw(JsonConvert.SerializeObject(Model.Questions.Select(x => new 
+        {
+            id = x.Id,
+            type = x.Type,
+            shortName = x.ShortName,
+        })));
+        ClientFeedbackFormsGrid.initialize(root, clientId, questions);
+    });
+</script>

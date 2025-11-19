@@ -1,0 +1,27 @@
+{
+  "name": "devguild.kendo-grid-errors",
+  "authors": [
+    "DevGuild <info@devguild.ru>"
+  ],
+  "description": "Provides the ability to handle errors during grid editing.",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "homepage": "https://devguild.ru/",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "version": "0.3.0",
+  "_release": "0.3.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.3.0",
+    "commit": "313b36ba62587c73b73e13aecfe0b2c6292933fb"
+  },
+  "_source": "https://devguildltd.visualstudio.com/DevGuild.Frontend/_git/kendo-grid-errors",
+  "_target": "v0.3.0",
+  "_originalSource": "git+https://devguildltd.visualstudio.com/DevGuild.Frontend/_git/kendo-grid-errors"
+}

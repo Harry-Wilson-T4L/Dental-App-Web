@@ -1,0 +1,112 @@
+﻿@using DevGuild.AspNetCore.Controls.HybridForms
+@using DentalDrill.CRM.Extensions
+@model DentalDrill.CRM.Models.ViewModels.ClientEmails.ClientEmailSendMaintenanceRequiredModel
+@{
+    ViewBag.Title = "Send Maintenance Required Email";
+    this.ConfigureHybridPage("ClientEmailsSendMaintenanceRequired");
+}
+
+<div class="editor mb-2">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Send Welcome Email</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Details" asp-controller="Clients" asp-route-id="@Model.Client.Id" asp-route-Tab="Emails" class="editor__action"><span class="fa fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+    
+    <form asp-action="SendMaintenanceRequired" method="post" hybrid-form-id="ClientEmailsSendMaintenanceRequired">
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+        <div class="row">
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-3">
+                        <label>To</label>
+                    </div>
+                    <div class="col-9">
+                        <p class="form-control-plaintext">@Model.Client.PrincipalDentist &lt;@Model.Client.Email&gt;</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-3">
+                        <label>Subject</label>
+                    </div>
+                    <div class="col-9">
+                        <p class="form-control-plaintext">Handpiece is due for service</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-12 mb-2">
+                        <div class="row">
+                            <div class="col-12">
+                                <label>Text</label>
+                            </div>
+                            <div class="col-12">
+                                <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                    <tr>
+                                        <td align="center">
+                                            <table border="0" cellpadding="0" cellspacing="0" width="600">
+                                                <tr>
+                                                    <td>
+                                                        <div>
+                                                            <p>If you notice the red bell icon <img alt="icon" src="~/img/email/red-bell.png" height="16px" /> next to any of your handpieces on the Handpiece Hub, this indicates that we have not seen that particular handpiece within at least a 12 month period. Therefore, you should withdraw it from circulation and have it checked over for a general service.</p>
+                                                            <p>The following handpieces are due for a service:</p>
+                                                            <ul>
+                                                                @foreach (var item in Model.Items)
+                                                                {
+                                                                    <li>@item.Brand @item.Model S/N @item.Serial</li>
+                                                                }
+                                                            </ul>
+                                                            <p>Please call us on 1300 337 300 to organise a Free pick-up.</p>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div>
+                                                            <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td align="center">
+                                                                            <div style="font-weight: bold">
+                                                                                <div>
+                                                                                    <div>Dental Drill Solutions</div>
+                                                                                    <div>P: 1300 337 300</div>
+                                                                                    <div>A: 2/11 Turbo Road, Kings Park NSW 2148 Australia</div>
+                                                                                    <div>E: <a href="mailto:info@dds11.au" style="color: #000000">info@dds11.au</a></div>
+                                                                                    <div>W: <a href="https://www.dds11.au/" style="color: #000000">www.dds11.au</a></div>
+                                                                                    <div>ABN: 25 150 633 515</div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+        </div>
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-primary">Send</button>
+                <a asp-action="Details" asp-controller="Clients" asp-route-id="@Model.Client.Id" asp-route-Tab="Emails" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

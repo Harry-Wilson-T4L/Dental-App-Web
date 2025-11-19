@@ -1,0 +1,81 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DevGuild.AspNetCore.Controls.HybridForms
+@using DevGuild.AspNetCore.Services.Uploads.Files
+@using Kendo.Mvc.UI.Fluent
+@model DentalDrill.CRM.Models.ViewModels.ClientEmails.ClientEmailSendCustomModel
+@{
+    ViewBag.Title = "Send Custom Email";
+    this.ConfigureHybridPage("ClientEmailsSendCustom");
+}
+
+<div class="editor mb-2">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Send custom email</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Details" asp-controller="Clients" asp-route-id="@Model.Client.Id" asp-route-Tab="Emails" class="editor__action"><span class="fa fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+    
+    <form asp-action="SendCustom" method="post" hybrid-form-id="ClientEmailsSendCustom">
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-12 mb-2">
+                        <div class="row">
+                            <div class="col-3">
+                                <label asp-for="To"></label>
+                            </div>
+                            <div class="col-9">
+                                @{
+                                    var emails = new List<String>();
+                                    emails.Add(Model.Client.Email);
+                                    emails.AddRange(Model.Client.ParseSecondaryEmails());
+                                }
+                                @Html.Kendo().DropDownListFor(x => x.To).BindTo(new SelectList(emails.Select(x => new { Email = x }), "Email", "Email"))
+                                <span class="text-danger" asp-validation-for="To"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-2">
+                        <div class="row">
+                            <div class="col-3">
+                                <label asp-for="Subject"></label>
+                            </div>
+                            <div class="col-9">
+                                <input asp-for="Subject" class="k-textbox" />
+                                <span class="text-danger" asp-validation-for="Subject"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-2">
+                        <div class="row">
+                            <div class="col-12">
+                                <label asp-for="Text"></label>
+                            </div>
+                            <div class="col-12">
+                                <textarea asp-for="Text" class="k-textbox" style="height: 400px"></textarea>
+                                <span class="text-danger" asp-validation-for="Text"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <h5>Attachments</h5>
+                <file-uploader-list asp-for="Attachments" configuration="EmailAttachments" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-primary">Send</button>
+                <a asp-action="Details" asp-controller="Clients" asp-route-id="@Model.Client.Id" asp-route-Tab="Emails" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,70 @@
+﻿@using Kendo.Mvc.UI
+@using DentalDrill.CRM.Models.ViewModels
+@using Newtonsoft.Json
+@using DentalDrill.CRM.Models.Permissions
+@model DentalDrill.CRM.Models.ViewModels.DiagnosticCheckItemIndexModel
+@{
+    ViewBag.Title = "Diagnostic Checks";
+}
+
+<h1 class="header">Diagnostic Checks</h1>
+
+@(Html.Kendo().Grid<DiagnosticCheckItemViewModel>()
+      .Name("DiagnosticCheckItemsGrid")
+      .HtmlAttributes(new { @class = "k-grid-commandicons2", style = "height: 630px" })
+      .Columns(columns =>
+      {
+          columns.Bound(c => c.Name).Filterable(filter => filter.Extra(false).Operators(op => op.ForString(ops => ops.Clear().Contains("Contains"))));
+          columns.Bound(c => c.Types)
+              .Sortable(false)
+              .Filterable(filter => filter.Extra(false).Multi(true).BindTo(Model.Types.Select(x => new { Id = x.Id, Name = x.Name })).ItemTemplate("function (e) { return `<div><label><input type=\"checkbox\" name=\"Types\" value=\"#=Id#\" /><span>#=Name#</span></label></div>`; }"))
+              .EditorTemplateName("DiagnosticCheckItemsGrid_Types_Editor")
+              .EditorViewData(new { Types = Model.Types })
+              .ClientTemplate(@"#: DentalDrill.CRM.Pages.DiagnosticCheckItems.Index.DiagnosticCheckItemsGrid.renderTypesColumn(data) #");
+          columns.Command(command =>
+          {
+              if (Model.Access.Global.CanWriteComponent(GlobalComponent.DiagnosticChecklist))
+              {
+                  command.Edit().Text("<span></span>").IconClass("fas fa-fw fa-pencil-alt");
+                  command.Destroy().Text("<span></span>").IconClass("fas fa-fw fa-trash-alt");
+              }
+          });
+      })
+      .ToolBar(toolbar =>
+      {
+          if (Model.Access.Global.CanWriteComponent(GlobalComponent.DiagnosticChecklist))
+          {
+              toolbar.Create();
+              toolbar.Custom().Name("CustomManageTypes").Text("Manage Types").HtmlAttributes(new { href = Url.Action("Index", "DiagnosticCheckTypes") });
+          }
+      })
+      .ColumnMenu(cm => cm.Enabled(false))
+      .Sortable(true)
+      .Filterable(f => f.Enabled(true).Mode(GridFilterMode.Menu))
+      .Editable(editable => editable.Mode(GridEditMode.InLine))
+      .Pageable()
+      .Scrollable(scrollable => scrollable.Enabled(true).Height("auto"))
+      .Events(events => events.BeforeEdit("DentalDrill.CRM.Pages.DiagnosticCheckItems.Index.DiagnosticCheckItemsGrid.handleBeforeEdit"))
+      .DataSource(dataSource => dataSource
+          .Ajax()
+          .Model(model =>
+          {
+              model.Id(f => f.Id);
+              model.Field(f => f.Id).DefaultValue(default(Guid));
+              model.Field(f => f.Name);
+              model.Field(f => f.Types).DefaultValue(new List<Guid>());
+          })
+          .Read(read => read.Action("Read", "DiagnosticCheckItems"))
+          .Create(create => create.Action("Create", "DiagnosticCheckItems"))
+          .Update(update => update.Action("Update", "DiagnosticCheckItems"))
+          .Destroy(destroy => destroy.Action("Destroy", "DiagnosticCheckItems"))
+          .Events(events => events.Error("DevGuild.AspNet.Controls.Grids.Errors.GridErrorHandler.handleGridError").RequestStart("DevGuild.AspNet.Controls.Grids.Errors.GridErrorHandler.handleRequestStart"))))
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/app/pages/diagnosticCheckItems/index.js" asp-append-version="true"></script>
+    <script type="text/javascript">
+        (function() {
+            DentalDrill.CRM.Pages.DiagnosticCheckItems.Index.DiagnosticCheckItemsGrid.setTypes(@Html.Raw(JsonConvert.SerializeObject(Model.Types.Select(x => new { x.Id, x.Name }))));
+        })();
+    </script>
+}

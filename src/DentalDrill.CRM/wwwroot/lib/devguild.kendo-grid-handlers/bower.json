@@ -1,0 +1,17 @@
+{
+  "name": "devguild.kendo-grid-handlers",
+  "authors": [
+    "DevGuild <info@devguild.ru>"
+  ],
+  "description": "Provides default implementation for grid buttons handlers.",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "homepage": "https://devguild.ru/",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

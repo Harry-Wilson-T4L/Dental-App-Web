@@ -1,0 +1,118 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DevGuild.AspNetCore.Controls.HybridForms
+@model DentalDrill.CRM.Models.ViewModels.JobHandpieceEditModel
+@{
+    ViewBag.Title = $"{Model.Original.Job.JobType.Name} #{Model.Original.Job.JobNumber}: {Model.Original.Entity.JobPosition}/{Model.Original.Job.Handpieces.Count}";
+    Layout = "_FullLayout";
+    this.ConfigureHybridPage("HandpiecesEdit");
+}
+
+<div class="editor">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="row">
+            <div class="editor__header col-lg-8 col-xl-8">
+                <div class="editor__title">
+                    <h1 style="font-size: 2rem;">@Model.Original.Job.JobType.Name #@Model.Original.Job.JobNumber: @Model.Original.Entity.JobPosition/@Model.Original.Job.Handpieces.Count</h1>
+                </div>
+                <div class="editor__status">
+                    <handpiece-status-indicator status="@Model.Original.Entity.HandpieceStatus" description="true" style="width: 150px" />
+                </div>
+            </div>
+            <div class="editor__header editor__header--right col-lg-4 col-xl-4 mt-0 mt-lg-3">
+                <div class="editor__actions">
+                    <a class="editor__action" asp-action="Edit" asp-controller="Jobs" asp-route-id="@Model.Original.Entity.Job.Id" data-toggle="tooltip" title="Return to the Estimate"><span class="fas fa-fw fa-level-up-alt"></span> To Est.</a>
+                    @if (Model.Original.Previous != null)
+                    {
+                        <a class="editor__action" asp-action="Edit" asp-route-id="@Model.Original.Previous.Id"><span class="fas fa-fw fa-arrow-up" data-toggle="tooltip" title="Return to the previous Handpiece"></span> Prev</a>
+                    }
+                    else
+                    {
+                        <span class="editor__action editor__action--disabled" data-toggle="tooltip" title="Return to the previous Handpiece"><span class="fas fa-fw fa-arrow-up"></span> Prev</span>
+                    }
+
+                    @if (Model.Original.Next != null)
+                    {
+                        <a class="editor__action" asp-action="Edit" asp-route-id="@Model.Original.Next.Id" data-toggle="tooltip" title="Proceed to the next Handpiece"><span class="fas fa-fw fa-arrow-down"></span> Next</a>
+                    }
+                    else
+                    {
+                        <span class="editor__action editor__action--disabled" data-toggle="tooltip" title="Proceed to the next Handpiece"><span class="fas fa-fw fa-arrow-down"></span> Next</span>
+                    }
+
+                    @if (Model.Original.Entity.HandpieceStatus == HandpieceStatus.Received && Model.Original.Job.Status == JobStatus.Received)
+                    {
+                        <a class="editor__action editor__action_color_red" asp-action="Delete" asp-route-id="@Model.Original.Id" data-toggle="tooltip" title="Delete the Handpiece"><span class="fas fa-fw fa-trash-alt"></span> Delete</a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (Model.Parent.Status == JobStatus.Received || Model.Parent.Status == JobStatus.BeingEstimated)
+    {
+        <form asp-action="Edit" asp-route-id="@Model.Original.Id" hybrid-form-id="HandpiecesEdit" id="HandpiecesEditForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <partial name="_EditContent-Estimate" model="@Model" />
+            <div class="row">
+                <div class="col editor__submit">
+                    @if (Model.PossibleStatuses != null && Model.PossibleStatuses.Count > 0)
+                    {
+                        @(Html.Kendo().DropDownListFor(x => x.ChangeStatus)
+                                      .HtmlAttributes(new { style="width: 200px;" })
+                                      .BindTo(HandpieceStatusHelper.MakeSelectList(Model.PossibleStatuses))
+                                      .Value(Model.ChangeStatus?.ToString()))
+                    }
+                    <button type="submit" class="btn btn-primary ml-2" name="Command" value="SaveAndNext" data-toggle="tooltip" title="Save the changes and go to the next handpiece">Save & Next</button>
+                    <button type="submit" class="btn btn-outline-primary ml-2" data-toggle="tooltip" title="Save the changes">Save</button>
+                    <input id="CommandInput" type="hidden" name="Command" value="" />
+                </div>
+            </div>
+        </form>
+    }
+    else
+    {
+        <form asp-action="Edit" asp-route-id="@Model.Original.Id" hybrid-form-id="HandpiecesEdit" id="HandpiecesEditForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <partial name="_EditContent" model="@Model" />
+            <div class="row">
+                <div class="col editor__submit">
+                    @if (Model.PossibleStatuses != null && Model.PossibleStatuses.Count > 0)
+                    {
+                        @(Html.Kendo().DropDownListFor(x => x.ChangeStatus)
+                                      .HtmlAttributes(new { style = "width: 200px;" })
+                                      .BindTo(HandpieceStatusHelper.MakeSelectList(Model.PossibleStatuses))
+                                      .Value(Model.ChangeStatus?.ToString()))
+                    }
+                    <button type="submit" class="btn btn-primary ml-2" name="Command" value="SaveAndNext" data-toggle="tooltip" title="Save the changes and go to the next handpiece">Save & Next</button>
+                    <button type="submit" class="btn btn-outline-primary ml-2" data-toggle="tooltip" title="Save the changes">Save</button>
+                    <input id="CommandInput" type="hidden" name="Command" value="" />
+                </div>
+            </div>
+        </form>
+
+        <div class="row tab-strip-spinner">
+            <div class="col">
+                <kendo-tabstrip name="HandpieceTabStrip" class="">
+                    <items>
+                        <tabstrip-item selected="true" data-tabname="History" text="Maintenance history" asp-action="Index" asp-controller="HandpieceHistory" asp-route-parentId="@Model.Original.Id" />
+                        <tabstrip-item selected="false" data-tabname="DiagnosticChecklist" text="Diagnostic checklist" asp-action="SetDiagnostics" asp-route-id="@Model.Original.Id" />
+                        <tabstrip-item selected="false" data-tabname="Images" text="Images" asp-action="Index" asp-controller="HandpieceImages" asp-route-parentId="@Model.Original.Id" />
+                        <tabstrip-item selected="false" data-tabname="Notes" text="Notes" asp-action="Index" asp-controller="HandpieceAssistant" asp-route-handpieceId="@Model.Original.Id" />
+                        <tabstrip-item selected="false" data-tabname="Changes" text="History" asp-action="Index" asp-controller="HandpieceChanges" asp-route-parentId="@Model.Original.Id" />
+                    </items>
+                </kendo-tabstrip>
+            </div>
+        </div>
+    }
+
+</div>
+
+@section Scripts {
+    <script type="text/javascript" src="~/vendor/pdfjs.min.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/js/app/pages/handpieceRequiredParts/index.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/js/app/pages/handpieceRequiredParts/deallocateFrom.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/js/app/pages/handpieceRequiredParts/allocateTo.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/js/app/pages/handpieces/details.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/js/app/pages/handpieces/edit.js" asp-append-version="true"></script>
+}

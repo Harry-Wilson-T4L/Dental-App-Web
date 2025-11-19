@@ -1,0 +1,55 @@
+﻿@model DentalDrill.CRM.Models.ViewModels.EmptyEmployeeIndexViewModel
+@{
+    ViewBag.Title = "Pickup requests";
+}
+
+<h1 class="header">Pickup requests</h1>
+
+<kendo-grid name="PickupRequestsGrid" height="630" class="k-grid--dense k-grid--small-text k-grid-commandicons2">
+    <columns>
+        <column field="CreatedOn" title="Created On" template="#: kendo.format('{0:d}\n{0:t}', DevGuild.Utilities.TimeZones.treatAsUtc(data.CreatedOn)) #" width="75" html-attributes="@(new Dictionary<String, Object>{ ["style" ] = "white-space: pre-line" })" />
+        <column field="CreatedBy" title="Created By" width="75" html-attributes="@(new Dictionary<String, Object>{ ["style" ] = "white-space: pre-line" })" />
+        <column field="Type" title="Type" width="75" />
+        <column field="Status" title="Status" width="75" />
+        <column field="PracticeName" title="Practice Name" width="150" />
+        <column field="Contact" title="Contact Person" width="150" html-attributes="@(new Dictionary<String, Object>{ ["style" ] = "white-space: pre-line" })" />
+        <column field="Address" title="Address" width="150" html-attributes="@(new Dictionary<String, Object>{ ["style" ] = "white-space: pre-line" })" />
+        <column field="HandpiecesCount" title="HandpiecesCount" width="75" />
+
+        <column width="50">
+            <commands>
+                <column-command name="CustomDetails" click="DentalDrill.CRM.Pages.PickupRequests.Index.PickupRequestsGrid.handleDetails" text="@("<span class=\"fas fa-fw fa-external-link-alt\"></span>")"></column-command>
+            </commands>
+        </column>
+    </columns>
+    <column-menu enabled="false" />
+    <editable enabled="false" />
+    <pageable enabled="true" />
+    <scrollable enabled="true" />
+    <datasource type="DataSourceTagHelperType.Ajax" page-size="100">
+        <transport>
+            <read url="@Url.Action("Read", "PickupRequests")" />
+        </transport>
+        <schema>
+            <model id="Id">
+                <fields>
+                    <field name="CreatedOn" type="Date" />
+                    <field name="CreatedBy" type="string" />
+                    <field name="PracticeName" type="string" />
+                    <field name="Contact" type="string" />
+                    <field name="Address" type="string" />
+                    <field name="HandpiecesCount" type="number" />
+                </fields>
+
+            </model>
+        </schema>
+        <sorts>
+            <sort field="CreatedOn" direction="desc" />
+        </sorts>
+    </datasource>
+</kendo-grid>
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/app/pages/pickupRequests/index.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/js/app/pages/pickupRequests/details.js" asp-append-version="true"></script>
+}

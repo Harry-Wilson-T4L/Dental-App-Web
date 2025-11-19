@@ -1,0 +1,36 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DentalDrill.CRM.Models.ViewModels
+@using DevGuild.AspNetCore.Controls.HybridForms
+@model DentalDrill.CRM.Models.ViewModels.ClientDetailsViewModel
+@{
+    ViewData["Title"] = $"Delete {Model.Entity.ClientNo} {Model.Entity.Name}";
+    this.ConfigureHybridPage("ClientDelete");
+}
+
+<div class="details">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="details__header">
+            <div class="details__title">
+                <h1>Delete @Model.Entity.ClientNo @Model.Entity.Name?</h1>
+            </div>
+            <div class="details__actions">
+                <a class="details__action" asp-action="Index"><span class="fa fa-list"></span> List</a>
+                <a class="editor__action" asp-action="Details" asp-route-id="@Model.Id"><span class="fa fa-external-link-alt"></span> Details</a>
+                <a class="details__action" asp-action="Edit" asp-route-id="@Model.Id"><span class="fa fa-pencil-alt"></span> Edit</a>
+            </div>
+        </div>
+    }
+
+    <partial name="_Details" model="@Model" />
+
+    <form asp-action="Delete" asp-route-id="@Model.Id" hybrid-form-id="ClientDelete">
+        <div class="row ">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-danger">Delete</button>
+                <a asp-action="Index" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>
+

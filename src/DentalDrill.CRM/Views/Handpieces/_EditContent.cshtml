@@ -1,0 +1,655 @@
+﻿@using DentalDrill.CRM.Extensions
+@model DentalDrill.CRM.Models.ViewModels.JobHandpieceEditModel
+@{
+    var acl = Model.PropertiesAccessControl;
+}
+
+@switch (Model.ChangeStatus)
+{
+    case HandpieceStatus.TradeIn:
+        <div class="row mb-2">
+            <div class="col-12">
+                <span class="badge badge-warning warning-badge">Do not repair. Trade-In</span>
+            </div>
+        </div>
+        break;
+    case HandpieceStatus.ReturnUnrepaired:
+        <div class="row mb-2">
+            <div class="col-12">
+                <span class="badge badge-warning warning-badge">Do not repair. Return Unrepaired.</span>
+            </div>
+        </div>
+        break;
+    case HandpieceStatus.Unrepairable:
+        <div class="row mb-2">
+            <div class="col-12">
+                <span class="badge badge-warning warning-badge">Do not repair. Unrepairable.</span>
+            </div>
+        </div>
+        break;
+    case HandpieceStatus.Cancelled:
+        <div class="row mb-2">
+            <div class="col-12">
+                <span class="badge badge-warning warning-badge">Do not repair. Cancelled.</span>
+            </div>
+        </div>
+        break;
+}
+
+@if (Context.Request.Method == "POST" && !this.ViewContext.ModelState.IsValid)
+{
+    <div class="row mb-2">
+        <div class="col-12 alert alert-danger">Changes are NOT saved.</div>
+    </div>
+}
+
+<div class="row">
+    <div class="col-12 mb-2">
+        <div class="row">
+            <div class="col-sm-5 col-lg-3 col-xl-2"><label class="col-form-label">Client</label></div>
+            <div class="col-sm-7 col-lg-9 col-xl-10 align-self-center">
+                <p class="form-control-plaintext">
+                    <a asp-action="Details" asp-controller="Clients" asp-route-id="@Model.Parent.Client.Id" target="_blank"
+                       data-toggle="tooltip" title="@Model.Parent.Client.FullName">@Model.Parent.Client.Name</a>
+                    @(Model.Parent.Client.Corporate != null ? $"({Model.Parent.Client.Corporate.Name})" : "")
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.Original == null)
+{
+    <div class="row">
+        <div class="col-12 mb-2">
+            <div class="row">
+                <div class="col-sm-5 col-lg-3 col-xl-2">
+                    <label>Existing</label>
+                </div>
+                <div class="col-sm-7 col-lg-9 col-xl-10">
+                    @(Html.Kendo().DropDownListFor(x => x.ClientHandpieceId)
+                        .DataTextField("Serial")
+                        .DataValueField("Id")
+                        .ValueTemplate(@"<span class=""selected-value"">#: data.MainText # # if (data.ComponentsText && data.ComponentsText !== """") { # + #: data.ComponentsText## } #</span>")
+                        .Template(@"<div class=""existing-client-handpiece-main"">#: data.MainText # # if (data.ComponentsText && data.ComponentsText !== """") { # + #: data.ComponentsText #</div> # } #</div><div class=""existing-client-handpiece-info"">Last Repair: # if (data.LastRepairDate) { # #: kendo.toString(new Date(data.LastRepairDate), ""d"") #  - #: data.LastRepairServiceLevelName ? data.LastRepairServiceLevelName : 'No Service Level' # -  #: data.LastRepairStatus # # } else { # Unknown # } #</div>")
+                        .Filter(FilterType.Contains)
+                        .Height(400)
+                        .DataSource(dataSource => dataSource
+                            .Ajax()
+                            .Read(read => read.Action("ReadExisting", "ClientHandpieces", new { clientId = Model.Parent.ClientId }))
+                            .ServerOperation(true))
+                        .Events(events =>
+                        {
+                            events.Change("DentalDrill.CRM.Pages.Handpieces.Edit.HandpiecesEditForm.handleExistingHandpieceChange");
+                        }))
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="row handpiece-brand-model-serial">
+    <div class="col-12 mb-2 handpiece-brand-model-serial__serial">
+        <div class="row">
+            <div class="col-sm-5 col-lg-3 col-xl-5">
+                <label asp-for="Serial" class="col-form-label"></label>
+                @if (acl.For(x => x.Serial).CanUpdate)
+                {
+                    <button type="button" class="k-button handpiece-brand-model-serial__add-component"><span class="fas fa-plus"></span></button>
+                }
+            </div>
+            <div class="col-sm-7 col-lg-9 col-xl-7">
+                @if (acl.For(x => x.Serial).CanUpdate)
+                {
+                    @Html.Kendo().TextBoxFor(x => x.Serial)
+                    @Html.ValidationMessageFor(x => x.Serial)
+                }
+                else if (acl.For(x => x.Serial).CanDisplay)
+                {
+                    <p class="form-control-plaintext">@Model.Original?.Entity.Serial</p>
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 mb-2 handpiece-brand-model-serial__brand">
+        <div class="row">
+            <div class="col-sm-5 col-lg-3 col-xl-3"><label asp-for="Brand" class="col-form-label"></label></div>
+            <div class="col-sm-7 col-lg-9 col-xl-9">
+                @if (acl.For(x => x.Brand).CanUpdate)
+                {
+                    @Html.Kendo().TextBoxFor(x => x.Brand)
+                    @Html.ValidationMessageFor(x => x.Brand)
+                }
+                else if (acl.For(x => x.Brand).CanDisplay)
+                {
+                    <p class="form-control-plaintext">@Model.Original?.Entity.Brand</p>
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 mb-2 handpiece-brand-model-serial__model">
+        <div class="row">
+            <div class="col-sm-5 col-lg-3 col-xl-3"><label asp-for="MakeAndModel" class="col-form-label"></label></div>
+            <div class="col-sm-7 col-lg-9 col-xl-9">
+                @if (acl.For(x => x.MakeAndModel).CanUpdate)
+                {
+                    @Html.Kendo().TextBoxFor(x => x.MakeAndModel)
+                    @Html.ValidationMessageFor(x => x.MakeAndModel)
+                }
+                else if (acl.For(x => x.MakeAndModel).CanDisplay)
+                {
+                    <p class="form-control-plaintext">@Model.Original?.Entity.MakeAndModel</p>
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="handpiece-components-wrapper row-wrapper">
+    @for (var i = 0; i < Model.Components.Count; i++)
+    {
+        <div class="row handpiece-brand-model-serial handpiece-brand-model-serial--component">
+            <div class="col-12 mb-2 handpiece-brand-model-serial__serial">
+                <div class="row">
+                    <div class="col-sm-5 col-lg-3 col-xl-5">
+                        <label asp-for="Components[i].Serial" class="col-form-label"></label>
+                        @if (acl.For(x => x.Serial).CanUpdate)
+                        {
+                            <button type="button" class="k-button handpiece-brand-model-serial__remove-component"><span class="fas fa-minus"></span></button>
+                        }
+                    </div>
+                    <div class="col-sm-7 col-lg-9 col-xl-7">
+                        @if (acl.For(x => x.Serial).CanUpdate)
+                        {
+                            @Html.Kendo().TextBoxFor(x => x.Components[i].Serial)
+                            @Html.ValidationMessageFor(x => x.Components[i].Serial)
+                        }
+                        else if (acl.For(x => x.Serial).CanDisplay)
+                        {
+                            <p class="form-control-plaintext">@Model.Components[i].Serial</p>
+                        }
+                        else
+                        {
+                            <p class="form-control-plaintext">(hidden)</p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 mb-2 handpiece-brand-model-serial__brand">
+                <div class="row">
+                    <div class="col-sm-5 col-lg-3 col-xl-3"><label asp-for="Components[i].Brand" class="col-form-label"></label></div>
+                    <div class="col-sm-7 col-lg-9 col-xl-9">
+                        @if (acl.For(x => x.Brand).CanUpdate)
+                        {
+                            @Html.Kendo().TextBoxFor(x => x.Components[i].Brand)
+                            @Html.ValidationMessageFor(x => x.Components[i].Brand)
+                        }
+                        else if (acl.For(x => x.Brand).CanDisplay)
+                        {
+                            <p class="form-control-plaintext">@Model.Components[i].Brand</p>
+                        }
+                        else
+                        {
+                            <p class="form-control-plaintext">(hidden)</p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 mb-2 handpiece-brand-model-serial__model">
+                <div class="row">
+                    <div class="col-sm-5 col-lg-3 col-xl-3"><label asp-for="Components[i].MakeAndModel" class="col-form-label"></label></div>
+                    <div class="col-sm-7 col-lg-9 col-xl-9">
+                        @if (acl.For(x => x.MakeAndModel).CanUpdate)
+                        {
+                            @Html.Kendo().TextBoxFor(x => x.Components[i].MakeAndModel)
+                            @Html.ValidationMessageFor(x => x.Components[i].MakeAndModel)
+                        }
+                        else if (acl.For(x => x.MakeAndModel).CanDisplay)
+                        {
+                            <p class="form-control-plaintext">@Model.Components[i].MakeAndModel</p>
+                        }
+                        else
+                        {
+                            <p class="form-control-plaintext">(hidden)</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<hr />
+
+<div class="row">
+    <div class="col-xl-6 mb-2">
+        <div class="row">
+            <div class="col-sm-5 col-lg-3 col-xl-4"><label asp-for="ServiceLevelId" class="col-form-label"></label></div>
+            <div class="col-sm-7 col-lg-9 col-xl-8">
+                @if (acl.For(x => x.ServiceLevelId).CanUpdate)
+                {
+                    @Html.Kendo().DropDownListFor(x => x.ServiceLevelId).BindTo(Model.ServiceLevels).DataValueField("Id").DataTextField("Name").OptionLabel("(none)")
+                    @Html.ValidationMessageFor(x => x.ServiceLevelId)
+                }
+                else if (acl.For(x => x.ServiceLevelId).CanDisplay)
+                {
+                    <p class="form-control-plaintext">@Model.Original?.Entity.ServiceLevel?.Name</p>
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-lg-6 col-xl-2_25 mb-2">
+        <div class="row">
+            <div class="col-sm-5 col-lg-6 col-xl-5"><label class="col-form-label">Received</label></div>
+            <div class="col-sm-7 col-lg-6 col-xl-7 align-self-center">
+                <input type="text" class="form-control-plaintext" value="@Model.Original?.Job.Received.ToString("d")" readonly="readonly" />
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-lg-6 col-xl-3_75 mb-2">
+        <div class="row">
+            <div class="col-sm-5 col-lg-4 col-xl-3"><label asp-for="Speed" class="col-form-label">Speed</label></div>
+            <div class="col-sm-7 col-lg-8 col-xl-9">
+                @if (acl.For(x => x.Speed).CanUpdate)
+                {
+                    <div class="row">
+                        <div class="col-6 pr-0">
+                            @Html.Kendo().NumericTextBoxFor(x => x.Speed).HtmlAttributes(new { @class = "w-100" }).Min(0).Format("0").Decimals(0).Spinners(false)
+                        </div>
+                        <div class="col-6 pl-0">
+                            @Html.Kendo().DropDownListFor(x => x.SpeedType).HtmlAttributes(new { @class = "w-100" }).BindTo(HandpieceSpeedHelper.MakeSelectList()).Value(Model.SpeedType.ToString())
+                        </div>
+                    </div>
+                    @Html.ValidationMessageFor(x => x.Speed)
+                    @Html.ValidationMessageFor(x => x.SpeedType)
+                }
+                else if (acl.For(x => x.Speed).CanDisplay)
+                {
+                    <p class="form-control-plaintext">@Model.Original?.Entity.Speed (@Model.Original?.Entity.SpeedType.ToDisplayString())</p>
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4 mb-2 mb-xl-0">
+        <div class="row">
+            <div class="col-sm-5 col-lg-3 col-xl-6"><label asp-for="Rating" class="col-form-label"></label></div>
+            <div class="col-sm-7 col-lg-9 col-xl-6">
+                @if (acl.For(x => x.Rating).CanUpdate)
+                {
+                    @Html.Kendo().NumericTextBoxFor(x => x.Rating).HtmlAttributes(new { @class = "w-100" }).Min(0).Max(10).Format("0'/10'").Decimals(0)
+                    @Html.ValidationMessageFor(x => x.Rating)
+                }
+                else if (acl.For(x => x.Rating).CanDisplay)
+                {
+                    <p class="form-control-plaintext">@Model.Original?.Entity.Rating/10</p>
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-8 mb-0">
+        <div class="row">
+            <div class="col-sm-5 col-lg-3 col-xl-3"><label asp-for="Parts" class="col-form-label"></label></div>
+            <div class="col-sm-7 col-lg-9 col-xl-9">
+                @if (acl.For(x => x.Parts).CanUpdate)
+                {
+                    @Html.Kendo().TextBoxFor(x => x.Parts)
+                    @Html.ValidationMessageFor(x => x.Parts)
+                }
+                else if (acl.For(x => x.Parts).CanDisplay)
+                {
+                    <p class="form-control-plaintext">@Model.Original?.Entity.Parts</p>
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+<div class="row">
+    <div class="col-12 mb-2">
+        <div class="row">
+            <div class="col-sm-5 col-lg-3 col-xl-2"><label asp-for="ProblemDescription" class="col-form-label"></label></div>
+            <div class="col-sm-7 col-lg-9 col-xl-10">
+                @if (acl.For(x => x.ProblemDescription).CanUpdate)
+                {
+                    @Html.Kendo().TextBoxFor(x => x.ProblemDescription)
+                    @Html.ValidationMessageFor(x => x.ProblemDescription)
+                }
+                else if (acl.For(x => x.ProblemDescription).CanDisplay)
+                {
+                    <p class="form-control-plaintext">@Model.Original?.Entity.ProblemDescription</p>
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 mb-2">
+        <div class="row">
+            <div class="col-sm-5 col-lg-3 col-xl-2"><label class="col-form-label">Diagnostics Report</label></div>
+            <div class="col-sm-7 col-lg-9 col-xl-10">
+                @if (acl.For(x => x.DiagnosticReport).CanDisplay)
+                {
+                    <p class="form-control-plaintext handpiece-diagnostic-report">
+                        @foreach (var diagnosticId in Model.DiagnosticReportChecked)
+                        {
+                            <text><span class="handpiece-diagnostic-report__item handpiece-diagnostic-report__predefined" data-diagnostic-id="@diagnosticId">@(Model.AllDiagnosticCheckItems != null && Model.AllDiagnosticCheckItems.TryGetValue(diagnosticId, out var diagnosticItem) ? diagnosticItem.Name : diagnosticId.ToString())<span class="handpiece-diagnostic-report__item__separator">, </span></span></text>
+                        }
+                        @if (!String.IsNullOrEmpty(Model.DiagnosticReportOther))
+                        {
+                            <text><span class="handpiece-diagnostic-report__item handpiece-diagnostic-report__other">@Model.DiagnosticReportOther<span class="handpiece-diagnostic-report__item__separator">, </span></span></text>
+                        }
+                    </p>
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+                
+                @if (acl.For(x => x.DiagnosticReport).CanUpdate)
+                {
+                    <div class="handpiece-diagnostic-checked-list" style="display: none">
+                        @foreach (var diagnosticId in Model.DiagnosticReportChecked)
+                        {
+                            <input id="DiagnosticReportChecked_@diagnosticId" name="DiagnosticReportChecked" type="hidden" value="@diagnosticId"/>
+                        }
+                    </div>
+                    <input asp-for="DiagnosticReportOther" type="hidden"/>
+                    @Html.ValidationMessageFor(x => x.DiagnosticReportChecked)
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+<div class="row" id="handpiece-parts-section">
+    @if (Model.Original != null && Model.Original.Entity.PartsVersion == HandpiecePartsVersion.Manual)
+    {
+        <div class="col-12 mb-2">
+            <div class="row">
+                @{
+                    var outOfStockClass = acl.For(x => x.PartsOutOfStock).CanDisplay
+                        ? Model.Original.Entity.PartsOutOfStock switch
+                        {
+                            HandpiecePartsStockStatus.InStock => "badge badge-success",
+                            HandpiecePartsStockStatus.OutOfStock => "badge badge-danger",
+                            HandpiecePartsStockStatus.PartialStock => "badge badge-warning",
+                            _ => "",
+                        }
+                        : "";
+                }
+                <div class="col-6 col-sm-5 col-md-5 col-xl-3"><label class="col-form-label @outOfStockClass">Parts Stock</label></div>
+                <div class="col-6 col-sm-7 col-md-auto">
+                    @if (acl.For(x => x.PartsOutOfStock).CanUpdate)
+                    {
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" asp-for="PartsOutOfStock" type="radio" id="PartsOutOfStock_InStock" value="@HandpiecePartsStockStatus.InStock" />
+                            <label class="form-check-label" for="PartsOutOfStock_InStock">In</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" asp-for="PartsOutOfStock" type="radio" id="PartsOutOfStock_OutOfStock" value="@HandpiecePartsStockStatus.OutOfStock" />
+                            <label class="form-check-label" for="PartsOutOfStock_OutOfStock">Out</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" asp-for="PartsOutOfStock" type="radio" id="PartsOutOfStock_PartialStock" value="@HandpiecePartsStockStatus.PartialStock" />
+                            <label class="form-check-label" for="PartsOutOfStock_PartialStock">Partial</label>
+                        </div>
+                    }
+                    else if (acl.For(x => x.PartsOutOfStock).CanDisplay)
+                    {
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" asp-for="PartsOutOfStock" type="radio" id="PartsOutOfStock_InStock" value="@HandpiecePartsStockStatus.InStock" disabled="disabled" />
+                            <label class="form-check-label" for="PartsOutOfStock_InStock">In</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" asp-for="PartsOutOfStock" type="radio" id="PartsOutOfStock_OutOfStock" value="@HandpiecePartsStockStatus.OutOfStock" disabled="disabled" />
+                            <label class="form-check-label" for="PartsOutOfStock_OutOfStock">Out</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" asp-for="PartsOutOfStock" type="radio" id="PartsOutOfStock_PartialStock" value="@HandpiecePartsStockStatus.PartialStock" disabled="disabled" />
+                            <label class="form-check-label" for="PartsOutOfStock_PartialStock">Partial</label>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="form-control-plaintext">(hidden)</p>
+                    }
+                </div>
+                @if (acl.For(x => x.PartsOrdered).CanDisplay)
+                {
+                    <div class="col-6 col-sm-5 col-md-auto">
+                        <div class="form-check form-check-inline">
+                            @if (acl.For(x => x.PartsOrdered).CanUpdate)
+                            {
+                                <input class="form-check-input" asp-for="PartsOrdered" type="checkbox"/>
+                            }
+                            else
+                            {
+                                <input class="form-check-input" type="checkbox" checked="@(Model.PartsOrdered ? "checked" : null)" disabled="disabled"/>
+                            }
+                            <label asp-for="PartsOrdered" class="form-check-label"></label>
+                        </div>
+                    </div>
+                }
+                @if (acl.For(x => x.PartsRestocked).CanDisplay)
+                {
+                    <div class="col-6 col-sm-7 col-md-auto">
+                        <div class="form-check form-check-inline">
+                            @if (acl.For(x => x.PartsRestocked).CanUpdate)
+                            {
+                                <input class="form-check-input" asp-for="PartsRestocked" type="checkbox"/>
+                            }
+                            else
+                            {
+                                <input class="form-check-input" type="checkbox" checked="@(Model.PartsRestocked ? "checked" : null)" disabled="disabled"/>
+                            }
+                            <label asp-for="PartsRestocked" class="form-check-label"></label>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    @if (Model.Original != null)
+    {
+        <div class="col-12 mb-2">
+            <div class="row">
+                <div class="col-sm-5 col-lg-3 col-xl-2">
+                    <label class="col-form-label">Parts Required</label>
+                </div>
+                <div class="col-sm-7 col-lg-9 col-xl-10">
+                    @if (acl.For(x => x.Parts).CanUpdate || acl.For(x => x.Parts).CanDisplay)
+                    {
+                        var canEdit = acl.For(x => x.Parts).CanUpdate;
+                        <select id="HandpieceRequiredPartsMultiSelect" data-handpiece="@Model.Original.Id" data-readonly="@(!canEdit)" data-removeonly="@(Model.Original.Entity.HandpieceStatus == HandpieceStatus.Cancelled)" data-ignore-change="true" class="w-100" multiple="multiple">
+                            @foreach (var part in Model.RequiredParts.OrderBy(x => x.SKUName))
+                            {
+                                <option selected="selected"
+                                        data-id="@part.Id"
+                                        data-sku-id="@part.SKUId"
+                                        data-sku-name="@part.SKUName"
+                                        data-quantity="@part.RequiredQuantity"
+                                        data-shelf-quantity="@part.ShelfQuantity"
+                                        data-price="@part.Price"
+                                        data-status="@((Int32)part.Status)"></option>
+                            }
+                        </select>
+                        @Html.ValidationMessageFor(x => x.RequiredParts)
+                    }
+                    else
+                    {
+                        <p class="form-control-plaintext">(hidden)</p>
+                        @Html.ValidationMessageFor(x => x.RequiredParts)
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="col-12 mb-2">
+            <div class="row">
+                <div class="col-sm-5 col-lg-3 col-xl-2">
+                    <label class="col-form-label">Parts Required</label>
+                </div>
+                <div class="col-sm-7 col-lg-9 col-xl-10">
+                    <p class="form-control-plaintext">(Parts can be added after handpiece is created)</p>
+                </div>
+            </div>
+        </div>
+    }
+    <div class="col-12 mb-2">
+        <div class="row">
+            <div class="col-sm-5 col-lg-3 col-xl-2"><label asp-for="PartsComment" class="col-form-label"></label></div>
+            <div class="col-sm-7 col-lg-9 col-xl-10">
+                @if (acl.For(x => x.PartsComment).CanUpdate)
+                {
+                    @Html.Kendo().TextBoxFor(x => x.PartsComment)
+                    @Html.ValidationMessageFor(x => x.PartsComment)
+                }
+                else if (acl.For(x => x.PartsComment).CanDisplay)
+                {
+                    <p class="form-control-plaintext">@Model.PartsComment</p>
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+<div class="row">
+    <div class="col-12 mb-2">
+        <div class="row">
+            <div class="col-sm-5 col-lg-3 col-xl-2"><label asp-for="InternalComment" class="col-form-label"></label></div>
+            <div class="col-sm-7 col-lg-9 col-xl-10">
+                @if (acl.For(x => x.InternalComment).CanUpdate)
+                {
+                    @Html.Kendo().TextBoxFor(x => x.InternalComment)
+                    @Html.ValidationMessageFor(x => x.InternalComment)
+                }
+                else if (acl.For(x => x.InternalComment).CanDisplay)
+                {
+                    <p class="form-control-plaintext">@Model.Original?.Entity.InternalComment</p>
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 mb-0">
+        <div class="row">
+            <div class="col-sm-5 col-lg-3 col-xl-2"><label asp-for="PublicComment" class="col-form-label"></label></div>
+            <div class="col-sm-7 col-lg-9 col-xl-10">
+                @if (acl.For(x => x.PublicComment).CanUpdate)
+                {
+                    @Html.Kendo().TextBoxFor(x => x.PublicComment)
+                    @Html.ValidationMessageFor(x => x.PublicComment)
+                }
+                else if (acl.For(x => x.PublicComment).CanDisplay)
+                {
+                    <p class="form-control-plaintext">@Model.Original?.Entity.PublicComment</p>
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+<div class="row">
+    <div class="col-lg-8 col-xl-6 mb-2">
+        <div class="row">
+            <div class="col-sm-5 col-lg-4_5 col-xl-4_0"><label asp-for="ReturnById" class="col-form-label"></label></div>
+            <div class="col-sm-7 col-lg-7_5 col-xl-8_0">
+                @if (acl.For(x => x.ReturnById).CanUpdate)
+                {
+                    @Html.Kendo().DropDownListFor(x => x.ReturnById).BindTo(new SelectList(Model.ReturnEstimates, "Id", "Name").WithNull("(none)"))
+                    @Html.ValidationMessageFor(x => x.ReturnById)
+                }
+                else if (acl.For(x => x.ReturnById).CanDisplay)
+                {
+                    <p class="form-control-plaintext">@Model.Original?.Entity.ReturnBy?.Name</p>
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4 col-xl-6 mb-2">
+        <div class="row">
+            <div class="col-sm-5 col-lg-4 col-xl-6"><label asp-for="CostOfRepair" class="col-form-label"></label></div>
+            <div class="col-sm-7 col-lg-8 col-xl-6">
+                @if (acl.For(x => x.CostOfRepair).CanUpdate)
+                {
+                    @Html.Kendo().NumericTextBoxFor(x => x.CostOfRepair).HtmlAttributes(new { @class = "w-100" }).Min(0)
+                    @Html.ValidationMessageFor(x => x.CostOfRepair)
+                }
+                else if (acl.For(x => x.CostOfRepair).CanDisplay)
+                {
+                    <p class="form-control-plaintext">@Model.Original?.Entity.CostOfRepair?.ToString("0.##")</p>
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>

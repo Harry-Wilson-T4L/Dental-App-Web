@@ -1,0 +1,9 @@
+﻿@model Handpiece
+
+<div class="row handpiece-assistant-unknown">
+    <div class="col-12">
+        <p>Brand or model was not found in handpiece directory.</p>
+        <a class="btn btn-outline-secondary" asp-action="Initialize" asp-route-handpieceId="@Model.Id" asp-controller="HandpieceAssistant"><span class="fas fa-fw fa-plus"></span> Add to Directory</a>
+    </div>
+</div>
+

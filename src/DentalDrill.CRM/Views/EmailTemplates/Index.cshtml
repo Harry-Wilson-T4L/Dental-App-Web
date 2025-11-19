@@ -1,0 +1,21 @@
+﻿@model dynamic
+@{
+    ViewBag.Title = "Email configuration";
+}
+
+<h1>Email configuration</h1>
+
+<h2>Templates</h2>
+<ul>
+    <li><a asp-action="NewClient">Sydney Clients General Email</a></li>
+    <li><a asp-action="NewQueenslandClient">Queensland Clients General Email</a></li>
+    <li><a asp-action="NewInterstateClient">Interstate Clients General Email</a></li>
+    <li><a asp-action="MaintenanceInstructions">Maintenance Instructions</a></li>
+    <li><a asp-action="ScalerInformation">Scaler Information</a></li>
+    <li><a asp-action="ChairTechnicianDetails">Chair Technician's Details</a></li>
+</ul>
+
+<h2>Feedback</h2>
+<ul>
+    <li><a asp-action="Index" asp-controller="FeedbackConfiguration">Configuration</a></li>
+</ul>

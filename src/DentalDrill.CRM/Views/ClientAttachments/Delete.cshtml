@@ -1,0 +1,47 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DevGuild.AspNetCore.Controls.HybridForms
+@model ClientAttachment
+@{
+    ViewBag.Title = "Delete Attachment";
+    this.ConfigureHybridPage("ClientAttachmentsDelete");
+}
+
+<div class="details">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="details__header">
+            <div class="details__title">
+                <h2>Delete attachment @Model.File.OriginalName?</h2>
+            </div>
+            <div class="details__actions">
+                <a class="details__action" asp-action="Details" asp-controller="Clients" asp-route-id="@Model.ClientId" asp-route-Tab="Attachments"><span class="fa fa-list"></span> List</a>
+                <a class="details__action" asp-action="Edit" asp-route-id="@Model.Id"><span class="fa fa-pencil-alt"></span> Edit</a>
+            </div>
+        </div>
+    }
+    
+    <div class="row">
+        <div class="col-12 mb-3">
+            <div class="row details__field">
+                <div class="details__label">File</div>
+                <div class="details__value">@Model.File.OriginalName</div>
+            </div>
+        </div>
+        <div class="col-12 mb-3">
+            <div class="row details__field">
+                <div class="details__label">Comment</div>
+                <div class="details__value">@Model.Comment</div>
+            </div>
+        </div>
+    </div>
+
+    <form asp-action="Delete" asp-route-id="@Model.Id" hybrid-form-id="ClientAttachmentsDelete">
+
+        <div class="row ">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-danger">Delete</button>
+                <a asp-action="Details" asp-controller="Clients" asp-route-Id="@Model.ClientId" asp-route-Tab="Attachments" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

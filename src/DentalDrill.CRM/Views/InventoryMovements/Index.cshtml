@@ -1,0 +1,141 @@
+﻿@using Newtonsoft.Json
+@using DentalDrill.CRM.Extensions
+@model DentalDrill.CRM.Models.ViewModels.InventoryMovements.InventoryMovementIndexModel
+@{
+    Layout = "_FullLayout";
+    ViewBag.Title = "Inventory Dashboard";
+}
+
+<div id="InventoryMovementsIndexPage" class="inventory-movements">
+    <div class="inventory-movements__header editor__header">
+        <div class="editor__title">
+            <h1>Inventory Dashboard</h1>
+        </div>
+        <div class="editor__actions">
+            <div class="editor__inline-filter">
+                <label for="FilterWorkshop">Workshop</label>
+                <kendo-dropdownlist id="FilterWorkshop"
+                                    class="filter-workshop"
+                                    bind-to="@(Model.Workshops.Count > 1 ? new SelectList(Model.Workshops, "Id", "Name").WithNull("All") : new SelectList(Model.Workshops, "Id", "Name"))"
+                                    value-primitive="true"
+                                    value="@(Model.SelectedWorkshop?.Id ?? (Model.Workshops.Count == 1 ? Model.Workshops[0].Id : null))"
+                                    datavaluefield="Value"
+                                    datatextfield="Text">
+                </kendo-dropdownlist>
+            </div>
+
+            @if (Model.RequestedSKU != null)
+            {
+                <a class="editor__action" asp-action="Index" asp-route-workshop="@(Model.SelectedWorkshop?.Id)" asp-route-sku=""><span class="fas fa-list"></span> All SKU</a>
+            }
+
+            @if (Model.GroupMovements)
+            {
+                <a class="editor__action" asp-action="Index" asp-route-workshop="@(Model.SelectedWorkshop?.Id)" asp-route-sku="@Model.RequestedSKU?.Id" asp-route-group="false"><span class="far fa-object-ungroup"></span> Show Separate</a>
+            }
+            else
+            {
+                <a class="editor__action" asp-action="Index" asp-route-workshop="@(Model.SelectedWorkshop?.Id)" asp-route-sku="@Model.RequestedSKU?.Id" asp-route-group="true"><span class="far fa-object-group"></span> Show Combined</a>
+            }
+
+            <a class="editor__action inventory-movements__actions__create" asp-action="Create" asp-route-workshop="@(Model.SelectedWorkshop?.Id)"><span class="fas fa-plus"></span> Add Movement</a>
+        </div>
+    </div>
+    
+    @if (Model.RequestedSKU != null)
+    {
+        <div class="inventory-movements__sku mb-2">
+            <strong>SKU:</strong> [@Model.RequestedSKU.Type.Name] @Model.RequestedSKU.Name
+        </div>
+    }
+
+    <div class="inventory-movements__movements inventory-movements--default">
+    </div>
+    <div class="inventory-movements__charts inventory-movements--default">
+    </div>
+    <form class="d-none inventory-movements__anti-forgery">
+        @Html.AntiForgeryToken()
+    </form>
+</div>
+
+@section Scripts
+{
+    <scripts-bundle path="/js/app/pages/inventoryMovements/index.min.js"/>
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function() {
+            var pageRoot = document.getElementById("InventoryMovementsIndexPage");
+            var options = new DentalDrill.CRM.Pages.InventoryMovements.Index.InventoryMovementsIndexOptions();
+            options.antiForgeryToken = pageRoot.querySelector(".inventory-movements__anti-forgery input[name=__RequestVerificationToken]").value;
+            @if (Model.RequestedSKU != null)
+            {
+                <text>options.sku = "@Model.RequestedSKU.Id";</text>
+            }
+
+            @if (Model.GroupMovements)
+            {
+                <text>options.showGrouped = true;</text>
+            }
+            else
+            {
+                <text>options.showGrouped = false; </text>
+            }
+            
+            @if (Model.SelectedWorkshop != null)
+            {
+                <text>options.workshop = @Html.Raw(JsonConvert.SerializeObject(new { Id = Model.SelectedWorkshop.Id, Name = Model.SelectedWorkshop.Name })); </text>
+            }
+
+            @if (!String.IsNullOrEmpty(Model.Tab))
+            {
+                <text>options.tab = @Html.Raw(JsonConvert.SerializeObject(Model.Tab));</text>
+            }
+
+            @foreach (var skuType in Model.StatsTypes)
+            {
+                var json = JsonConvert.SerializeObject(new
+                {
+                    Id = skuType.Id,
+                    Name = skuType.Name,
+                });
+                <text>options.statsTypes.push(@Html.Raw(json));</text>
+            }
+
+            $(function() {
+                var filterWorkshop = $("#FilterWorkshop").data("kendoDropDownList");
+                filterWorkshop.bind("change", function () {
+                    var selectedWorkshop = filterWorkshop.value();
+                    if (selectedWorkshop && options.workshop && options.workshop.Id == selectedWorkshop ||
+                        !selectedWorkshop && options.workshop === undefined) {
+                        return;
+                    }
+                    
+                    var uriBuilder = "/InventoryMovements";
+                    var nextSeparator = "?";
+                    if (selectedWorkshop) {
+                        uriBuilder = uriBuilder + nextSeparator + "workshop=" + selectedWorkshop;
+                        nextSeparator = "&";
+                    }
+
+                    if (options.sku) {
+                        uriBuilder = uriBuilder + nextSeparator + "sku=" + options.sku;
+                        nextSeparator = "&";
+                    }
+
+                    if (options.showGrouped) {
+                        uriBuilder = uriBuilder + nextSeparator + "group=true";
+                        nextSeparator = "&";
+                    } else {
+                        uriBuilder = uriBuilder + nextSeparator + "group=false";
+                        nextSeparator = "&";
+                    }
+
+                    var newUri = new DevGuild.AspNet.Routing.Uri(uriBuilder);
+                    newUri.navigate();
+                });
+            });
+
+            var page = new DentalDrill.CRM.Pages.InventoryMovements.Index.InventoryMovementsIndexPage(pageRoot, options);
+            page.init();
+        });
+    </script>
+}

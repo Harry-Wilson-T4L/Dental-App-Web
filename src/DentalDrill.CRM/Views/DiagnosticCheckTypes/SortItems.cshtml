@@ -1,0 +1,41 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DentalDrill.CRM.Models.ViewModels
+@using DevGuild.AspNetCore.Controls.HybridForms
+@model DentalDrill.CRM.Models.ViewModels.DiagnosticCheckTypeViewModel
+@{
+    ViewBag.Title = $"Sort diagnostic checklist for type {Model.Name}";
+    this.ConfigureHybridPage("DiagnosticCheckItemsSort");
+}
+
+@if (!Context.IsAjaxRequest())
+{
+    <h1 class="header">Sort diagnostic checklist for type @Model.Name</h1>
+}
+
+
+@(Html.Kendo().Grid<DiagnosticCheckItemSortViewModel>()
+    .Name("DiagnosticCheckItemsSortGrid")
+    .HtmlAttributes(new { @class = "k-grid-commandicons2", style = "height: 630px" })
+    .Columns(columns =>
+    {
+        columns.Bound(c => c.Name);
+        columns.Command(command =>
+        {
+            command.Custom("CustomMoveUp").IconClass("fas fa-fw fa-arrow-up").Text("<span></span>").Click("DentalDrill.CRM.Pages.DiagnosticCheckTypes.Index.DiagnosticCheckTypesGrid.handleItemMoveUp");
+            command.Custom("CustomMoveDown").IconClass("fas fa-fw fa-arrow-down").Text("<span></span>").Click("DentalDrill.CRM.Pages.DiagnosticCheckTypes.Index.DiagnosticCheckTypesGrid.handleItemMoveDown");
+        });
+    })
+    .Pageable()
+    .Scrollable(scrollable => scrollable.Enabled(true).Height("auto"))
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .Model(model =>
+        {
+            model.Id(f => f.ItemId);
+            model.Field(f => f.Name);
+        })
+        .Read(read => read.Action("SortItemsRead", "DiagnosticCheckTypes", new { typeId = Model.Id }))))
+        
+@section Scripts {
+    <script type="text/javascript" src="~/js/app/pages/diagnosticCheckTypes/index.js" asp-append-version="true"></script>
+}

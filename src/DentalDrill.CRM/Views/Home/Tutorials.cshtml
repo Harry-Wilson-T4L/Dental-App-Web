@@ -1,0 +1,36 @@
+﻿@model TutorialPage
+@{
+    ViewData["Title"] = $"{Model.Title} - {UserManager.GetUserName(User)}";
+    Layout = "_SurgeryLayout";
+
+    var userIsClient = User.IsInRole(ApplicationRoles.Client);
+    var userIsCorporate = User.IsInRole(ApplicationRoles.Corporate);
+    var userIsStaff = User.IsInRole(ApplicationRoles.OfficeAdministrator);
+    var userIsAdmin = User.IsInRole(ApplicationRoles.CompanyAdministrator) || User.IsInRole(ApplicationRoles.Administrator);
+
+    var requiredAvailability =
+        (userIsClient ? TutorialVideoAvailability.Client : TutorialVideoAvailability.None) |
+        (userIsCorporate ? TutorialVideoAvailability.Corporate : TutorialVideoAvailability.None) |
+        (userIsStaff ? TutorialVideoAvailability.Staff : TutorialVideoAvailability.None);
+}
+
+@inject UserManager<ApplicationUser> UserManager
+
+<div class="container">
+    <h2>Surgery tutorials</h2>
+    
+    <div class="row">
+        @foreach (var video in Model.Videos.OrderBy(x => x.OrderNo))
+        {
+            if (userIsAdmin || (video.Availability & requiredAvailability) != TutorialVideoAvailability.None)
+            {
+                <div class="col-12 col-lg-6 mt-3">
+                    <h3>@video.Title</h3>
+                    <div class="embed-responsive embed-responsive-16by9">
+                        <iframe class="embed-responsive-item" src="@video.VideoUrl" allowfullscreen></iframe>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>

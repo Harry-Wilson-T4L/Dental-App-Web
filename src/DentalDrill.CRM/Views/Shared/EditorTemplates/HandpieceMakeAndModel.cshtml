@@ -1,0 +1,15 @@
+﻿@model String
+
+@(Html.Kendo().AutoCompleteFor(x => x)
+      .DataTextField("Name")
+      .ValuePrimitive(true)
+      .Filter("startswith")
+      .MinLength(2)
+      .DataSource(dataSource => dataSource
+          .Ajax()
+          .Read(read => read.Action("ModelsAutoComplete", "Jobs").Data("function () { var brand = $(\"#Brand\").val(); return brand ? { brand: brand } : { };  }"))
+          .Sort(sort =>
+          {
+              sort.Add("Name");
+          })
+          .ServerOperation(true)))

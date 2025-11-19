@@ -1,0 +1,68 @@
+﻿@using Kendo.Mvc.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using DentalDrill.CRM.Models.Permissions
+@model DentalDrill.CRM.Models.ViewModels.Corporates.CorporateDetailsModel
+@{
+    Layout = null;
+}
+
+<div class="editor">
+    <div class="row">
+        <div class="col-12 mb-2">
+            <div class="row">
+                <div class="col-sm-5">
+                    <label>User</label>
+                </div>
+                @if (Model.Entity.User != null)
+                {
+                    <div class="col-sm-7">
+                        @Model.Entity.User.UserName
+                        @if (!String.IsNullOrEmpty(Model.Entity.User.Email))
+                        {
+                            <span>(@Model.Entity.User.Email)</span>
+                        }
+                        else
+                        {
+                            <span class="text-danger">(NO EMAIL)</span>
+                        }
+                        
+                        @if (Model.Access.Global.CanWriteComponent(GlobalComponent.Corporate))
+                        {
+                            <br />
+                            <a class="btn btn-sm btn-secondary" asp-action="ManageUser" asp-controller="CorporateAccess" asp-route-id="@Model.Id">Manage</a>
+                            <a class="btn btn-sm btn-secondary" asp-action="DeleteUser" asp-controller="CorporateAccess" asp-route-id="@Model.Id">Delete</a>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="col-sm-7">
+                        @if (Model.Access.Global.CanWriteComponent(GlobalComponent.Corporate))
+                        {
+                            <a class="btn btn-sm btn-secondary" asp-action="CreateUser" asp-controller="CorporateAccess" asp-route-id="@Model.Id">Create</a>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="col-12 mb-2">
+            <div class="row">
+                <div class="col-sm-5">
+                    <label>Page Url</label>
+                </div>
+                <div class="col-sm-7">
+                    @{
+                        var urlPrefix = $"{Context.Request.Scheme}://{Context.Request.Host}/CorporateSurgeries/";
+                        <a href="@(urlPrefix + Model.Entity.UrlPath)">@urlPrefix<strong>@Model.Entity.UrlPath</strong></a>
+                    }
+                    @if (Model.Access.Global.CanWriteComponent(GlobalComponent.Corporate))
+                    {
+                        <br/>
+                        <a class="btn btn-sm btn-secondary" asp-action="ConfigurePageUrl" asp-controller="CorporateAccess" asp-route-id="@Model.Id">Configure</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

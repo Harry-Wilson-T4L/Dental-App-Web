@@ -1,0 +1,123 @@
+﻿@using DentalDrill.CRM.Models.Permissions
+@model DentalDrill.CRM.Models.ViewModels.ClientDetailsViewModel
+@{
+    ViewData["Title"] = $"{Model.Entity.ClientNo} {Model.Entity.Name}";
+}
+
+<div class="details">
+    <div class="details__header">
+        <div class="details__title">
+            <h1>@Model.Entity.ClientNo @Model.Entity.Name</h1>
+        </div>
+        <div class="details__actions">
+            <a class="details__action" asp-action="Index"><span class="fas fa-list"></span> List</a>
+            <a class="details__action" asp-action="Index" asp-controller="Surgeries" asp-route-id="@Model.Entity.UrlPath"><span class="fas fa-external-link-alt"></span> Surgery</a>
+            <a class="details__action" asp-action="Index" asp-controller="Pickup" asp-route-client="@Model.Id"><span class="fas fa-shipping-fast"></span> Book a Pick-up</a>
+            @if (Model.Access.CanWriteComponent(ClientEntityComponent.Client))
+            {
+                <a class="details__action" asp-action="Edit" asp-route-id="@Model.Id"><span class="fas fa-pencil-alt"></span> Edit</a>
+                <a class="details__action details__action_color_red" asp-action="Delete" asp-route-id="@Model.Id"><span class="fas fa-trash-alt"></span> Delete</a>
+            }
+        </div>
+    </div>
+    
+    <partial name="_Details" model="@Model" />
+    
+    @if (Model.Access.CanReadAnyComponentOf(
+        ClientEntityComponent.Note,
+        ClientEntityComponent.Callback,
+        ClientEntityComponent.Repair,
+        ClientEntityComponent.Email,
+        ClientEntityComponent.Invoice,
+        ClientEntityComponent.Feedback,
+        ClientEntityComponent.Attachment,
+        ClientEntityComponent.Appearance,
+        ClientEntityComponent.Access))
+    {
+        <div class="row tab-strip-spinner">
+            <div class="col">
+                @(Html.Kendo().TabStrip().Name("ClientDetailsTabStrip")
+                    .SelectedIndex(0)
+                    .HtmlAttributes(new { @class = "k-tabstrip-autonavigation" })
+                    .Items(items =>
+                    {
+                        if (Model.Access.CanReadComponent(ClientEntityComponent.Note))
+                        {
+                            items.Add().Text("Notes")
+                                .HtmlAttributes(new { data_tabname = "Notes" })
+                                .LoadContentFrom("DetailsTabNotes", "Clients", new { id = Model.Id });
+                        }
+
+                        if (Model.Access.CanReadComponent(ClientEntityComponent.Callback))
+                        {
+                            items.Add().Text("Callback")
+                                .HtmlAttributes(new { data_tabname = "Callback" })
+                                .LoadContentFrom("DetailsTabCallbackNotifications", "Clients", new { id = Model.Id });
+                        }
+
+                        if (Model.Access.CanReadComponent(ClientEntityComponent.Repair))
+                        {
+                            items.Add().Text("Repairs")
+                                .HtmlAttributes(new { data_tabname = "Repairs" })
+                                .LoadContentFrom("DetailsTabRepairs", "Clients", new { id = Model.Id });
+                        }
+
+                        if (Model.Access.CanReadComponent(ClientEntityComponent.Repair))
+                        {
+                            items.Add().Text("Repairs History")
+                                .HtmlAttributes(new { data_tabname = "RepairsHistory" })
+                                .LoadContentFrom("DetailsTabRepairHistory", "Clients", new { id = Model.Id });
+                        }
+
+                        if (Model.Access.CanReadComponent(ClientEntityComponent.Email))
+                        {
+                            items.Add().Text("Emails")
+                                .HtmlAttributes(new { data_tabname = "Emails" })
+                                .LoadContentFrom("DetailsTabEmails", "Clients", new { id = Model.Id });
+                        }
+
+                        if (Model.Access.CanReadComponent(ClientEntityComponent.Invoice))
+                        {
+                            items.Add().Text("Invoices")
+                                .HtmlAttributes(new { data_tabname = "Invoices" })
+                                .LoadContentFrom("DetailsTabInvoices", "Clients", new { id = Model.Id });
+                        }
+
+                        if (Model.Access.CanReadComponent(ClientEntityComponent.Feedback))
+                        {
+                            items.Add().Text("Feedback")
+                                .HtmlAttributes(new { data_tabname = "Feedback" })
+                                .LoadContentFrom("DetailsTabFeedback", "Clients", new { id = Model.Id });
+                        }
+
+                        if (Model.Access.CanReadComponent(ClientEntityComponent.Attachment))
+                        {
+                            items.Add().Text("Attachments")
+                                .HtmlAttributes(new { data_tabname = "Attachments" })
+                                .LoadContentFrom("DetailsTabAttachments", "Clients", new { id = Model.Id });
+                        }
+
+                        if (Model.Access.CanReadComponent(ClientEntityComponent.Appearance))
+                        {
+                            items.Add().Text("Appearance")
+                                .HtmlAttributes(new { data_tabname = "Appearance" })
+                                .LoadContentFrom("Appearance", "Clients", new { id = Model.Id });
+                        }
+
+                        if (Model.Access.CanReadComponent(ClientEntityComponent.Access))
+                        {
+                            items.Add().Text("Access")
+                                .HtmlAttributes(new { data_tabname = "Access" })
+                                .LoadContentFrom("DetailsTabAccess", "Clients", new { id = Model.Id });
+                        }
+                    }))
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <scripts-bundle path="/js/app/pages/clients/details.min.js"/>
+    <script type="text/javascript" src="~/js/app/pages/clients/appearance.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/js/app/pages/jobs/create.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,210 @@
+﻿@model DentalDrill.CRM.Models.ViewModels.JobsGenerateViewModel
+@{
+    ViewBag.Title = "Generate handpieces";
+}
+
+<div class="editor">
+    <div class="editor__header">
+        <div class="editor__title">
+            <h1>Generate handpieces</h1>
+        </div>
+        <div class="editor__actions">
+            <a asp-action="DownloadImages" class="editor__action"><span class="fas fa-download"></span> Download</a>
+            <a asp-action="Index" class="editor__action"><span class="fas fa-list"></span> List</a>
+        </div>
+    </div>
+    
+    <form asp-action="Generate" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="row">
+            <div class="col-12 mb-2">
+                @*Corporates*@
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="SelectedCorporates"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        @(Html.Kendo().MultiSelectFor(x => x.SelectedCorporates)
+                              .BindTo(Model.Corporates.Select(x => new { x.Id, x.Name }))
+                              .DataTextField("Name")
+                              .DataValueField("Id")
+                              .AutoBind(true)
+                              .AutoClose(false))
+                        <span asp-validation-for="SelectedCorporates" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mb-2">
+                @*Clients*@
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="SelectedClients"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        @(Html.Kendo().MultiSelectFor(x => x.SelectedClients)
+                              .BindTo(Model.Clients.Select(x => new { x.Id, x.Name, x.CorporateId }))
+                              .DataTextField("Name")
+                              .DataValueField("Id")
+                              .AutoBind(true)
+                              .AutoClose(false))
+                        <span asp-validation-for="SelectedClients" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mb-2">
+                @*Employee*@
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="SelectedEmployee"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        <kendo-dropdownlist for="SelectedEmployee" bind-to="@(Model.Employees.Select(x => new { x.Id, Name = $"{x.FirstName} {x.LastName}" }))" datatextfield="Name" datavaluefield="Id"></kendo-dropdownlist>
+                        <span asp-validation-for="SelectedEmployee" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mb-2">
+                @*Year*@
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="Year"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        <input asp-for="Year" class="k-textbox" />
+                        <span asp-validation-for="Year" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mb-2">
+                @*Quantity*@
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="Quantity"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        <input asp-for="Quantity" class="k-textbox" />
+                        <span asp-validation-for="Quantity" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-12">
+                        <h3>Advanced</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mb-2">
+                @*BrandsConfig*@
+                <div class="row">
+                    <div class="col-12">
+                        <label asp-for="BrandsConfig"></label>
+                    </div>
+                    <div class="col-12">
+                        <textarea asp-for="BrandsConfig" class="k-textbox"></textarea>
+                        <span asp-validation-for="BrandsConfig" class="text-danger"></span>
+                    </div>
+                    <div class="col-12">
+                        <small class="text-muted">One brand per line. Each line is a list of semicolon-separated vales. First value is brand name, other values are possible model names: {brandName}[;{modelName}...]</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mb-2">
+                @*CostsConfig*@
+                <div class="row">
+                    <div class="col-12">
+                        <label asp-for="CostsConfig"></label>
+                    </div>
+                    <div class="col-12">
+                        <textarea asp-for="CostsConfig" class="k-textbox"></textarea>
+                        <span asp-validation-for="CostsConfig" class="text-danger"></span>
+                    </div>
+                    <div class="col-12">
+                        <small class="text-muted">One cost range per line. Format: {minValue};{maxValue};{step};{weight} or {value};{weight}</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mb-2">
+                @*RatingsConfig*@
+                <div class="row">
+                    <div class="col-12">
+                        <label asp-for="RatingsConfig"></label>
+                    </div>
+                    <div class="col-12">
+                        <textarea asp-for="RatingsConfig" class="k-textbox"></textarea>
+                        <span asp-validation-for="RatingsConfig" class="text-danger"></span>
+                    </div>
+                    <div class="col-12">
+                        <small class="text-muted">One rating range per line. Format: {minValue};{maxValue};{step};{weight} or {value};{weight}</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mb-2">
+                @*StatusesConfig*@
+                <div class="row">
+                    <div class="col-12">
+                        <label asp-for="StatusesConfig"></label>
+                    </div>
+                    <div class="col-12">
+                        <textarea asp-for="StatusesConfig" class="k-textbox"></textarea>
+                        <span asp-validation-for="StatusesConfig" class="text-danger"></span>
+                    </div>
+                    <div class="col-12">
+                        <small class="text-muted">Each line represents JobStatus and contains its name, weight and list of possible handpiece statuses. Format: {jobStatus}:{weight}[;{handpieceStatus}:{weight}...]</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mb-2">
+                @*DatesConfig*@
+                <div class="row">
+                    <div class="col-12">
+                        <label asp-for="DatesConfig"></label>
+                    </div>
+                    <div class="col-12">
+                        <textarea asp-for="DatesConfig" class="k-textbox"></textarea>
+                        <span asp-validation-for="DatesConfig" class="text-danger"></span>
+                    </div>
+                    <div class="col-12">
+                        <small class="text-muted">
+                            QW:{1Q weight};{2Q weight};{3Q weight};{4Q weight}<br />
+                            QD:{quarter deviation}<br />
+                            MW:{1M weight};{2M weight};{3M weight}<br />
+                            MD:{month deviation}<br />
+                            DW:{Sun weight};{Mon weight};{Tue weight};{Wed weight};{Thu weight};{Fri weight};{Sat weight}<br />
+                            DD:{day of week deviation}<br />
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mb-2">
+                @*CostsConfig*@
+                <div class="row">
+                    <div class="col-12">
+                        <label asp-for="ImagesArchive"></label>
+                    </div>
+                    <div class="col-12">
+                        <input type="file" asp-for="ImagesArchive" />
+                        <span asp-validation-for="ImagesArchive" class="text-danger"></span>
+                    </div>
+                    <div class="col-12">
+                        <small class="text-muted">
+                            *.zip archive with images (*.jpg,*.jpeg,*.png) for generated handpieces.<br />
+                            Generator will look for images in the following paths (relative to archive root): <br />
+                            <code>/{brandName}/{modelName}/{anyName}.{ext}</code> - will randomly pick one of those <br />
+                            <code>/{brandName}/{modelName}.{ext}</code> - single image per model <br />
+                            <code>/{brandName}/_/{anyName}.{ext}</code> - fallback images for unknown models <br />
+                            <code>/{brandName.{ext}</code> - single image per brand <br />
+                            <code>/_/{anyName}.{ext}</code> - fallback images for unknown brands <br />
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a asp-action="Index" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

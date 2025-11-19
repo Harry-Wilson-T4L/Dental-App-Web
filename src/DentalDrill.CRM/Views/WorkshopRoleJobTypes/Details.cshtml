@@ -1,0 +1,183 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DentalDrill.CRM.Models.Permissions
+@using DevGuild.AspNetCore.Controls.HybridForms
+@using Kendo.Mvc.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model DentalDrill.CRM.Models.ViewModels.WorkshopRoleJobTypes.WorkshopRoleJobTypeEditModel
+@{
+    ViewBag.Title = $"Workshop role {Model.Original.JobType.Name} permissions";
+    this.ConfigureHybridPage("WorkshopRoleJobTypesDetails");
+}
+
+<div class="editor">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Workshop role @Model.Original.JobType.Name permissions</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Details" asp-controller="WorkshopRoles" asp-route-id="@Model.Original.WorkshopRoleId" class="editor__action"><span class="fas fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-12 mb-2">
+            <div class="row">
+                <div class="col-sm-5">
+                    <label asp-for="Original.JobTypeId"></label>
+                </div>
+                <div class="col-sm-7">
+                    <p class="form-control-plaintext">@Model.Original.JobType.Name</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12 mb-2">
+            <h5>Job Permissions</h5>
+            <table class="table mb-2">
+                <colgroup><col style="width: 80%" /><col style="width: 10%" /><col style="width: 10%" /></colgroup>
+                <thead>
+                <tr>
+                    <th>Component</th>
+                    <th>Read</th>
+                    <th>Write</th>
+                </tr>
+                </thead>
+                <tbody>
+                @for (var i = 0; i < Model.JobComponents.Count; i++)
+                {
+                    var index = i;
+                    <tr>
+                        <td>
+                            @Model.JobComponents[index].Object.ToDisplayString()
+                            <input asp-for="JobComponents[index].Object" type="hidden"/>
+                        </td>
+                        <td>
+                            <input asp-for="JobComponents[index].Read" type="checkbox" disabled="disabled"/>
+                        </td>
+                        <td>
+                            <input asp-for="JobComponents[index].Write" type="checkbox" disabled="disabled"/>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+            <table class="table mb-2">
+                <colgroup><col style="width: 70%" /><col style="width: 10%" /><col style="width: 10%" /><col style="width: 10%" /></colgroup>
+                <thead>
+                <tr>
+                    <th>Field</th>
+                    <th>Read</th>
+                    <th>Write</th>
+                    <th>Init</th>
+                </tr>
+                </thead>
+                <tbody>
+                @for (var i = 0; i < Model.JobFields.Count; i++)
+                {
+                    var index = i;
+                    <tr>
+                        <td>
+                            @Model.JobFields[index].Object.ToDisplayString()
+                            <input asp-for="JobFields[index].Object" type="hidden"/>
+                        </td>
+                        <td>
+                            <input asp-for="JobFields[index].Read" type="checkbox" disabled="disabled"/>
+                        </td>
+                        <td>
+                            <input asp-for="JobFields[index].Write" type="checkbox" disabled="disabled"/>
+                        </td>
+                        <td>
+                            <input asp-for="JobFields[index].Init" type="checkbox" disabled="disabled"/>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-md-12 mb-2">
+            <h5>Handpiece Permissions</h5>
+            <table class="table mb-2">
+                <colgroup><col style="width: 80%" /><col style="width: 10%" /><col style="width: 10%" /></colgroup>
+                <thead>
+                <tr>
+                    <th>Component</th>
+                    <th>Read</th>
+                    <th>Write</th>
+                </tr>
+                </thead>
+                <tbody>
+                @for (var i = 0; i < Model.HandpieceComponents.Count; i++)
+                {
+                    var index = i;
+                    <tr>
+                        <td>
+                            @Model.HandpieceComponents[index].Object.ToDisplayString()
+                            <input asp-for="HandpieceComponents[index].Object" type="hidden"/>
+                        </td>
+                        <td>
+                            <input asp-for="HandpieceComponents[index].Read" type="checkbox" disabled="disabled"/>
+                        </td>
+                        <td>
+                            <input asp-for="HandpieceComponents[index].Write" type="checkbox" disabled="disabled"/>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+            <table class="table mb-2">
+                <colgroup><col style="width: 70%" /><col style="width: 10%" /><col style="width: 10%" /><col style="width: 10%" /></colgroup>
+                <thead>
+                <tr>
+                    <th>Field</th>
+                    <th>Read</th>
+                    <th>Write</th>
+                    <th>Init</th>
+                </tr>
+                </thead>
+                <tbody>
+                @for (var i = 0; i < Model.HandpieceFields.Count; i++)
+                {
+                    var index = i;
+                    <tr>
+                        <td>
+                            @Model.HandpieceFields[index].Object.ToDisplayString()
+                            <input asp-for="HandpieceFields[index].Object" type="hidden"/>
+                        </td>
+                        <td>
+                            <input asp-for="HandpieceFields[index].Read" type="checkbox" disabled="disabled"/>
+                        </td>
+                        <td>
+                            <input asp-for="HandpieceFields[index].Write" type="checkbox" disabled="disabled"/>
+                        </td>
+                        <td>
+                            <input asp-for="HandpieceFields[index].Init" type="checkbox" disabled="disabled"/>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="row tab-strip-spinner">
+        <div class="col">
+            <kendo-tabstrip name="WorkshopRoleJobTypeTabStrip" class="k-tabstrip-autonavigation">
+                <items>
+                    <tabstrip-item selected="true" data-tabname="Statuses" text="Status Permissions" asp-action="DetailsTabStatuses" asp-controller="WorkshopRoleJobTypes" asp-route-parentId="@Model.Original.Id" />
+                    <tabstrip-item selected="false" data-tabname="JobExceptions" text="Job Status Exceptions" asp-action="DetailsTabJobExceptions" asp-controller="WorkshopRoleJobTypes" asp-route-parentId="@Model.Original.Id" />
+                    <tabstrip-item selected="false" data-tabname="HandpieceExceptions" text="Handpiece Status Exceptions" asp-action="DetailsTabHandpieceExceptions" asp-controller="WorkshopRoleJobTypes" asp-route-parentId="@Model.Original.Id" />
+                </items>
+            </kendo-tabstrip>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/app/pages/workshopRoleJobTypeStatuses/index.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/js/app/pages/workshopRoleJobTypeJobExceptions/index.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/js/app/pages/workshopRoleJobTypeHandpieceExceptions/index.js" asp-append-version="true"></script>
+}

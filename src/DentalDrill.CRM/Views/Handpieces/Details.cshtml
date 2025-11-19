@@ -1,0 +1,66 @@
+﻿@model DentalDrill.CRM.Models.ViewModels.HandpieceDetailsModel
+@{
+    Layout = "_FullLayout";
+    ViewBag.Title = $"Estimate #{Model.Job.JobNumber}: HP {Model.Entity.JobPosition}/{Model.Job.Handpieces.Count}";
+}
+
+<div class="details">
+    <div class="row">
+        <div class="details__header col-lg-7 col-xl-6">
+            <div class="details__title">
+                <h1 style="font-size: 2rem">Estimate #@Model.Job.JobNumber: HP @Model.Entity.JobPosition/@Model.Job.Handpieces.Count</h1>
+            </div>
+            <div class="details__status">
+                <handpiece-status-indicator status="@Model.Entity.HandpieceStatus" description="true" style="width: 150px" />
+            </div>
+        </div>
+        <div class="details__header details__header--right col-lg-5 col-xl-6 mt-0 mt-lg-3">
+            <div class="details__actions">
+                <a class="details__action" asp-action="Details" asp-controller="Jobs" asp-route-id="@Model.Job.Id"><span class="fas fa-fw fa-level-up-alt"></span></a>
+                @if (Model.Previous != null)
+                {
+                    <a class="details__action" asp-action="Details" asp-route-id="@Model.Previous.Id"><span class="fas fa-fw fa-arrow-up"></span></a>
+                }
+                else
+                {
+                    <span class="details__action details__action--disabled"><span class="fas fa-fw fa-arrow-up"></span></span>
+                }
+
+                @if (Model.Next != null)
+                {
+                    <a class="details__action" asp-action="Details" asp-route-id="@Model.Next.Id"><span class="fas fa-fw fa-arrow-down"></span></a>
+                }
+                else
+                {
+                    <span class="details__action details__action--disabled"><span class="fas fa-fw fa-arrow-down"></span></span>
+                }
+
+                @*<a class="details__action handpiece-status-change-button" asp-action="SetStatus" asp-route-id="@Model.Id"><span class="far fa-dot-circle"></span> Set Status</a>*@
+                <a class="details__action" asp-action="Edit" asp-route-id="@Model.Id"><span class="fas fa-pencil-alt"></span> Edit</a>
+                <a class="details__action details__action_color_red" asp-action="Delete" asp-route-id="@Model.Id"><span class="fas fa-trash-alt"></span> Delete</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="details__content">
+        <partial name="_DetailsContent" model="@Model" />
+    </div>
+    
+    <div class="row tab-strip-spinner">
+        <div class="col">
+            <kendo-tabstrip name="HandpieceTabStrip" class="k-tabstrip-autonavigation">
+                <items>
+                    <tabstrip-item selected="true" data-tabname="History" text="Maintenance history" asp-action="Index" asp-controller="HandpieceHistory" asp-route-parentId="@Model.Id" />
+                    <tabstrip-item selected="false" data-tabname="DiagnosticChecklist" text="Diagnostic checklist" asp-action="SetDiagnostics" asp-route-id="@Model.Id" />
+                    <tabstrip-item selected="false" data-tabname="Images" text="Images" asp-action="Index" asp-controller="HandpieceImages" asp-route-parentId="@Model.Id" />
+                    <tabstrip-item selected="false" data-tabname="Changes" text="History" asp-action="Index" asp-controller="HandpieceChanges" asp-route-parentId="@Model.Id" />
+                </items>
+            </kendo-tabstrip>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/app/pages/handpieces/details.js" asp-append-version="true"></script>
+}

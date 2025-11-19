@@ -1,0 +1,17 @@
+﻿@model DentalDrill.CRM.Models.ViewModels.NotificationFeedModel
+
+<div class="callback-feed @(Model.Init == true ? "callback-feed--init" : "")" data-page-size="@Model.PageSize" data-link-full-version="@Model.LinkFullVersion" data-show-read="@(!Model.LinkFullVersion)">
+    <div class="callback-feed__list-view"></div>
+    <div class="callback-feed__pager"></div>
+    
+    <script type="text/x-kendo-template" class="callback-feed__template">
+        <div class="callback" data-id="#=data.Id#">
+            <div class="callback__date">#: (data.CallDateTime ? kendo.toString(data.CallDateTime, "g") : "") #</div>
+            <div class="callback__text">Callback #: data.ClientName # about "#: data.Note #"</div>
+            <div class="callback__actions">
+                <a class="btn btn-sm btn-secondary callback__actions__read" href="\#" target="__blank">Mark as Done</a>
+                <a class="btn btn-sm btn-outline-secondary" href="/Clients/Details/#=data.ClientId#" target="__blank">Open Surgery</a>
+            </div>
+        </div>
+    </script>
+</div>

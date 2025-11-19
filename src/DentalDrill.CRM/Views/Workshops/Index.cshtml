@@ -1,0 +1,55 @@
+﻿@using DentalDrill.CRM.Models.Permissions
+@model DentalDrill.CRM.Models.ViewModels.EmptyEmployeeIndexViewModel
+@{
+    ViewBag.Title = "Workshops";
+}
+
+<h1 class="header">Workshops</h1>
+
+@(Html.Kendo().Grid<DentalDrill.CRM.Models.ViewModels.Workshops.WorkshopViewModel>()
+    .Name("WorkshopsGrid")
+    .HtmlAttributes(new { @class = "k-grid-commandicons2", style = "height: 630px" })
+    .Columns(columns =>
+    {
+        columns.Bound(c => c.Name);
+        columns.Bound(c => c.Description);
+        columns.Command(command =>
+        {
+            if (Model.Access.Global.CanWriteComponent(GlobalComponent.Workshop))
+            {
+                command.Edit().Text("<span></span>").IconClass("fas fa-fw fa-pencil-alt");
+                command.Destroy().Text("<span></span>").IconClass("fas fa-fw fa-trash-alt");
+                command.Custom("CustomMoveUp").IconClass("fas fa-fw fa-arrow-up").Text("<span></span>").Click("DentalDrill.CRM.Pages.Workshops.Index.WorkshopsGrid.handleMoveUp");
+                command.Custom("CustomMoveDown").IconClass("fas fa-fw fa-arrow-down").Text("<span></span>").Click("DentalDrill.CRM.Pages.Workshops.Index.WorkshopsGrid.handleMoveDown");
+            }
+        });
+    })
+    .ToolBar(toolbar =>
+    {
+        if (Model.Access.Global.CanWriteComponent(GlobalComponent.Workshop))
+        {
+            toolbar.Create();
+        }
+    })
+    .ColumnMenu(cm => cm.Enabled(false))
+    .Editable(editable => editable.Mode(GridEditMode.InLine))
+    .Pageable()
+    .Scrollable(scrollable => scrollable.Enabled(true).Height("auto"))
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .Model(model =>
+        {
+            model.Id(f => f.Id);
+            model.Field(f => f.Id).DefaultValue(default(Guid));
+            model.Field(f => f.Name);
+            model.Field(f => f.Description);
+        })
+        .Read(read => read.Action("Read", "Workshops"))
+        .Create(create => create.Action("Create", "Workshops"))
+        .Update(update => update.Action("Update", "Workshops"))
+        .Destroy(destroy => destroy.Action("Destroy", "Workshops"))
+        .Events(events => events.Error("DevGuild.AspNet.Controls.Grids.Errors.GridErrorHandler.handleGridError").RequestStart("DevGuild.AspNet.Controls.Grids.Errors.GridErrorHandler.handleRequestStart"))))
+        
+@section Scripts {
+    <script type="text/javascript" src="~/js/app/pages/workshops/index.js" asp-append-version="true"></script>
+}

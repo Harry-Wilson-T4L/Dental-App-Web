@@ -1,0 +1,21 @@
+﻿.grid-wrapper {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    &__header {
+        flex: 0 0 auto;
+    }
+
+    &__content {
+        flex: 0 0 auto;
+    }
+
+    &__grid {
+        flex: 1 1 500px;
+
+        > .k-grid {
+            height: 100%;
+        }
+    }
+}

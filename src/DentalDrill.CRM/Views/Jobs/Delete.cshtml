@@ -1,0 +1,66 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DevGuild.AspNetCore.Controls.HybridForms
+@model Job
+@{
+    ViewBag.Title = $"Delete Estimate #{Model.JobNumber}";
+    Layout = "_FullLayout";
+    this.ConfigureHybridPage("JobsDelete");
+}
+
+<div class="details">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="details__header">
+            <div class="details__title">
+                <h2>Delete Estimate #@Model.JobNumber?</h2>
+            </div>
+            <div class="details__actions">
+                <a class="details__action" asp-action="Index"><span class="fas fa-list"></span> List</a>
+                <a class="details__action" asp-action="Details" asp-route-id="@Model.Id"><span class="fas fa-external-link-alt"></span> Details</a>
+                <a class="details__action  details__action_color_red" asp-action="Edit" asp-route-id="@Model.Id"><span class="fas fa-pencil-alt"></span> Edit</a>
+            </div>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col">
+            <div class="row details__field">
+                <div class="details__label">
+                    @Html.DisplayNameFor(x => x.Client)
+                </div>
+                <div class="details__value">
+                    @Html.DisplayTextFor(x => x.Client.Name)
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="row details__field">
+                <div class="details__label">
+                    @Html.DisplayNameFor(x => x.Received)
+                </div>
+                <div class="details__value">
+                    @Html.DisplayFor(x => x.Received)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row details__field">
+        <div class="details__label">
+            @Html.DisplayNameFor(x => x.Comment)
+        </div>
+        <div class="details__value">
+            @Html.DisplayTextFor(x => x.Comment)
+        </div>
+    </div>
+
+    <form asp-action="Delete" asp-route-id="@Model.Id" hybrid-form-id="JobsDelete" id="JobsDeleteForm">
+        <div class="row ">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-danger">Delete</button>
+                <a asp-action="Index" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>
+

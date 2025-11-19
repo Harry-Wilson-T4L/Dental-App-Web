@@ -1,0 +1,78 @@
+﻿@using DentalDrill.CRM.Models.ViewModels
+@{
+    ViewBag.Title = "Pending Maintenance Reminder";
+}
+
+<div class="grid-wrapper">
+    <h1 class="grid-wrapper__header">Pending Maintenance Reminder</h1>
+    <div class="grid-wrapper__grid">
+        @(Html.Kendo().Grid<ClientRepairedItemViewModel>()
+            .Name("RepairedItemsGrid")
+            .HtmlAttributes(new { @class = "k-grid-commandicons2 k-grid--dense k-grid--small-text", style = "height: 100%" })
+            .Columns(columns =>
+            {
+                columns.Bound(c => c.ClientId).Width(100).Title("Client").ClientGroupHeaderTemplate("#: data.items[0].ClientName # (#: data.items[0].ClientEmail #)").Hidden(true);
+                columns.Bound(c => c.Brand).Width(80).Title("Brand");
+                columns.Bound(c => c.Model).Width(80).Title("Model");
+                columns.Bound(c => c.Serial).Width(80).Title("Serial");
+                columns.Bound(c => c.LastRepair).Width(60).Title("Last Repair").ClientTemplate("<a href=\"#:LastRepairUrl#\" style=\"color: rgb(0, 123, 255)\">#:LastRepair#</a>");
+                columns.Bound(c => c.LastRepairDate).Width(80).Title("Last Repair Date").ClientTemplate("#: kendo.toString(LastRepairDate, \"dd/MM/yyyy\") #");
+                columns.Bound(c => c.LastRepairStatus).Width(100).Title("Last Repair Status").ClientTemplate("#= DentalDrill.CRM.Pages.Clients.Details.RepairHistoryGrid.formatLastRepairStatus(data) #");
+                columns.Bound(c => c.RemindersLastDateTime).Width(80).Title("Last Reminder").ClientTemplate("#: RemindersLastDateTime ? kendo.toString(RemindersLastDateTime, \"dd/MM/yyyy\") : \"\" #");
+                columns.Bound(c => c.RemindersCount).Width(60).Title("Recent Rem.").ClientTemplate("<span class=\"d-flex align-items-center justify-content-between\"><span>#: RemindersCount #</span># if (RemindersCount) { # <span class=\"k-command-cell p-0 d-inline-block float-right\"><button class=\"k-button k-button-icontext client-repair-history-reset-count\"><span class=\"fas fa-fw fa-times\"></span></button></span> # } # </span>");
+                columns.Bound(c => c.TotalRemindersCount).Width(60).Title("Total Rem.");
+                columns.Bound(c => c.Status).Width(80).Title("Item Status").ClientTemplate("#= DentalDrill.CRM.Pages.Clients.Details.RepairHistoryGrid.formatStatus(data) #");
+                columns.Command(command =>
+                {
+                    command.Custom("CustomToggle").Text("<span class=\"fas fa-fw fa-power-off\"></span>").Click("DentalDrill.CRM.Pages.Clients.Details.RepairHistoryGrid.handleToggle");
+                }).Width(50);
+            })
+            .ColumnMenu(cm => cm.Enabled(false))
+            .Scrollable(scrollable => scrollable.Enabled(true).Height("auto"))
+            .Sortable()
+            .DataSource(dataSource => dataSource
+                .Ajax()
+                .Model(model =>
+                {
+                    model.Id(f => f.Id);
+                    model.Field(f => f.Id);
+                    model.Field(f => f.Brand);
+                    model.Field(f => f.Model);
+                    model.Field(f => f.Serial);
+                    model.Field(f => f.LastRepair);
+                    model.Field(f => f.LastRepairUrl);
+                    model.Field(f => f.LastRepairDate);
+                    model.Field(f => f.Status);
+                })
+                .Sort(sort => sort.Add(x => x.Status))
+                .Group(group => group.Add(x => x.ClientId))
+                .Read(read => read.Action("ReadPending", "MaintenanceReminder", new { }))))
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/app/pages/clients/details/repairHistory.js" asp-append-version="true"></script>
+    <script type="text/javascript">
+        (function() {
+            var resizeTimeout;
+
+            function resize() {
+                resizeTimeout = undefined;
+                var grid = $("#RepairedItemsGrid").data("kendoGrid");
+                grid.setOptions({ height: "500px" });
+                grid.resize(true);
+
+                grid.setOptions({ height: "100%" });
+                grid.resize(true);
+            }
+
+            window.addEventListener("resize", function(e) {
+                if (resizeTimeout !== undefined) {
+                    clearTimeout(resizeTimeout);
+                }
+
+                resizeTimeout = setTimeout(resize, 500);
+            });
+        })();
+    </script>
+}

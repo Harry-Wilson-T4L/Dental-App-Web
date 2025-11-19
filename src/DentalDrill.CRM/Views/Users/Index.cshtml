@@ -1,0 +1,61 @@
+﻿@using DentalDrill.CRM.Models.Permissions
+@model DentalDrill.CRM.Models.ViewModels.EmptyEmployeeIndexViewModel
+@{
+    ViewBag.Title = "Users";
+}
+
+<h1 class="header">Users</h1>
+
+<kendo-grid name="UsersGrid" class="k-grid-commandicons2" height="630">
+    <columns>
+        <column field="UserName" title="UserName" width="150" />
+        <column field="Email" title="Email" width="150" />
+        <column field="Roles" title="Roles" width="150">
+            <sortable enabled="false" />
+            <filterable enabled="false" />
+        </column>
+        <column width="150">
+            <commands>
+                <column-command name="CustomDetails" click="DentalDrill.CRM.Pages.Users.Index.UsersGrid.handleDetails" text="@("<span class=\"fas fa-fw fa-external-link-alt\"></span>")"></column-command>
+                @if (Model.Access.Global.CanWriteComponent(GlobalComponent.User))
+                {
+                    <column-command name="CustomEdit" click="DentalDrill.CRM.Pages.Users.Index.UsersGrid.handleEdit" text="@("<span class=\"fas fa-fw fa-pencil-alt\"></span>")"></column-command>
+                    <column-command name="CustomDelete" click="DentalDrill.CRM.Pages.Users.Index.UsersGrid.handleDelete" text="@("<span class=\"fas fa-fw fa-trash-alt\"></span>")"></column-command>
+                }
+            </commands>
+        </column>
+    </columns>
+    <toolbar>
+        @if (Model.Access.Global.CanWriteComponent(GlobalComponent.User))
+        {
+            <toolbar-button name="CustomCreate" text="@("<span class=\"fas fa-fw fa-plus\"></span> Create")"></toolbar-button>
+        }
+    </toolbar>
+    <column-menu enabled="false" />
+    <editable enabled="false" />
+    <pageable enabled="true" />
+    <scrollable enabled="true" />
+    <sortable enabled="true" />
+    <filterable enabled="true" />
+    <datasource type="DataSourceTagHelperType.Ajax" page-size="100">
+        <transport>
+            <read url="@Url.Action("Read", "Users")" />
+        </transport>
+        <schema>
+            <model id="Id">
+                <fields>
+                    <field name="UserName"></field>
+                    <field name="Email"></field>
+                    <field name="Roles"></field>
+                </fields>
+            </model>
+        </schema>
+        <sorts>
+            <sort field="UserName" direction="asc" />
+        </sorts>
+    </datasource>
+</kendo-grid>
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/app/pages/users/index.js" asp-append-version="true"></script>
+}

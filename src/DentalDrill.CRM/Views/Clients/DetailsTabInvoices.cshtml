@@ -1,0 +1,41 @@
+﻿@using DentalDrill.CRM.Models.ViewModels
+@using DentalDrill.CRM.Models.Permissions
+@model DentalDrill.CRM.Models.ViewModels.ClientDetailsViewModel
+@{
+    Layout = null;
+}
+
+@(Html.Kendo().Grid<ClientInvoiceReadModel>()
+      .Name($"ClientInvoicesGrid")
+      .HtmlAttributes(new { @class = "k-grid-commandicons2", data_client_id = Model.Id })
+      .Columns(columns =>
+      {
+          columns.Bound(x => x.JobTypeName).Title("Type").Width(100);
+          columns.Bound(x => x.FullInvoiceNumber).Title("#").Width(100);
+          columns.Bound(x => x.FileName).Title("File name").Width(200);
+          columns.Bound(x => x.CreatedOn).Title("Created on").ClientTemplate("#= kendo.toString(DevGuild.Utilities.TimeZones.treatAsUtc(CreatedOn), \"g\") #").Width(150);
+          columns.Bound(x => x.EmployeeName).Title("Employee").Width(200);
+          columns.Command(commands =>
+          {
+              commands.Custom("CustomDownload2").Text("<span class=\"fas fa-fw fa-file-download\"></span>").Click("DentalDrill.CRM.Pages.Clients.Details.ClientInvoicesGrid.handleDownload");
+          }).Width(150);
+      })
+      .ToolBar(toolbar =>
+      {
+          if (Model.Access.CanWriteComponent(ClientEntityComponent.Invoice))
+          {
+              toolbar.Custom().Name("CustomCreate").Text("<span class=\"fas fa-fw fa-plus\"></span> Upload Invoice");
+          }
+      })
+      .ColumnMenu(menu => menu.Enabled(false))
+      .Editable(editable => editable.Enabled(false))
+      .Scrollable(scrollable => scrollable.Enabled(false))
+      .Sortable(sortable => sortable.Enabled(false))
+      .DataSource(dataSource => dataSource
+          .Ajax()
+          .Model(model =>
+          {
+              model.Id(f => f.Id);
+          })
+          .Sort(sort => sort.Add(f => f.CreatedOn).Descending())
+          .Read(read => read.Action("Read", "ClientInvoices", new { parentId = Model.Id }))))

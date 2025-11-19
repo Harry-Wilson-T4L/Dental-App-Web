@@ -1,0 +1,61 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DevGuild.AspNetCore.Controls.HybridForms
+@model DentalDrill.CRM.Models.ViewModels.HandpieceDetailsModel
+@{
+    ViewBag.Title = $"Delete Estimate #{Model.Job.JobNumber}: HP {Model.Entity.JobPosition}/{Model.Job.Handpieces.Count}";
+    Layout = "_FullLayout";
+    this.ConfigureHybridPage("HandpiecesDelete");
+}
+
+<div class="details">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="row">
+            <div class="details__header col-lg-7 col-xl-6">
+                <div class="details__title">
+                    <h1 style="font-size: 2rem">Delete Estimate #@Model.Job.JobNumber: HP @Model.Entity.JobPosition/@Model.Job.Handpieces.Count</h1>
+                </div>
+                <div class="details__status">
+                    <handpiece-status-indicator status="@Model.Entity.HandpieceStatus" description="true" style="width: 150px" />
+                </div>
+            </div>
+            <div class="details__header details__header--right col-lg-5 col-xl-6 mt-0 mt-lg-3">
+                <div class="details__actions">
+                    <a class="details__action" asp-action="Details" asp-controller="Jobs" asp-route-id="@Model.Job.Id"><span class="fas fa-fw fa-level-up-alt"></span></a>
+                    @if (Model.Previous != null)
+                    {
+                        <a class="details__action" asp-action="Delete" asp-route-id="@Model.Previous.Id"><span class="fas fa-fw fa-arrow-up"></span></a>
+                    }
+                    else
+                    {
+                        <span class="details__action details__action--disabled"><span class="fas fa-fw fa-arrow-up"></span></span>
+                    }
+
+                    @if (Model.Next != null)
+                    {
+                        <a class="details__action" asp-action="Delete" asp-route-id="@Model.Next.Id"><span class="fas fa-fw fa-arrow-down"></span></a>
+                    }
+                    else
+                    {
+                        <span class="details__action details__action--disabled"><span class="fas fa-fw fa-arrow-down"></span></span>
+                    }
+
+                    <a class="details__action" asp-action="Edit" asp-route-id="@Model.Id"><span class="fas fa-pencil-alt"></span> Edit</a>
+                </div>
+            </div>
+        </div>
+    }
+    
+    <div class="details__content">
+        <partial name="_DetailsContent" model="@Model" />
+    </div>
+
+    <form asp-action="Delete" asp-route-id="@Model.Id" hybrid-form-id="HandpiecesDelete">
+        <div class="row ">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-danger">Delete</button>
+                <a asp-action="Details" asp-controller="Handpieces" asp-route-id="@Model.Id" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

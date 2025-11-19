@@ -1,0 +1,375 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DentalDrill.CRM.Models.ViewModels
+@using Newtonsoft.Json
+@model JobDetailsModel
+@{
+    this.Layout = null;
+}
+
+<kendo-grid name="@($"JobHandpiecesGrid_{Model.Id}")"
+            class="job-handpieces-grid k-grid-commandicons2 k-grid--dense k-grid--dense-commands k-grid--small-text"
+            data-job-id="@Model.Id"
+            on-data-bound="DentalDrill.CRM.Pages.Jobs.Details.HandpiecesGrid.handleDataBound"
+            row-template-id="@($"JobHandpiecesGrid_{Model.Id}_RowTemplate")"
+            alt-row-template-id="@($"JobHandpiecesGrid_{Model.Id}_RowTemplateAlt")">
+    <columns>
+        <column field="JobPosition" title="#" width="20" />
+        <column field="Brand" title="Brand" width="60" />
+        <column field="MakeAndModel" title="Model" width="60" />
+        <column field="Serial" title="Serial" width="60" />
+        <column field="DiagnosticReport" title="Diagnostic" width="200" />
+        <column field="ServiceLevel" title="Service" width="80" />
+        <column field="Status" title="Status" width="80" />
+        <column field="Parts" title="Parts" width="80"
+                template="@(@"# if (data.PartsOutOfStock === 1) { # <span class=""badge badge-danger"">Out of stock</span> # } else if (data.PartsOutOfStock === 2) { # <span class=""badge badge-warning"">Partial stock</span> # } else { # <span class=""badge badge-success"">In stock</span> # } # # if (data.Parts) { # <br/><span data-toggle=""tooltip"" data-placement=""left"" title=""#: data.Parts #"">#: data.Parts #</span> # } #")" />
+        @if (!User.IsInRole(ApplicationRoles.OfficeAdministrator))
+        {
+            <column field="EstimatedBy" title="Est. by" width="80"/>
+        }
+        <column field="RepairedBy" title="Rep. by" width="80" />
+        <column field="CostOfRepair" title="Cost" width="80" />
+        <column field="InternalComment" title="Int. comment" width="120" />
+        <column width="35">
+            <commands>
+                <column-command name="CustomEdit2" click="DentalDrill.CRM.Pages.Jobs.Details.HandpiecesGrid.handleEdit" text="@("<span class=\"fas fa-fw fa-pencil-alt\"></span>")" />
+            </commands>
+        </column>
+    </columns>
+    @if (Model.CanAddHandpieces && (Model.IsOfficeAdministrator || Model.IsCompanyAdministrator))
+    {
+        <toolbar>
+            <toolbar-button name="CustomCreate2" text="@("<span class=\"fas fa-fw fa-plus\"></span> Add Handpiece")" />
+        </toolbar>
+    }
+    <column-menu enabled="false" />
+    <editable enabled="false" />
+    <scrollable enabled="false" />
+    <sortable enabled="false" />
+    <datasource type="DataSourceTagHelperType.Ajax" page-size="0">
+        <transport>
+            <read url="@Url.Action("Read", "Handpieces", new { parentId = Model.Id })" />
+        </transport>
+        <schema>
+            <model id="Id">
+                <fields>
+                    <field name="JobPosition" type="number" />
+                    <field name="Brand" />
+                    <field name="MakeAndModel" />
+                    <field name="Serial" />
+                    <field name="DiagnosticReport" />
+                    <field name="ServiceLevel" />
+                    <field name="Status" />
+                    <field name="PartsOutOfStock" type="number" />
+                    <field name="Parts" />
+                    <field name="EstimatedBy" />
+                    <field name="RepairedBy" />
+                    <field name="CostOfRepair" type="number" />
+                    <field name="InternalComment" />
+                </fields>
+            </model>
+        </schema>
+        <sorts>
+            <sort field="JobPosition" direction="asc" />
+        </sorts>
+    </datasource>
+</kendo-grid>
+<script type="text/html" id="@($"JobHandpiecesGrid_{Model.Id}_RowTemplate")">
+    <tr data-uid="#:uid#">
+        <td role="gridcell">
+            # if (data.JobPosition !== undefined && data.JobPosition !== null) { #
+            <span>#: data.JobPosition #</span>
+            # } #
+        </td>
+        <td colspan="3" class="p-0" style="height: 1px;">
+            <table style="border-collapse: collapse; height: 100%;">
+                <colgroup>
+                    <col style="width: 60px" />
+                    <col style="width: 60px" />
+                    <col style="width: 60px" />
+                </colgroup>
+                <tr>
+                    <td class="p-1" role="gridcell">
+                    # if (data.Brand !== undefined && data.Brand !== null) { #
+                    <span>#: data.Brand #</span>
+                    # } #
+                    <td class="p-1" role="gridcell">
+                    # if (data.MakeAndModel !== undefined && data.MakeAndModel !== null) { #
+                    <span>#: data.MakeAndModel #</span>
+                    # } #
+                    <td class="p-1" role="gridcell">
+                    # if (data.Serial !== undefined && data.Serial !== null) { #
+                    <span>#: data.Serial #</span>
+                    # } #
+                </tr>
+                # if (data.Components && data.Components.length) { for (var ci = 0; ci < data.Components.length; ci++) { #
+                <tr style="border-top: 1px solid rgba(33,37,41,.125);">
+                    <td class="p-1" >
+                    # if (data.Components[ci] && data.Components[ci].Brand !== undefined && data.Components[ci].Brand !== null) { #
+                    <span>#: data.Components[ci].Brand #</span>
+                    # } #
+                    <td class="p-1" >
+                    # if (data.Components[ci] && data.Components[ci].MakeAndModel !== undefined && data.Components[ci].MakeAndModel !== null) { #
+                    <span>#: data.Components[ci].MakeAndModel #</span>
+                    # } #
+                    <td class="p-1" >
+                    # if (data.Components[ci] && data.Components[ci].Serial !== undefined && data.Components[ci].Serial !== null) { #
+                    <span>#: data.Components[ci].Serial #</span>
+                    # } #
+                </tr>
+                # } } #
+            </table>
+        </td>
+        <td role="gridcell">
+            # if (data.DiagnosticReport !== undefined && data.DiagnosticReport !== null) { #
+            <span>#: data.DiagnosticReport #</span>
+            # } #
+        </td>
+        <td role="gridcell">
+            # if (data.ServiceLevel !== undefined && data.ServiceLevel !== null) { #
+            <span>#: data.ServiceLevel #</span>
+            # } #
+        </td>
+        <td role="gridcell">
+            @if (Model.ActionsList.CanSetStatus && Model.ActionsList.CanBulkChangeStatus)
+            {
+                var statuses = JsonConvert.SerializeObject(HandpieceStatusHelper.List().Select(x => new { value = x, text = x.ToDisplayString() }));
+                var options = JsonConvert.SerializeObject(Model.ActionsList.StatusChanges.Values.Select(x => new { source = x.Source, destinations = x.Destinations }));
+                var template = $@"#= DentalDrill.CRM.Pages.Jobs.Details.HandpiecesGrid.statusTemplate(data, {options}, {statuses})#";
+                @Html.Raw(template)
+            }
+            else
+            {
+                <text>
+                    # if (data.Status !== undefined && data.Status !== null) { #
+                    <span>#: data.Status #</span>
+                    # } #
+                </text>
+            }
+        </td>
+        <td role="gridcell">
+            # if (data.PartsOutOfStock === 1) { #
+            <span class="badge badge-danger">Out of stock</span>
+            # } else if (data.PartsOutOfStock === 2) { #
+            <span class="badge badge-warning">Partial stock</span>
+            # } else { #
+            <span class="badge badge-success">In stock</span>
+            # } #
+            # if (data.Parts) { #
+            <br/><span data-toggle="tooltip" data-placement="left" title="#: data.Parts #">#: data.Parts #</span>
+            # } #
+        </td>
+        @if (!User.IsInRole(ApplicationRoles.OfficeAdministrator))
+        {
+            <td role="gridcell">
+                # if (data.EstimatedBy !== undefined && data.EstimatedBy !== null) { #
+                <span>#: data.EstimatedBy #</span>
+                # } #
+            </td>
+        }
+        <td role="gridcell">
+            # if (data.RepairedBy !== undefined && data.RepairedBy !== null) { #
+            <span>#: data.RepairedBy #</span>
+            # } #
+        </td>
+        <td role="gridcell">
+            # if (data.CostOfRepair !== undefined && data.CostOfRepair !== null) { #
+            <span>#: data.CostOfRepair #</span>
+            # } #
+        </td>
+        <td role="gridcell">
+            # if (data.InternalComment !== undefined && data.InternalComment !== null) { #
+            <span>#: data.InternalComment #</span>
+            # } #
+        </td>
+        <td class="k-command-cell" role="gridcell">
+            <a role="button" class="k-button k-button-icontext k-grid-CustomEdit2" href="\#" onclick="DentalDrill.CRM.Pages.Jobs.Details.HandpiecesGrid.handleEdit">
+                <span class="fas fa-fw fa-pencil-alt"></span>
+            </a>
+        </td>
+    </tr>
+</script>
+<script type="text/html" id="JobHandpiecesGrid_RowTemplateAlt">
+    <tr data-uid="#:uid#" class="k-alt">
+        <td role="gridcell">
+            # if (data.JobPosition !== undefined && data.JobPosition !== null) { #
+            <span>#: data.JobPosition #</span>
+            # } #
+        </td>
+        <td colspan="3" class="p-0" style="height: 1px;">
+            <table style="border-collapse: collapse; height: 100%;">
+                <colgroup>
+                    <col style="width: 60px" />
+                    <col style="width: 60px" />
+                    <col style="width: 60px" />
+                </colgroup>
+                <tr>
+                    <td class="p-1" role="gridcell">
+                        # if (data.Brand !== undefined && data.Brand !== null) { #
+                        <span>#: data.Brand #</span>
+                        # } #
+                    <td class="p-1" role="gridcell">
+                        # if (data.MakeAndModel !== undefined && data.MakeAndModel !== null) { #
+                        <span>#: data.MakeAndModel #</span>
+                        # } #
+                    <td class="p-1" role="gridcell">
+                        # if (data.Serial !== undefined && data.Serial !== null) { #
+                        <span>#: data.Serial #</span>
+                        # } #
+                </tr>
+                # if (data.Components && data.Components.length) { for (var ci = 0; ci < data.Components.length; ci++) { #
+                <tr style="border-top: 1px solid rgba(33,37,41,.125);">
+                    <td class="p-1" >
+                        # if (data.Components[ci] && data.Components[ci].Brand !== undefined && data.Components[ci].Brand !== null) { #
+                        <span>#: data.Components[ci].Brand #</span>
+                        # } #
+                    <td class="p-1" >
+                        # if (data.Components[ci] && data.Components[ci].MakeAndModel !== undefined && data.Components[ci].MakeAndModel !== null) { #
+                        <span>#: data.Components[ci].MakeAndModel #</span>
+                        # } #
+                    <td class="p-1" >
+                        # if (data.Components[ci] && data.Components[ci].Serial !== undefined && data.Components[ci].Serial !== null) { #
+                        <span>#: data.Components[ci].Serial #</span>
+                        # } #
+                </tr>
+                # } } #
+            </table>
+        </td>
+        <td role="gridcell">
+            # if (data.DiagnosticReport !== undefined && data.DiagnosticReport !== null) { #
+            <span>#: data.DiagnosticReport #</span>
+            # } #
+        </td>
+        <td role="gridcell">
+            # if (data.ServiceLevel !== undefined && data.ServiceLevel !== null) { #
+            <span>#: data.ServiceLevel #</span>
+            # } #
+        </td>
+        <td role="gridcell">
+            @if (Model.ActionsList.CanSetStatus && Model.ActionsList.CanBulkChangeStatus)
+            {
+                var statuses = JsonConvert.SerializeObject(HandpieceStatusHelper.List().Select(x => new { value = x, text = x.ToDisplayString() }));
+                var options = JsonConvert.SerializeObject(Model.ActionsList.StatusChanges.Values.Select(x => new { source = x.Source, destinations = x.Destinations }));
+                var template = $@"#= DentalDrill.CRM.Pages.Jobs.Details.HandpiecesGrid.statusTemplate(data, {options}, {statuses})#";
+                @Html.Raw(template)
+            }
+            else
+            {
+                <text>
+                    # if (data.Status !== undefined && data.Status !== null) { #
+                    <span>#: data.Status #</span>
+                    # } #
+                </text>
+            }
+        </td>
+        <td role="gridcell">
+            # if (data.PartsOutOfStock === 1) { #
+            <span class="badge badge-danger">Out of stock</span>
+            # } else if (data.PartsOutOfStock === 2) { #
+            <span class="badge badge-warning">Partial stock</span>
+            # } else { #
+            <span class="badge badge-success">In stock</span>
+            # } #
+            # if (data.Parts) { #
+            <br/><span data-toggle="tooltip" data-placement="left" title="#: data.Parts #">#: data.Parts #</span>
+            # } #
+        </td>
+        @if (!User.IsInRole(ApplicationRoles.OfficeAdministrator))
+        {
+            <td role="gridcell">
+                # if (data.EstimatedBy !== undefined && data.EstimatedBy !== null) { #
+                <span>#: data.EstimatedBy #</span>
+                # } #
+            </td>
+        }
+        <td role="gridcell">
+            # if (data.RepairedBy !== undefined && data.RepairedBy !== null) { #
+            <span>#: data.RepairedBy #</span>
+            # } #
+        </td>
+        <td role="gridcell">
+            # if (data.CostOfRepair !== undefined && data.CostOfRepair !== null) { #
+            <span>#: data.CostOfRepair #</span>
+            # } #
+        </td>
+        <td role="gridcell">
+            # if (data.InternalComment !== undefined && data.InternalComment !== null) { #
+            <span>#: data.InternalComment #</span>
+            # } #
+        </td>
+        <td class="k-command-cell" role="gridcell">
+            <a role="button" class="k-button k-button-icontext k-grid-CustomEdit2" href="\#" onclick="DentalDrill.CRM.Pages.Jobs.Details.HandpiecesGrid.handleEdit">
+                <span class="fas fa-fw fa-pencil-alt"></span>
+            </a>
+        </td>
+    </tr>
+</script>
+
+@*@(Html.Kendo().Grid<JobHandpieceReadModel>()
+      .Name($"JobHandpiecesGrid_{Model.Id}")
+      .HtmlAttributes(new { @class = "job-handpieces-grid k-grid-commandicons2 k-grid--dense k-grid--small-text", data_job_id = Model.Id })
+      .Columns(columns =>
+      {
+          columns.Bound(x => x.JobPosition).Title("#").Width(40);
+          columns.Bound(x => x.Brand).Title("Brand").Width(80);
+          columns.Bound(x => x.MakeAndModel).Title("Model").Width(80);
+          columns.Bound(x => x.Serial).Title("Serial").Width(80);
+          columns.Bound(x => x.DiagnosticReport).Title("Diagnostic").Width(300);
+          columns.Bound(x => x.ServiceLevel).Title("Service").Width(100);
+          if (Model.ActionsList.CanSetStatus && Model.ActionsList.CanBulkChangeStatus)
+          {
+              var statuses = JsonConvert.SerializeObject(HandpieceStatusHelper.List().Select(x => new { value = x, text = x.ToDisplayString() }));
+              var options = JsonConvert.SerializeObject(Model.ActionsList.StatusChanges.Values.Select(x => new { source = x.Source, destinations = x.Destinations }));
+              var template = $@"#= DentalDrill.CRM.Pages.Jobs.Details.HandpiecesGrid.statusTemplate(data, {options}, {statuses})#";
+              columns.Bound(x => x.Status).Title("Status").Width(100).ClientTemplate(template);
+          }
+          else
+          {
+              columns.Bound(x => x.Status).Title("Status").Width(100);
+          }
+
+          columns.Bound(x => x.Parts).Title("Parts")
+              .ClientTemplate(@"# if (data.PartsOutOfStock === 1) { # <span class=""badge badge-danger"">Out of stock</span> # } else if (data.PartsOutOfStock === 2) { # <span class=""badge badge-warning"">Partial stock</span> # } else { # <span class=""badge badge-success"">In stock</span> # } # # if (data.Parts) { # <br/><span data-toggle=""tooltip"" data-placement=""left"" title=""#: data.Parts #"">#: data.Parts #</span> # } #")
+              .Width(80);
+          if (!User.IsInRole(ApplicationRoles.OfficeAdministrator))
+          {
+              columns.Bound(x => x.EstimatedBy).Title("Est. by").Width(80);
+          }
+          columns.Bound(x => x.RepairedBy).Title("Rep. by").Width(80);
+          columns.Bound(x => x.CostOfRepair).Title("Cost").Width(80);
+          columns.Bound(x => x.InternalComment).Title("Int. comment").Width(160);
+          columns.Command(commands =>
+          {
+              commands.Custom("CustomEdit2").Text("<span class=\"fas fa-fw fa-pencil-alt\"></span>").Click("DentalDrill.CRM.Pages.Jobs.Details.HandpiecesGrid.handleEdit");
+          }).Width(50);
+      })
+      .When(Model.Entity.Status.IsOneOf(JobStatus.Received, JobStatus.WaitingForApproval, JobStatus.EstimateSent, JobStatus.BeingRepaired) && 
+            (Model.IsOfficeAdministrator || Model.IsCompanyAdministrator), grid => grid
+          .ToolBar(toolbar =>
+          {
+              toolbar.Custom().Name("CustomCreate2").Text("<span class=\"fas fa-fw fa-plus\"></span> Add Handpiece");
+          }))
+      .ColumnMenu(menu => menu.Enabled(false))
+      .Editable(editable => editable.Enabled(false))
+      .Scrollable(scrollable => scrollable.Enabled(false))
+      .Sortable(sortable => sortable.Enabled(false))
+      .Events(events => events.DataBound("DentalDrill.CRM.Pages.Jobs.Details.HandpiecesGrid.handleDataBound"))
+      .DataSource(dataSource => dataSource
+          .Ajax()
+          .Model(model =>
+          {
+              model.Id(f => f.Id);
+          })
+          .Sort(sort => sort.Add(f => f.JobPosition))
+          .Read(read => read.Action("Read", "Handpieces", new { parentId = Model.Id })))
+      )*@
+
+
+@if (Model.ActionsList.CanSetStatus && Model.ActionsList.CanBulkChangeStatus)
+{
+    <div class="mt-2 text-right">
+        <form asp-action="UpdateHandpieces" asp-route-id="@Model.Id" onsubmit="return DentalDrill.CRM.Pages.Jobs.Details.HandpiecesGrid.handleStatusSubmit(event);">
+            <div class="handpiece-status-change__inputs"></div>
+            <button class="btn btn-primary">Save Status Changes</button>
+        </form>
+    </div>
+}

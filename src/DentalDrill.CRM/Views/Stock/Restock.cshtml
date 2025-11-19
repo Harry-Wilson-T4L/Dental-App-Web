@@ -1,0 +1,84 @@
+﻿@model DentalDrill.CRM.Models.ViewModels.StockControlByWeekViewModel
+@{
+    ViewBag.Title = "Stock Control By Week";
+}
+
+<h1 class="header">Stock Control</h1>
+<nav class="nav nav-material nav-pills nav-justified mt-3">
+    <a class="nav-item nav-link" asp-action="Index" asp-controller="Stock">Needs Ordering</a>
+    <a class="nav-item nav-link active" asp-action="Restock" asp-controller="Stock">Restock</a>
+</nav>
+<div class="row mt-2 align-items-center">
+    <div class="col-md-4">
+        <h2>Restock</h2>
+    </div>
+
+    <div class="col-md-4">
+        <div id="StockControlPartsOutGrid_WeekSelector" class="week-selector @(Model.PreviousWeek != null ? "week-selector--has-previous" : null) @(Model.NextWeek != null ? "week-selector--has-next" : null) text-center" data-week-id="@Model.Week.Id" style="font-size: 1.25rem">
+            <span class="week-selector__previous fas fa-fw fa-chevron-left"></span>
+            <span class="week-selector__name">Week @Model.Week.Week (@Model.Week.RangeStart.ToString("MMM dd") - @Model.Week.RangeEnd.AddDays(-1).ToString("MMM dd"))</span>
+            <span class="week-selector__next fas fa-fw fa-chevron-right"></span>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <p class="text-md-right">All parts marked as <br /> "ignored" will NOT be carried <br /> over to the next week</p>
+    </div>
+</div>
+<div>
+    <kendo-grid name="StockControlPartsOutGrid" height="630" class="k-grid-commandicons2 k-grid--dense k-grid--small-text">
+        <columns>
+            <column field="JobNumber" title="#" width="50" />
+            <column field="Brand" title="Make" width="100" />
+            <column field="Model" title="Model" width="100" />
+            <column field="ServiceLevel" title="Service Level" width="100" />
+            <column field="PartsComment" title="Parts Comment" width="200" />
+            <column field="Amount" title="Amount" width="75" template="@("$#:kendo.toString(data.Amount, \"\\#,\\#\\#0.\\#\")#")" />
+            <column field="Ordered" title="Restocked" width="75" template="@("<input id=\"stock__field__ordered__#=data.uid#\" type=\"checkbox\" class=\"stock__field__ordered k-checkbox\" #= data.Ordered ? \"checked=\\\"checked\\\"\" : \"\" # #= data.Ignored ? \"disabled=\\\"disabled\\\"\" : \"\" # />" +
+                                                                           "<label for=\"stock__field__ordered__#=data.uid#\" class=\"k-checkbox-label\"></label>")" />
+            <column field="Ignored" title="Ignore" width="75" template="@("<input id=\"stock__field__ignored__#=data.uid#\" type=\"checkbox\" class=\"stock__field__ignored k-checkbox\" #= data.Ignored ? \"checked=\\\"checked\\\"\" : \"\" # #= data.Ordered ? \"disabled=\\\"disabled\\\"\" : \"\" # />" +
+                                                                           "<label for=\"stock__field__ignored__#=data.uid#\" class=\"k-checkbox-label\"></label>")" />
+            <column width="75">
+                <commands>
+                    <column-command name="CustomOpen" click="DentalDrill.CRM.Pages.Stock.Week.StockControlPartsOutGrid.handleOpen" text="@("<span class=\"fas fa-fw fa-external-link-alt\"></span> Handpiece")"/>
+                </commands>
+            </column>
+        </columns>
+        <column-menu enabled="false" />
+        <editable enabled="false" />
+        <pageable enabled="true" />
+        <scrollable enabled="true" />
+        <sortable enabled="true" allow-unsort="true" mode="multiple" />
+        <filterable enabled="true" />
+        <datasource type="DataSourceTagHelperType.Ajax" page-size="50">
+            <transport>
+                <read url="@Url.Action("ReadHandpiecesWithPartsOut", "Stock", new { weekId = Model.Week.Id })" data="" />
+            </transport>
+            <schema>
+                <model id="Id">
+                    <fields>
+                        <field name="CompletedAt" type="date" />
+                        <field name="JobId" />
+                        <field name="JobNumber" type="number" />
+                        <field name="HandpieceId" />
+                        <field name="Brand" />
+                        <field name="Model" />
+                        <field name="ServiceLevel" />
+                        <field name="PartsComment" />
+                        <field name="Amount" type="number" />
+                        <field name="Ordered" type="boolean" />
+                        <field name="Ignored" type="boolean" />
+                    </fields>
+                </model>
+            </schema>
+            <sorts>
+                <sort field="CompletedAt" direction="asc" />
+            </sorts>
+        </datasource>
+    </kendo-grid>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript" src="~/js/app/pages/stock/week.js" asp-append-version="true"></script>
+}

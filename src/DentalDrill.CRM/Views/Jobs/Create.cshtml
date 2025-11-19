@@ -1,0 +1,405 @@
+﻿@using Kendo.Mvc.UI
+@using DentalDrill.CRM.Extensions
+@using DentalDrill.CRM.Models.ViewModels
+@using DevGuild.AspNetCore.Controls.HybridForms
+@model DentalDrill.CRM.Models.ViewModels.JobCreateModel
+@{
+    ViewBag.Title = $"New {Model.Type.Name}";
+    Layout = "_FullLayout";
+    this.ConfigureHybridPage("JobsCreate");
+}
+<div class="editor mb-2">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>New @Model.Type.Name</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Index" class="editor__action"><span class="fas fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+
+    <form asp-action="Create" method="post" asp-route-type="@Model.Type.Id" hybrid-form-id="JobsCreate" id="JobsCreateForm">
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+
+        <div class="row">
+            <div class="col-md-6 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        @Html.LabelFor(x => x.ExpectedId, labelText: $"Expected {Model.Type.ShortName} #")
+                    </div>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control-plaintext" value="@Model.ExpectedId" disabled="disabled" />
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">@Html.LabelFor(x => x.WorkshopId)</div>
+                    <div class="col-sm-7">
+                        @(Html.Kendo().DropDownListFor(x => x.WorkshopId)
+                            .HtmlAttributes(new { @class = "w-100" })
+                            .BindTo(Model.Workshops.Count > 1 ? new SelectList(Model.Workshops, "Id", "Name").WithNull("(None)") : new SelectList(Model.Workshops, "Id", "Name")))
+                        @Html.ValidationMessageFor(x => x.WorkshopId)
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-sm-2_5">
+                        @Html.LabelFor(x => x.ClientId)
+                    </div>
+                    <div class="col-sm-9_5">
+                        <style type="text/css">
+                            #ClientId-list {
+                                min-width: 400px !important;
+                            }
+
+                            @@media (min-width: 576px) {
+                                #ClientId-list {
+                                    min-width: 500px !important;
+                                }
+                            }
+                            
+                            @@media (min-width: 1200px) {
+                                #ClientId-list {
+                                    min-width: 700px !important;
+                                }
+                            }
+                        </style>
+                        @(Html.Kendo().DropDownListFor(x => x.ClientId)
+                            .DataTextField("FullName")
+                            .DataValueField("Id")
+                            .Filter("contains")
+                            .OptionLabel("Select client...")
+                            .MinLength(3)
+                            .EnforceMinLength(true)
+                            .Height(480)
+                            .AutoWidth(true)
+                            .Virtual(v => v.ItemHeight(32).MapValueTo("dataItem").ValueMapper("DentalDrill.CRM.Controls.ClientSelectorControl.valueMapper"))
+                            .Template("<span title=\"#: FullName#\">#: FullName#</span>")
+                            .Popup(popup => popup.Origin("bottom right").Position("top right"))
+                            .DataSource(dataSource => dataSource
+                                .Ajax()
+                                .Read(read => read.Action("ClientsAutoComplete", "Jobs", new { }))
+                                .Sort(sort => sort.Add("FullName"))
+                                .PageSize(15)
+                                .ServerOperation(true))
+                            .Events(events =>
+                            {
+                                events.Change("DentalDrill.CRM.Pages.Jobs.Create.HandpieceEditorControl.handleClientChange");
+                            }))
+                        @Html.ValidationMessageFor(x => x.ClientId)
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        @Html.LabelFor(x => x.Received)
+                    </div>
+                    <div class="col-sm-7">
+                        @Html.Kendo().DatePickerFor(x => x.Received)
+                        @Html.ValidationMessageFor(x => x.Received)
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        @Html.LabelFor(x => x.HasWarning)
+                    </div>
+                    <div class="col-sm-7">
+                        @Html.Kendo().CheckBoxFor(x => x.HasWarning).Label(String.Empty)
+                        @Html.ValidationMessageFor(x => x.HasWarning)
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <hr />
+        <div id="HandpieceEditorControl">
+            <div class="row">
+                <div class="col-md-8 mb-2">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <label>Existing</label>
+                        </div>
+                        <div class="col-sm-10">
+                            @(Html.Kendo().DropDownList()
+                                .Name("ExistingClientHandpiece")
+                                .DataTextField("Serial")
+                                .DataValueField("Id")
+                                .ValueTemplate(@"<span class=""selected-value"">#: data.MainText # # if (data.ComponentsText && data.ComponentsText !== """") { # + #: data.ComponentsText## } #</span>")
+                                .Template(@"<div class=""existing-client-handpiece-main"">#: data.MainText # # if (data.ComponentsText && data.ComponentsText !== """") { # + #: data.ComponentsText #</div> # } #</div><div class=""existing-client-handpiece-info"">Last Repair: # if (data.LastRepairDate) { # #: kendo.toString(new Date(data.LastRepairDate), ""d"") # - #: data.LastRepairServiceLevelName ? data.LastRepairServiceLevelName : 'No Service Level' # - #: data.LastRepairStatus # # } else { # Unknown # } #</div>")
+                                .Filter(FilterType.Contains)
+                                .Height(400)
+                                .DataSource(dataSource => dataSource
+                                    .Ajax()
+                                    .Read(read => read.Action("ReadExisting", "ClientHandpieces").Data(@"() => ({ ClientId: $(""#ClientId"").data(""kendoDropDownList"").value() })"))
+                                    .ServerOperation(true))
+                                .Events(events =>
+                                {
+                                    events.Change("DentalDrill.CRM.Pages.Jobs.Create.HandpieceEditorControl.handleExistingChange");
+                                }))
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <label>Change</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="checkbox" name="EditorChange" disabled="disabled" class="k-checkbox"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <label>Serial</label>
+                            <button type="button" class="k-button handpiece-editor-control__add-component" disabled="disabled"><span class="fas fa-plus"></span></button>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="text" name="EditorSerial" disabled="disabled" class="k-textbox"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <label>Brand</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="text" name="EditorBrand" disabled="disabled" class="w-100"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <label>Model</label>
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="text" name="EditorModel" disabled="disabled" class="w-100"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 handpiece-editor-control__components"></div>
+            </div>
+            <div class="row">
+                <div class="col-md-8 mb-2">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <label>Problem</label>
+                        </div>
+                        <div class="col-sm-10">
+                            <input type="text" name="EditorProblem" disabled="disabled" class="w-100" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <button type="button" class="btn btn-outline-primary handpiece-editor-control-save">Add Handpiece</button>
+                    <button type="button" class="btn btn-outline-secondary handpiece-editor-control-cancel">Cancel</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 handpiece-editor-control__warning-container">
+                </div>
+            </div>
+        </div>
+
+        @(Html.Kendo().Grid<JobCreateModelHandpiece>(Model.Handpieces)
+              .Name("HandpiecesGrid")
+              .HtmlAttributes(new { @class = "k-grid-commandicons", style = "height: 300px" })
+              .Columns(columns =>
+              {
+                  columns.Bound(c => c.Position).Width(50);
+                  columns.Bound(c => c.Brand).EditorTemplateName("HandpieceBrand").Width(150);
+                  columns.Bound(c => c.Model).EditorTemplateName("HandpieceMakeAndModel").Width(150);
+                  columns.Bound(c => c.Serial).Width(150);
+                  columns.Bound(c => c.ProblemDescription).EditorTemplateName("HandpieceProblemDescription").Width(200);
+                  columns.Command(command =>
+                  {
+                      command.Custom("CustomEdit").Text("<span></span>").IconClass("fas fa-fw fa-pencil-alt").Click("DentalDrill.CRM.Pages.Jobs.Create.HandpiecesGrid.handleEditClick");
+                      command.Custom("CustomDelete").Text("<span></span>").IconClass("fas fa-fw fa-trash-alt").Click("DentalDrill.CRM.Pages.Jobs.Create.HandpiecesGrid.handleDeleteClick");
+                  }).Width(150);
+              })
+              .ColumnMenu(cm => cm.Enabled(false))
+              .Editable(editable => editable.Enabled(false))
+              .Scrollable(scrollable => scrollable.Enabled(true).Height("auto"))
+              .ClientRowTemplate(@"<tr data-uid=""#:uid#"">
+  <td role=""gridcell"">
+    # if (data.Position) { #
+    <span>#: data.Position #</span>
+    # } #
+  </td>
+  <td colspan=""3"" class=""p-0"" style=""height: 1px;"">
+    <table style=""border-collapse: collapse; height: 100%;"">
+      <colgroup>
+        <col style=""width: 150px"" />
+        <col style=""width: 150px"" />
+        <col style=""width: 150px"" />
+      </colgroup>
+      <tr>
+        <td class=""p-1"" role=""gridcell"">
+          # if (data.Brand) { #
+          <span>#: data.Brand #</span>
+          # } #
+        </td>
+        <td class=""p-1"" role=""gridcell"">
+          # if (data.Model) { #
+          <span>#: data.Model #</span>
+          # } #
+        </td>
+        <td class=""p-1"" role=""gridcell"">
+          # if (data.Serial) { #
+          <span>#: data.Serial #</span>
+          # } #
+        </td>
+      </tr>
+      # if (data.Components && data.Components.length) { for (var ci = 0; ci < data.Components.length; ci++) { #
+      <tr style=""border-top: 1px solid rgba(33,37,41,.125);"">
+        <td class=""p-1"" >
+          # if (data.Components[ci] && data.Components[ci].Brand) { #
+          <span>#: data.Components[ci].Brand #</span>
+          # } #
+        </td>
+        <td class=""p-1"" >
+          # if (data.Components[ci] && data.Components[ci].Model) { #
+          <span>#: data.Components[ci].Model #</span>
+          # } #
+        </td>
+        <td class=""p-1"" >
+          # if (data.Components[ci] && data.Components[ci].Serial) { #
+          <span>#: data.Components[ci].Serial #</span>
+          # } #
+        </td>
+      </tr>
+      # } } #
+    </table>
+  </td>
+  <td role=""gridcell"">
+    # if (data.ProblemDescription) { #
+    <span>#: data.ProblemDescription#</span>
+    # } #
+  </td>
+  <td class=""k-command-cell"" role=""gridcell"">
+    <a role=""button"" class=""k-button k-button-icontext k-grid-CustomEdit"" href=""\#"" onclick=""DentalDrill.CRM.Pages.Jobs.Create.HandpiecesGrid.handleEditClick"">
+      <span class=""fas fa-fw fa-pencil-alt""></span>
+    </a>
+    <a role=""button"" class=""k-button k-button-icontext k-grid-CustomDelete"" href=""\#"" onclick=""DentalDrill.CRM.Pages.Jobs.Create.HandpiecesGrid.handleDeleteClick"">
+      <span class=""fas fa-fw fa-trash-alt""></span>
+    </a>
+  </td>
+</tr>")
+              .ClientAltRowTemplate(@"<tr data-uid=""#:uid#"" class=""k-alt"">
+  <td role=""gridcell"">
+    # if (data.Position) { #
+    <span>#: data.Position #</span>
+    # } #
+  </td>
+  <td colspan=""3"" class=""p-0"" style=""height: 1px;"">
+    <table style=""border-collapse: collapse; height: 100%;"">
+      <colgroup>
+        <col style=""width: 150px"" />
+        <col style=""width: 150px"" />
+        <col style=""width: 150px"" />
+      </colgroup>
+      <tr>
+        <td class=""p-1"" role=""gridcell"">
+          # if (data.Brand) { #
+          <span>#: data.Brand #</span>
+          # } #
+        </td>
+        <td class=""p-1"" role=""gridcell"">
+          # if (data.Model) { #
+          <span>#: data.Model #</span>
+          # } #
+        </td>
+        <td class=""p-1"" role=""gridcell"">
+          # if (data.Serial) { #
+          <span>#: data.Serial #</span>
+          # } #
+        </td>
+      </tr>
+      # if (data.Components && data.Components.length) { for (var ci = 0; ci < data.Components.length; ci++) { #
+      <tr style=""border-top: 1px solid rgba(33,37,41,.125);"">
+        <td class=""p-1"" >
+          # if (data.Components[ci] && data.Components[ci].Brand) { #
+          <span>#: data.Components[ci].Brand #</span>
+          # } #
+        </td>
+        <td class=""p-1"" >
+          # if (data.Components[ci] && data.Components[ci].Model) { #
+          <span>#: data.Components[ci].Model #</span>
+          # } #
+        </td>
+        <td class=""p-1"" >
+          # if (data.Components[ci] && data.Components[ci].Serial) { #
+          <span>#: data.Components[ci].Serial #</span>
+          # } #
+        </td>
+      </tr>
+      # } } #
+    </table>
+  </td>
+  <td role=""gridcell"">
+    # if (data.ProblemDescription) { #
+    <span>#: data.ProblemDescription #</span>
+    # } #
+  </td>
+  <td class=""k-command-cell"" role=""gridcell"">
+    <a role=""button"" class=""k-button k-button-icontext k-grid-CustomEdit"" href=""\#"" onclick=""DentalDrill.CRM.Pages.Jobs.Create.HandpiecesGrid.handleEditClick"">
+      <span class=""fas fa-fw fa-pencil-alt""></span>
+    </a>
+    <a role=""button"" class=""k-button k-button-icontext k-grid-CustomDelete"" href=""\#"" onclick=""DentalDrill.CRM.Pages.Jobs.Create.HandpiecesGrid.handleDeleteClick"">
+      <span class=""fas fa-fw fa-trash-alt""></span>
+    </a>
+  </td>
+</tr>")
+              .DataSource(dataSource => dataSource
+                  .Custom().Schema(schema => schema.Model(model =>
+                  {
+                      model.Field(m => m.Position).Editable(false);
+                      model.Field(m => m.ClientHandpieceId);
+                      model.Field(m => m.Brand);
+                      model.Field(m => m.Model);
+                      model.Field(m => m.Serial);
+                      model.Field(m => m.ProblemDescription);
+                  })))
+              .BindTo(Model.HandpieceList))
+
+        <div class="row">
+            <div class="col-12">
+                @Html.LabelFor(x => x.Comment)
+            </div>
+            <div class="col-12 mb-2">
+                @Html.TextAreaFor(x => x.Comment, new { @class = "k-textbox" })
+                @Html.ValidationMessageFor(x => x.Comment)
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a asp-action="Index" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+
+    <script type="text/javascript">(function () { DentalDrill.CRM.Pages.Jobs.Create.HandpiecesGrid.init(); })()</script>
+</div>
+
+@section Scripts{
+    <script type="text/javascript" src="~/js/app/pages/jobs/create.js" asp-append-version="true"></script>
+}

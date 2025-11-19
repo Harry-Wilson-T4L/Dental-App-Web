@@ -1,0 +1,70 @@
+﻿@using DentalDrill.CRM.Models.ViewModels
+@using DentalDrill.CRM.Models.Permissions
+@model DentalDrill.CRM.Models.ViewModels.EmptyEmployeeIndexViewModel
+@{
+    ViewBag.Title = "Handpiece Directory";
+}
+
+<div class="editor">
+    <div class="editor__header" ajax-rendering="NormalOnly">
+        <div class="editor__title">
+            <h1>Handpiece Directory</h1>
+        </div>
+        <div class="editor__actions">
+            @if (Model.Access.Global.CanWriteComponent(GlobalComponent.HandpiecesDirectory))
+            {
+                <a class="editor__action" id="HandpieceBrandsGrid-Create" asp-action="Create"><span class="fas fa-fw fa-plus"></span> Add Brand</a>
+            }
+
+            @if (User.IsInRole(ApplicationRoles.Administrator) || User.IsInRole(ApplicationRoles.CompanyAdministrator))
+            {
+                <a class="editor__action" asp-action="Import"><span class="fas fa-fw fa-file-import"></span> Import</a>
+            }
+        </div>
+    </div>
+
+    <kendo-grid name="HandpieceBrandsGrid" class="k-grid-commandicons2 k-grid--dense" data-readonly="@((!Model.Access.Global.CanWriteComponent(GlobalComponent.HandpiecesDirectory)).ToString().ToLowerInvariant())" on-detail-init="DentalDrill.CRM.Pages.HandpieceBrands.Index.HandpieceBrandsGrid.handleDetailsInit">
+        <columns>
+            <column field="ImageId" title="Image" width="50" template="@("<img src=\"#: data.ImageUrl #\" alt=\"#:data.Name#\" />")">
+                <sortable enabled="false" />
+            </column>
+            <column field="Name" title="Name" width="300" />
+            <column width="200">
+                <commands>
+                    @if (Model.Access.Global.CanWriteComponent(GlobalComponent.HandpiecesDirectory))
+                    {
+                        <column-command name="CustomCreateModel" click="DentalDrill.CRM.Pages.HandpieceBrands.Index.HandpieceBrandsGrid.handleCreateModel" text="@("<span class=\"fas fa-fw fa-plus\"></span> Add Model")"/>
+                        <column-command name="CustomEdit" click="DentalDrill.CRM.Pages.HandpieceBrands.Index.HandpieceBrandsGrid.handleEdit" text="@("<span class=\"fas fa-fw fa-pencil-alt\"></span> Edit")"/>
+                        <column-command name="CustomDelete" click="DentalDrill.CRM.Pages.HandpieceBrands.Index.HandpieceBrandsGrid.handleDelete" text="@("<span class=\"fas fa-fw fa-trash-alt\"></span> Delete")"/>
+                    }
+                </commands>
+            </column>
+        </columns>
+        <column-menu enabled="false" />
+        <editable enabled="false" />
+        <pageable enabled="false" />
+        <sortable enabled="true" allow-unsort="true" mode="multiple" />
+        <datasource type="DataSourceTagHelperType.Ajax" page-size="0">
+            <transport>
+                <read url="@Url.Action("Read", "HandpieceBrands")" />
+            </transport>
+            <schema>
+                <model id="Id">
+                    <fields>
+                        <field name="Name" />
+                        <field name="ImageId" />
+                        <field name="ImageUrl" />
+                    </fields>
+                </model>
+            </schema>
+            <sorts>
+                <sort field="Name" direction="asc" />
+            </sorts>
+        </datasource>
+    </kendo-grid>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript" src="/js/app/pages/handpieceBrands/index.js" asp-append-version="true"></script>
+}

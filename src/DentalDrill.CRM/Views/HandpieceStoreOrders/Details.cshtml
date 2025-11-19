@@ -1,0 +1,164 @@
+﻿@using DevGuild.AspNetCore.Controls.HybridForms
+@using DevGuild.AspNetCore.Services.Uploads.Images
+@using DentalDrill.CRM.Extensions
+@using DentalDrill.CRM.Models.Permissions
+@model DentalDrill.CRM.Models.ViewModels.HandpieceStoreOrderDetailsModel
+@{
+    ViewBag.Title = $"Handpiece Order {Model.Order.OrderNumber}";
+    this.ConfigureHybridPage("HandpieceStoreOrderDetails");
+    var isStuff = User.IsInRole(ApplicationRoles.OfficeAdministrator) ||
+                  User.IsInRole(ApplicationRoles.CompanyAdministrator) ||
+                  User.IsInRole(ApplicationRoles.Administrator);
+}
+
+@inject IImageUploadService ImageUploadService
+
+<div class="handpiece-store-buy">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="row">
+            <div class="col-12">
+                <h1>Handpiece Order @Model.Order.OrderNumber</h1>
+            </div>
+        </div>
+    }
+
+    @foreach (var item in Model.Order.Items)
+    {
+        <div class="row">
+            <div class="col-9">
+                <h2>@item.Listing.Model.Brand.Name @item.Listing.Model.Name</h2>
+            </div>
+            <div class="col-3 handpiece-store-buy__price">
+                @if (item.Listing.Model.PriceNew.HasValue)
+                {
+                    <div class="handpiece-store-buy__price__new">RRP<br/>$@item.Listing.Model.PriceNew.Value.ToString("#,##0.##")</div>
+                }
+                <div class="handpiece-store-buy__price__listing">$@item.Listing.Price.ToString("#,##0.##")</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                @if (item.Listing.Images.Count > 0)
+                {
+                    var index = 0;
+                    <kendo-scrollview name="HandpieceStoreBuyImagePreview" class="handpiece-shop-image-scrollview" enable-pager="true" content-height="100%" page="0">
+                        <items>
+                            @foreach (var image in item.Listing.Images.OrderBy(x => x.OrderNo))
+                            {
+                                <scrollview-item>
+                                    <content class="handpiece-shop-image-scrollview__page" data-index="@index" data-id="@image.Id">
+                                        <img uploaded-ref="image.Image" uploaded-variation="600" class="handpiece-image-show-carousel" data-id="@item.Listing.Id" data-image="@image.Id" alt="@item.Listing.Model.Brand.Name @item.Listing.Model.Name" />
+                                    </content>
+                                </scrollview-item>
+
+                                index++;
+                            }
+                        </items>
+                    </kendo-scrollview>
+                }
+                else if (item.Listing.Model.ImageId.HasValue)
+                {
+                    var imageUrl = await ImageUploadService.GetImageUrlAsync(item.Listing.Model.Image, "300");
+                    <img class="handpiece-store-buy__image" alt="@item.Listing.Model.Brand.Name @item.Listing.Model.Name" src="@imageUrl" />
+                }
+                else
+                {
+                    <img class="handpiece-store-buy__image" alt="@item.Listing.Model.Brand.Name @item.Listing.Model.Name" src="/img/hub-logo.png" />
+                }
+            </div>
+            <div class="col-6 handpiece-store-buy__info handpiece-store-buy__info--side">
+                <div class="handpiece-store-buy__info__section-header">Order details</div>
+                <div class="handpiece-store-buy__info__section">Date: @Model.Order.CreatedOn.ToString("g")</div>
+                <div class="handpiece-store-buy__info__section">Surgery Name: @Model.Order.SurgeryName</div>
+                <div class="handpiece-store-buy__info__section">Contact Name: @Model.Order.ContactName</div>
+                <div class="handpiece-store-buy__info__section">Contact Email: <a href="mailto:@Model.Order.ContactEmail">@Model.Order.ContactEmail</a></div>
+
+                <div class="handpiece-store-buy__info__section-header">Listing details</div>
+                @if (isStuff && !String.IsNullOrEmpty(item.Listing.SerialNumber))
+                {
+                    <div class="handpiece-store-buy__info__section"><span class="handpiece-store-buy__info__key">S/N:</span> @item.Listing.SerialNumber</div>
+                }
+                @if (!String.IsNullOrEmpty(item.Listing.Coupling))
+                {
+                    <div class="handpiece-store-buy__info__section"><span class="handpiece-store-buy__info__key">Coupling / Fitting:</span> @item.Listing.Coupling</div>
+                }
+                @if (!String.IsNullOrEmpty(item.Listing.CosmeticCondition))
+                {
+                    <div class="handpiece-store-buy__info__section"><span class="handpiece-store-buy__info__key">Cosmetic Condition:</span> @item.Listing.CosmeticCondition</div>
+                }
+                @if (!String.IsNullOrEmpty(item.Listing.FiberOpticBrightness))
+                {
+                    <div class="handpiece-store-buy__info__section"><span class="handpiece-store-buy__info__key">Fibre Optic Brightness:</span> @item.Listing.FiberOpticBrightness</div>
+                }
+                @if (!String.IsNullOrEmpty(item.Listing.Warranty))
+                {
+                    <div class="handpiece-store-buy__info__section"><span class="handpiece-store-buy__info__key">Warranty:</span> @item.Listing.Warranty</div>
+                }
+                @if (!String.IsNullOrEmpty(item.Listing.Notes))
+                {
+                    <div class="handpiece-store-buy__info__section handpiece-store-buy__info__section-multiline">@item.Listing.Notes</div>
+                }
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-12 handpiece-store-buy__info">
+                <div class="handpiece-store-buy__info__section-header">Model description</div>
+                <div class="handpiece-store-buy__info__section-multiline">@item.Listing.Model.Description</div>
+            </div>
+        </div>
+    }
+    
+    @if (Model.Access.Global.CanWriteComponent(GlobalComponent.HandpiecesOrder))
+    {
+        <div class="row mt-2">
+            <div class="col-12">
+                <form asp-action="ChangeStatus" asp-controller="HandpieceStoreOrders" asp-route-id="@Model.Order.Id" hybrid-form-id="HandpieceStoreOrderDetails">
+                    <div class="row">
+                        <div class="col-3 offset-6" style="line-height: 2rem; font-size: 1.2rem;">
+                            Status: @Model.Order.Status.ToLocalizedString()
+                        </div>
+                        <div class="col-3">
+                            @if (Model.StatusTransitions.Count == 1)
+                            {
+                                <button type="submit" class="btn btn-primary" name="Status" value="@Model.StatusTransitions[0]">@Model.StatusTransitions[0].ToActionString()</button>
+                            }
+                            else if (Model.StatusTransitions.Count > 1)
+                            {
+                                <div class="dropdown">
+                                    <button type="button" class="btn btn-primary dropdown-toggle" id="HandpieceStoreOrderChangeStatusButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Change Status
+                                    </button>
+                                    <div class="dropdown-menu" aria-labeledby="HandpieceStoreOrderChangeStatusButton">
+                                        @foreach (var statusTransition in Model.StatusTransitions)
+                                        {
+                                            <button class="dropdown-item" name="Status" value="@statusTransition" type="submit">@statusTransition.ToActionString()</button>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row mt-2">
+            <div class="col-12">
+                <div class="row">
+                    <div class="col-3 offset-6" style="line-height: 2rem; font-size: 1.2rem;">
+                        Status: @Model.Order.Status.ToLocalizedString()
+                    </div>
+                    <div class="col-3">
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script type="text/javascript" src="/js/app/pages/handpieceStore/listing.js" asp-append-version="true"></script>
+}

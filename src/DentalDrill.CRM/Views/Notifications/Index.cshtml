@@ -1,0 +1,17 @@
+﻿@model DentalDrill.CRM.Models.ViewModels.EmptyIndexViewModel
+@{
+    ViewBag.Title = "Notifications";
+}
+
+@if (User.IsInRole(ApplicationRoles.Administrator))
+{
+    <form asp-action="Upgrade" method="post">
+        <button type="submit" class="btn btn-secondary">Upgrade</button>
+    </form>
+}
+
+<partial name="_Feed" model="new DentalDrill.CRM.Models.ViewModels.NotificationFeedModel { Init = true, PageSize = 10 }" />
+
+@section Scripts {
+    <script src="~/js/app/pages/notifications/index.js" asp-append-version="true"></script>
+}

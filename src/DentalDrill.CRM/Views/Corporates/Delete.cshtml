@@ -1,0 +1,40 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DevGuild.AspNetCore.Controls.HybridForms
+@model Corporate
+@{
+    ViewBag.Title = $"Corporate {Model.Name}";
+    this.ConfigureHybridPage("CorporatesDelete");
+}
+
+<div class="details">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="details__header">
+            <div class="details__title">
+                <h1>Corporate @Model.Name</h1>
+            </div>
+            <div class="details__actions">
+                <a asp-action="Index" class="details__action"><span class="fas fa-list"></span> List</a>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="details__action"><span class="fas fa-pencil-alt"></span> Edit</a>
+                <a class="details__action" asp-action="Details" asp-route-id="@Model.Id"><span class="fas fa-external-link-alt"></span> Details</a>
+            </div>
+        </div>
+    }
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row details__field">
+                <div class="details__label">Name</div>
+                <div class="details__value">@Model.Name</div>
+            </div>
+        </div>
+    </div>
+
+    <form asp-action="Delete" asp-route-id="@Model.Id" hybrid-form-id="CorporatesDelete" id="CorporatesDeleteForm">
+        <div class="row ">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-danger">Delete</button>
+                <a asp-action="Index" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

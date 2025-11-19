@@ -1,0 +1,113 @@
+﻿@model DentalDrill.CRM.Models.ViewModels.ImportClientsViewModel
+@{
+    ViewBag.Title = "Import Clients from ACT";
+}
+
+<div class="editor">
+    <div class="editor__header">
+        <div class="editor__title">
+            <h1>Import Clients from ACT</h1>
+        </div>
+        <div class="editor__actions">
+            <a asp-action="Index" class="editor__action"><span class="fas fa-arrow-left"></span> Back</a>
+        </div>
+    </div>
+    <form asp-action="ACT" enctype="multipart/form-data" >
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="row">
+            <div class="col-md-6 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="File"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        <input asp-for="File" type="file" />
+                        <span asp-validation-for="File" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="MappingFile"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        <input asp-for="MappingFile" type="file" />
+                        <span asp-validation-for="MappingFile" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="Confirmation"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        <input asp-for="Confirmation" />
+                        <span asp-validation-for="Confirmation" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a asp-action="Index" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+    
+    @if (Model.ImportedClients != null)
+    {
+        var index = 1;
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Clt#</th>
+                    <th>Contact</th>
+                    <th>Company</th>
+                    <th>City</th>
+                    <th>Address</th>
+                    <th>Zone</th>
+                    <th>State</th>
+                    <th>Postcode</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Other contact</th>
+                    <th>Opening hours</th>
+                    <th>Brands</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.ImportedClients
+                    .Where(x => !String.IsNullOrEmpty(x.Contact) || !String.IsNullOrEmpty(x.Company) || !String.IsNullOrEmpty(x.City))
+                    .OrderBy(x => x.ClientNumber == null ? 0 : 1))
+                {
+                    var style = "";
+                    if (item.ClientNumber == null)
+                    {
+                        style += "background-color: red";
+                    }
+                    <tr style="@style">
+                        <td>@(index++)</td>
+                        <td>@item.ClientNumber</td>
+                        <td>@item.Contact</td>
+                        <td>@item.Company</td>
+                        <td>@item.City</td>
+                        <td>@item.Address1 @item.Address2</td>
+                        <td>@item.MailoutNo</td>
+                        <td>@item.State</td>
+                        <td>@item.Postcode</td>
+                        <td>@String.Join(", ", item.ParseEmails())</td>
+                        <td>@item.Phone @item.FaxPhone @item.MobilePhone</td>
+                        <td>@item.OtherContact</td>
+                        <td>@item.OpeningHours</td>
+                        <td>@item.BrandsUsed</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

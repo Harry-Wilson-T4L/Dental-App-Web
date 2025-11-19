@@ -1,0 +1,59 @@
+﻿@using Kendo.Mvc.UI
+@using DentalDrill.CRM.Models.ViewModels
+@using DentalDrill.CRM.Models.Permissions
+@model DentalDrill.CRM.Models.ViewModels.EmptyEmployeeIndexViewModel
+@{
+    ViewBag.Title = "Diagnostic Types";
+}
+
+<h1 class="header">Diagnostic Types</h1>
+
+@(Html.Kendo().Grid<DiagnosticCheckTypeViewModel>()
+      .Name("DiagnosticCheckTypesGrid")
+      .HtmlAttributes(new { @class = "k-grid-commandicons2", style = "height: 630px" })
+      .Columns(columns =>
+      {
+          columns.Bound(c => c.Name);
+          columns.Command(command =>
+          {
+              if (Model.Access.Global.CanWriteComponent(GlobalComponent.DiagnosticChecklist))
+              {
+                  command.Edit().Text("<span></span>").IconClass("fas fa-fw fa-pencil-alt");
+                  command.Destroy().Text("<span></span>").IconClass("fas fa-fw fa-trash-alt");
+                  command.Custom("CustomSortItems").IconClass("fas fa-fw fa-sort-alpha-down").Text("<span></span>").Click("DentalDrill.CRM.Pages.DiagnosticCheckTypes.Index.DiagnosticCheckTypesGrid.handleSortItems");
+                  command.Custom("CustomMoveUp").IconClass("fas fa-fw fa-arrow-up").Text("<span></span>").Click("DentalDrill.CRM.Pages.DiagnosticCheckTypes.Index.DiagnosticCheckTypesGrid.handleMoveUp");
+                  command.Custom("CustomMoveDown").IconClass("fas fa-fw fa-arrow-down").Text("<span></span>").Click("DentalDrill.CRM.Pages.DiagnosticCheckTypes.Index.DiagnosticCheckTypesGrid.handleMoveDown");
+              }
+          });
+      })
+      .ToolBar(toolbar =>
+      {
+          if (Model.Access.Global.CanWriteComponent(GlobalComponent.DiagnosticChecklist))
+          {
+              toolbar.Create();
+              toolbar.Custom().Name("CustomManageItems").Text("Manage Items").HtmlAttributes(new { href = Url.Action("Index", "DiagnosticCheckItems") });
+          }
+      })
+      .ColumnMenu(cm => cm.Enabled(false))
+      .Editable(editable => editable.Mode(GridEditMode.InLine).CreateAt(GridInsertRowPosition.Bottom))
+      .Pageable()
+      .Scrollable(scrollable => scrollable.Enabled(true).Height("auto"))
+      .DataSource(dataSource => dataSource
+          .Ajax()
+          .Model(model =>
+          {
+              model.Id(f => f.Id);
+              model.Field(f => f.Id).DefaultValue(default(Guid));
+              model.Field(f => f.Name);
+          })
+          .Read(read => read.Action("Read", "DiagnosticCheckTypes"))
+          .Create(create => create.Action("Create", "DiagnosticCheckTypes"))
+          .Update(update => update.Action("Update", "DiagnosticCheckTypes"))
+          .Destroy(destroy => destroy.Action("Destroy", "DiagnosticCheckTypes"))
+          .Events(events => events.Error("DevGuild.AspNet.Controls.Grids.Errors.GridErrorHandler.handleGridError").RequestStart("DevGuild.AspNet.Controls.Grids.Errors.GridErrorHandler.handleRequestStart")))
+      .Events(events => events
+          .Save("DentalDrill.CRM.Pages.DiagnosticCheckTypes.Index.DiagnosticCheckTypesGrid.handleSave")))
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/app/pages/diagnosticCheckTypes/index.js" asp-append-version="true"></script>
+}

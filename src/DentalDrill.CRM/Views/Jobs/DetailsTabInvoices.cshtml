@@ -1,0 +1,38 @@
+﻿@using DentalDrill.CRM.Models.ViewModels
+@model DentalDrill.CRM.Models.ViewModels.JobDetailsModel
+@{
+    this.Layout = null;
+}
+
+@(Html.Kendo().Grid<JobInvoiceReadModel>()
+      .Name($"JobInvoicesGrid_{Model.Id}")
+      .HtmlAttributes(new { @class = "job-invoices-grid k-grid-commandicons2 k-grid--dense k-grid--small-text", data_job_id = Model.Id })
+      .Columns(columns =>
+      {
+          columns.Bound(x => x.FullInvoiceNumber).Title("#").Width(100);
+          columns.Bound(x => x.FileName).Title("File name").Width(200);
+          columns.Bound(x => x.CreatedOn).Title("Created on").ClientTemplate("#: kendo.toString(data.CreatedOn, \"g\") #").Width(150);
+          columns.Bound(x => x.EmployeeName).Title("Employee").Width(200);
+          columns.Command(commands =>
+          {
+              commands.Custom("CustomDownload2").Text("<span class=\"fas fa-fw fa-file-download\"></span>").Click("DentalDrill.CRM.Pages.Jobs.Details.JobInvoicesGrid.handleDownload");
+              commands.Custom("CustomDelete2").Text("<span class=\"fas fa-fw fa-trash-alt\"></span>").Click("DentalDrill.CRM.Pages.Jobs.Details.JobInvoicesGrid.handleDelete");
+          }).Width(150);
+      })
+      .ToolBar(toolbar =>
+      {
+          toolbar.Custom().Name("CustomCreate2").Text("<span class=\"fas fa-fw fa-plus\"></span> Upload Invoice");
+      })
+      .ColumnMenu(menu => menu.Enabled(false))
+      .Editable(editable => editable.Enabled(false))
+      .Scrollable(scrollable => scrollable.Enabled(false))
+      .Sortable(sortable => sortable.Enabled(false))
+      .DataSource(dataSource => dataSource
+          .Ajax()
+          .Model(model =>
+          {
+              model.Id(f => f.Id);
+          })
+          .PageSize(0)
+          .Sort(sort => sort.Add(f => f.CreatedOn).Descending())
+          .Read(read => read.Action("Read", "JobInvoices", new { parentId = Model.Id }))))

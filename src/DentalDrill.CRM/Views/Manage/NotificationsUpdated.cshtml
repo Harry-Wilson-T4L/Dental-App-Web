@@ -1,0 +1,8 @@
+﻿@model dynamic
+@{
+    ViewData["Title"] = "Notifications";
+    ViewData.AddActivePage(ManageNavPages.Notifications);
+}
+
+<h4>@ViewData["Title"]</h4>
+<partial name="_StatusMessage" model="@("Notification settings updated")" />

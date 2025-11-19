@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>@ViewData["Title"] - Dental Drill Solutions</title>
+    <environment include="Production">
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177303649-1"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'UA-177303649-1');
+        </script>
+    </environment>
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/icon/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icon/favicon-16.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/icon/favicon-48.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon/favicon-192.png">
+    <link rel="apple-touch-icon" type="image/png" sizes="167x167" href="/icon/favicon-167.png">
+    <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="/icon/favicon-180.png">
+    <link rel="shortcut icon" href="/icon/favicon.ico">
+
+    <styles-bundle path="/vendor/vendor.min.css" />
+    <styles-bundle path="/vendor/internal.min.css" />
+    <styles-bundle path="/css/main.min.css" />
+</head>
+<body>
+    <main role="main" class="main--headerless">
+        <div class="container">
+            @RenderBody()
+        </div>
+    </main>
+    <partial name="_FooterPartial" />
+</body>
+</html>

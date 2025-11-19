@@ -1,0 +1,180 @@
+﻿@using DevGuild.AspNetCore.ObjectModel;
+@using DentalDrill.CRM.Models.ViewModels;
+@model HandpieceSetDiagnosticsModel
+@{
+    this.Layout = null;
+    var canUpdate = Model.Details.PropertiesAccessControl.For(x => x.DiagnosticReport).CanUpdate;
+    var i = 0;
+}
+
+<div id="DiagnosticReportItems" class="handpiece-diagnostics">
+    <div class="row">
+        @if (Model.DiagnosticTypes.Count > 1)
+        {
+            <kendo-tabstrip name="DiagnosticTypesTabstrip" style="width: 100%; min-height: 300px;">
+                <items>
+                    @for (var typeIndex = 0; typeIndex < Model.DiagnosticTypes.Count; typeIndex++)
+                    {
+                        var type = Model.DiagnosticTypes[typeIndex];
+                        var items = type.Items;
+                        var count = items.Count;
+                        var baseColumn = count / 3;
+                        var reminder = count % 3;
+                        var leftCount = baseColumn + (reminder > 0 ? 1 : 0);
+                        var middleCount = leftCount + baseColumn + (reminder > 1 ? 1 : 0);
+                        var j = 0;
+
+                        <tabstrip-item selected="@(typeIndex == 0)" text="@type.Name">
+                            <content>
+                                <div class="row w-100">
+                                    <div class="col-lg-4">
+                                        @for (; j < leftCount; j++)
+                                        {
+                                            var entry = items[j];
+                                            var item = entry.Item;
+                                            <div class="form-check diagnostic-check">
+                                                <input type="checkbox"
+                                                       checked="@(entry.IsSelected ? "checked" : null)"
+                                                       id="@($"diagnostic-check-{type.Id:N}-{item.Id:N}-selected")"
+                                                       class="form-check-input diagnostic-check__selected"
+                                                       style="height: 1.15rem; line-height: 1.15rem"
+                                                       value="@item.Id"
+                                                       disabled="@(canUpdate ? null : "disabled")"/>
+                                                <label for="@($"diagnostic-check-{type.Id:N}-{item.Id:N}-selected")"
+                                                       class="form-check-label editor__label-normal">@item.Name</label>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="col-lg-4">
+                                        @for (; j < middleCount; j++)
+                                        {
+                                            var entry = items[j];
+                                            var item = entry.Item;
+                                            <div class="form-check diagnostic-check">
+                                                <input type="checkbox"
+                                                       checked="@(entry.IsSelected ? "checked" : null)"
+                                                       id="@($"diagnostic-check-{type.Id:N}-{item.Id:N}-selected")"
+                                                       class="form-check-input diagnostic-check__selected"
+                                                       style="height: 1.15rem; line-height: 1.15rem"
+                                                       value="@item.Id"
+                                                       disabled="@(canUpdate ? null : "disabled")" />
+                                                <label for="@($"diagnostic-check-{type.Id:N}-{item.Id:N}-selected")"
+                                                       class="form-check-label editor__label-normal">@item.Name</label>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="col-lg-4">
+                                        @for (; j < count; j++)
+                                        {
+                                            var entry = items[j];
+                                            var item = entry.Item;
+                                            <div class="form-check diagnostic-check">
+                                                <input type="checkbox"
+                                                       checked="@(entry.IsSelected ? "checked" : null)"
+                                                       id="@($"diagnostic-check-{type.Id:N}-{item.Id:N}-selected")"
+                                                       class="form-check-input diagnostic-check__selected"
+                                                       style="height: 1.15rem; line-height: 1.15rem"
+                                                       value="@item.Id"
+                                                       disabled="@(canUpdate ? null : "disabled")" />
+                                                <label for="@($"diagnostic-check-{type.Id:N}-{item.Id:N}-selected")"
+                                                       class="form-check-label editor__label-normal">@item.Name</label>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                
+                            </content>
+                        </tabstrip-item>
+                    }
+                </items>
+            </kendo-tabstrip>
+        }
+        else if (Model.DiagnosticTypes.Count == 1)
+        {
+            var type = Model.DiagnosticTypes[0];
+            var items = Model.DiagnosticTypes[0].Items;
+            var count = items.Count;
+            var baseColumn = count / 3;
+            var reminder = count % 3;
+            var leftCount = baseColumn + (reminder > 0 ? 1 : 0);
+            var middleCount = leftCount + baseColumn + (reminder > 1 ? 1 : 0);
+            <div class="col-lg-4">
+                @for (; i < leftCount; i++)
+                {
+                    var entry = items[i];
+                    var item = entry.Item;
+                    <div class="form-check diagnostic-check">
+                        <input type="checkbox"
+                               checked="@(entry.IsSelected ? "checked" : null)"
+                               id="@($"diagnostic-check-{type.Id:N}-{item.Id:N}-selected")"
+                               class="form-check-input diagnostic-check__selected"
+                               style="height: 1.15rem; line-height: 1.15rem"
+                               value="@item.Id"
+                               disabled="@(canUpdate ? null : "disabled")" />
+                        <label for="@($"diagnostic-check-{type.Id:N}-{item.Id:N}-selected")"
+                               class="form-check-label editor__label-normal">@item.Name</label>
+                    </div>
+                }
+            </div>
+            <div class="col-lg-4">
+                @for (; i < middleCount; i++)
+                {
+                    var entry = items[i];
+                    var item = entry.Item;
+                    <div class="form-check diagnostic-check">
+                        <input type="checkbox"
+                               checked="@(entry.IsSelected ? "checked" : null)"
+                               id="@($"diagnostic-check-{type.Id:N}-{item.Id:N}-selected")"
+                               class="form-check-input diagnostic-check__selected"
+                               style="height: 1.15rem; line-height: 1.15rem"
+                               value="@item.Id"
+                               disabled="@(canUpdate ? null : "disabled")" />
+                        <label for="@($"diagnostic-check-{type.Id:N}-{item.Id:N}-selected")"
+                               class="form-check-label editor__label-normal">@item.Name</label>
+                    </div>
+                }
+            </div>
+            <div class="col-lg-4">
+                @for (; i < count; i++)
+                {
+                    var entry = items[i];
+                    var item = entry.Item;
+                    <div class="form-check diagnostic-check">
+                        <input type="checkbox"
+                               checked="@(entry.IsSelected ? "checked" : null)"
+                               id="@($"diagnostic-check-{type.Id:N}-{item.Id:N}-selected")"
+                               class="form-check-input diagnostic-check__selected"
+                               style="height: 1.15rem; line-height: 1.15rem"
+                               value="@item.Id"
+                               disabled="@(canUpdate ? null : "disabled")" />
+                        <label for="@($"diagnostic-check-{type.Id:N}-{item.Id:N}-selected")"
+                               class="form-check-label editor__label-normal">@item.Name</label>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+
+        }
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="form-check diagnostic-check-other">
+                <input type="checkbox"
+                       checked="@(Model.OtherSelected ? "checked" : null)"
+                       id="diagnostic-check-other-selected"
+                       class="form-check-input diagnostic-check-other__selected"
+                       style="height: 1.15rem; line-height: 1.15rem"
+                       disabled="@(canUpdate ? null : "disabled")"/>
+                <label for="diagnostic-check-other-selected" class="form-check-label editor__label-normal">Other</label>
+                <input type="text" value="@Model.OtherText" class="k-textbox diagnostic-check-other__text @(!Model.OtherSelected ? "d-none" : "")" disabled="@(canUpdate ? null : "disabled")"/>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(function() {
+            DentalDrill.CRM.Pages.Handpieces.Edit.HandpiecesEditForm.initDiagnostics();
+        });
+    </script>
+</div>

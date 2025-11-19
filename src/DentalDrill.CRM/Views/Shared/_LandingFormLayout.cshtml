@@ -1,0 +1,22 @@
+﻿@{
+    Layout = "_LandingLayout";
+}
+
+<div class="container-fluid">
+    <div class="row align-items-center">
+        <video autoplay muted loop id="landingBackdrop" src="/media/landing_backdrop.mp4" poster="/img/video_thumbnail.png"></video>
+        <div class="col-12">
+            <div class="row justify-content-center">
+                <div class="col-10 col-md-6 col-lg-4 col-xl-4">
+                    <div class="landing__form">
+                        @RenderBody()
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @RenderSection("Scripts", required: false)
+}

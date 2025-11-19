@@ -1,0 +1,46 @@
+﻿@model DentalDrill.CRM.Models.ViewModels.HandpieceHistoryIndexViewModel
+@{
+    this.Layout = "";
+}
+
+<kendo-grid name="HandpieceHistoryGrid" height="320" class="k-grid-commandicons2 k-grid--dense k-grid--small-text">
+    <columns>
+        <column field="JobNumber" title="Estimate #" width="75" />
+        <column field="JobReceived" title="Received" format="{0:d}" width="100" />
+        <column field="CompletedOn" title="Completed" format="{0:d}" width="100" />
+        <column field="DiagnosticReport" title="Report" width="300" />
+        <column field="Rating" title="Rating" width="100" template="@("#: data.Rating#/10")" />
+        <column field="TechnicianName" title="Technician" width="150" />
+        <column field="CostOfRepair" title="Cost" format="{0:0.##}" width="100" />
+        <column width="50">
+            <commands>
+                <column-command name="CustomOpenHandpiece" click="DentalDrill.CRM.Pages.Handpieces.Details.HandpieceHistoryGrid.handleDetails" text="@("<span class=\"fas fa-fw fa-external-link-alt\"></span>")" />
+            </commands>
+        </column>
+    </columns>
+    <column-menu enabled="false" />
+    <editable enabled="false" />
+    <pageable enabled="false" />
+    <scrollable enabled="true" />
+    <datasource type="DataSourceTagHelperType.Ajax" page-size="0">
+        <transport>
+            <read url="@Url.Action("Read", "HandpieceHistory", new { parentId = Model.Parent.Id })" />
+        </transport>
+        <schema>
+            <model id="Id">
+                <fields>
+                    <field name="JobNumber" type="number" />
+                    <field name="JobReceived" type="date" />
+                    <field name="CompletedOn" type="date" />
+                    <field name="DiagnosticReport" />
+                    <field name="Rating" type="number" />
+                    <field name="TechnicianName" />
+                    <field name="CostOfRepair" type="number" />
+                </fields>
+            </model>
+        </schema>
+        <sorts>
+            <sort field="JobReceived" direction="desc" />
+        </sorts>
+    </datasource>
+</kendo-grid>

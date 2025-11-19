@@ -1,0 +1,50 @@
+﻿@using DentalDrill.CRM.Models.Permissions
+@using Kendo.Mvc.TagHelpers
+@model DentalDrill.CRM.Models.ViewModels.ClientDetailsViewModel
+@{
+    Layout = null;
+}
+
+<kendo-grid name="ClientAttachmentsGrid" class="client-attachments-grid k-grid-commandicons2" data-client-id="@Model.Id">
+    <columns>
+        <column field="UploadedOn" title="Uploaded on" format="{0:d}" />
+        <column field="FileName" title="File name" />
+        <column field="Comment" title="Comment" />
+        <column field="EmployeeName" title="Employee" />
+        <column>
+            <commands>
+                <column-command name="CustomDownload2" click="DentalDrill.CRM.Pages.Clients.Details.ClientAttachmentsGrid.handleDownload" text="@("<span class=\"fas fa-fw fa-file-download\"></span>")" />
+                @if (Model.Access.CanWriteComponent(ClientEntityComponent.Attachment))
+                {
+                    <column-command name="CustomEdit2" click="DentalDrill.CRM.Pages.Clients.Details.ClientAttachmentsGrid.handleEdit" text="@("<span class=\"fas fa-fw fa-pencil-alt\"></span>")"/>
+                    <column-command name="CustomDelete2" click="DentalDrill.CRM.Pages.Clients.Details.ClientAttachmentsGrid.handleDelete" text="@("<span class=\"fas fa-fw fa-trash-alt\"></span>")"/>
+                }
+            </commands>
+        </column>
+    </columns>
+    <toolbar>
+        @if (Model.Access.CanWriteComponent(ClientEntityComponent.Attachment))
+        {
+            <toolbar-button name="CustomCreate2" text="@("<span class=\"fas fa-fw fa-plus\"></span> Upload attachment")"></toolbar-button>
+        }
+    </toolbar>
+    <column-menu enabled="false" />
+    <editable enabled="false" />
+    <scrollable enabled="false" />
+    <sortable enabled="true" />
+    <datasource type="DataSourceTagHelperType.Ajax" page-size="100">
+        <transport>
+            <read url="@Url.Action("Read", "ClientAttachments", new { parentId = Model.Id })" />
+        </transport>
+        <schema>
+            <model id="Id">
+                <fields>
+                    <field name="UploadedOn" type="Date"></field>
+                    <field name="FileName"></field>
+                    <field name="Comment"></field>
+                    <field name="EmployeeName"></field>
+                </fields>
+            </model>
+        </schema>
+    </datasource>
+</kendo-grid>

@@ -1,0 +1,49 @@
+﻿@using DentalDrill.CRM.Models.Permissions
+@model DentalDrill.CRM.Models.ViewModels.Corporates.CorporateDetailsModel
+@{
+    ViewBag.Title = $"Corporate {Model.Entity.Name}";
+}
+
+<div class="details">
+    <div class="details__header">
+        <div class="details__title">
+            <h1>Corporate @Model.Entity.Name</h1>
+        </div>
+        <div class="details__actions">
+            <a asp-action="Index" class="details__action"><span class="fas fa-list"></span> List</a>
+            <a class="details__action" asp-action="Index" asp-controller="CorporateSurgeries" asp-route-id="@Model.Entity.UrlPath"><span class="fas fa-external-link-alt"></span> Corporate</a>
+            @if (Model.Access.Global.CanWriteComponent(GlobalComponent.Corporate))
+            {
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="details__action"><span class="fas fa-pencil-alt"></span> Edit</a>
+                <a asp-action="Delete" asp-route-id="@Model.Id" class="details__action details__action_color_red"><span class="fas fa-trash-alt"></span> Delete</a>
+            }
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row details__field">
+                <div class="details__label">Name</div>
+                <div class="details__value">@Model.Entity.Name</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <kendo-tabstrip name="CorporateTabStrip">
+                <items>
+                    <tabstrip-item text="Clients" selected="true" asp-action="Clients" asp-route-id="@Model.Id" />
+                    <tabstrip-item text="Appearance" asp-action="Appearance" asp-route-id="@Model.Id" />
+                    <tabstrip-item text="Access" asp-action="Access" asp-route-id="@Model.Id" />
+                </items>
+            </kendo-tabstrip>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+    {
+    <script type="text/javascript" src="~/js/app/pages/corporates/details.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/js/app/pages/corporates/appearance.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,179 @@
+﻿@using DentalDrill.CRM.Extensions
+@model DentalDrill.CRM.Models.ViewModels.JobDetailsModel
+@{
+    ViewBag.Title = $"Estimate #{Model.Entity.JobNumber}";
+    Layout = "_FullLayout";
+}
+
+<div class="details">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="details__header">
+            <div class="details__title">
+                <h2>Estimate #@Model.Entity.JobNumber</h2>
+                
+            </div>
+            <div class="details__status">
+                <job-status-indicator entity="@Model.Entity" description="true" style="width: 150px" />
+            </div>
+            <div class="details__actions">
+                @*@if (Model.ActionsList.Actions.Any())
+                {
+                    @foreach (var action in Model.ActionsList.Actions)
+                    {
+                        if (action.Enabled)
+                        {
+                            <form action="@HtmlEncoder.Encode(action.Url)" method="post" class="d-inline mr-2">
+                                <a class="btn btn-primary">@action.Title</a>
+                                @Html.AntiForgeryToken()
+                            </form>
+                        }
+                        else
+                        {
+                            <a class="btn btn-secondary mr-2" disabled="disabled">@action.Title</a>
+                        }
+                    }
+                }*@
+                <a class="details__action" asp-action="Index"><span class="fas fa-list"></span> List</a>
+                <a class="details__action" asp-action="Edit" asp-route-id="@Model.Id"><span class="fas fa-pencil-alt"></span> Edit</a>
+                @if (Model.Entity.Status == JobStatus.Received)
+                {
+                    <a class="details__action details__action_color_red" asp-action="Delete" asp-route-id="@Model.Id" data-toggle="tooltip" title="Deletes the job. Irreversible action."><span class="fas fa-trash-alt"></span> Delete</a>
+                }
+            </div>
+        </div>
+    }
+    
+    <div class="row">
+        @if (Model.ActionsList.Actions.Any())
+        {
+            <div class="col-12 col-md-6">
+                @foreach (var action in Model.ActionsList.Actions)
+                {
+                    if (action.Enabled)
+                    {
+                        <form action="@HtmlEncoder.Encode(action.Url)" method="post" class="d-inline mr-2">
+                            <button class="btn btn-primary">@action.Title</button>
+                            @Html.AntiForgeryToken()
+                        </form>
+                    }
+                    else
+                    {
+                        <button class="btn btn-secondary mr-2" disabled="disabled">@action.Title</button>
+                    }
+                }
+            </div>
+        }
+        <div class="col-12 col-md-6">
+            @if (Model.Entity.HasWarning)
+            {
+                <span class="badge badge-danger warning-badge">WARNING! NOT STERILIZED!</span>
+            }
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-2">
+            <div class="row details__field">
+                <div class="details__label">
+                    @Html.DisplayNameFor(x => x.Entity.Client)
+                </div>
+                <div class="details__value">
+                    <a asp-action="Details" asp-controller="Clients" asp-route-id="@Model.Entity.Client.Id" target="_blank">@Model.Entity.Client.FullName</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-2">
+            <div class="row details__field">
+                <div class="details__label">
+                    @Html.DisplayNameFor(x => x.Entity.Received)
+                </div>
+                <div class="details__value">
+                    @Model.Entity.Received.ToString("d")
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-2">
+            <div class="row details__field">
+                <div class="details__label">
+                    By
+                </div>
+                <div class="details__value">
+                    @Model.Entity.Creator?.GetFullName()
+                </div>
+            </div>
+        </div>
+        @if (Model.Entity.Status != JobStatus.Received
+             && Model.Entity.Status != JobStatus.BeingEstimated
+             && Model.Entity.Status != JobStatus.WaitingForApproval)
+        {
+            <div class="col-md-4 mb-2">
+                <div class="row details__field">
+                    <div class="details__label">
+                        @Html.DisplayNameFor(x => x.Entity.ApprovedBy)
+                    </div>
+                    <div class="details__value">
+                        @if (!String.IsNullOrEmpty(Model.Entity.ApprovedBy))
+                        {
+                            <text>
+                                @Model.Entity.ApprovedBy (@Model.Entity.ApprovedOn?.ToString("d"))
+                            </text>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-2">
+                <div class="row details__field">
+                    <div class="details__label">
+                        @Html.DisplayNameFor(x => x.Entity.ApprovedOn)
+                    </div>
+                    <div class="details__value">
+                        @if (Model.Entity.ApprovedOn != null)
+                        {
+                            @Model.Entity.ApprovedOn.Value.ToShortDateString()
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-2">
+                <div class="row details__field">
+                    <div class="details__label">
+                        @Html.DisplayNameFor(x => x.Entity.RatePlan)
+                    </div>
+                    <div class="details__value">
+                        @Model.Entity.RatePlan.ToDisplayString()
+                    </div>
+                </div>
+            </div>
+        }
+        
+        <div class="col-md-12 mb-2">
+            <div class="row details__field">
+                <div class="details__label">
+                    @Html.DisplayNameFor(x => x.Entity.Comment)
+                </div>
+                <div class="details__value">
+                    @Html.DisplayTextFor(x => x.Entity.Comment)
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    @(Html.Kendo().TabStrip()
+          .Name("JobDetailsTabStrip")
+          .SelectedIndex(0)
+          .Items(items =>
+          {
+              items.Add().Text("Handpieces").LoadContentFrom("DetailsTabHandpieces", "Jobs", new { id = Model.Id });
+              if (!User.IsInRole(ApplicationRoles.WorkshopTechnician))
+              {
+                  items.Add().Text("Invoices").LoadContentFrom("DetailsTabInvoices", "Jobs", new { id = Model.Id });
+              }
+              items.Add().Text("History").LoadContentFrom("Index", "JobChanges", new { parentId = Model.Id });
+          }))  
+</div>
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/app/pages/jobs/details.js" asp-append-version="true"></script>
+}
+

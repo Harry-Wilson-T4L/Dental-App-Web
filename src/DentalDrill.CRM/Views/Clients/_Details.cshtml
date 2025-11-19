@@ -1,0 +1,444 @@
+﻿@using DentalDrill.CRM.Models.Permissions
+@model DentalDrill.CRM.Models.ViewModels.ClientDetailsViewModel
+@*Main info row*@
+<div class="row">
+    <div class="col-12 mb-0 mb-sm-0 order-1">
+        <div class="row">
+            <div class="col-2_5">
+                @Html.LabelFor(x => x.Entity.PrincipalDentist)
+            </div>
+            <div class="col-9_5">
+                @if (Model.Access.CanReadField(ClientEntityField.PrincipalDentist))
+                {
+                    @Html.DisplayTextFor(x => x.Entity.PrincipalDentist)
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-12 col-sm-6 col-md-6 mb-2 mb-sm-0 order-2">
+        <div class="row">
+            <div class="col-5">
+                @Html.LabelFor(x => x.Entity.PrimaryWorkshop)
+            </div>
+            <div class="col-7">
+                @if (Model.Access.CanReadField(ClientEntityField.PrimaryWorkshop))
+                {
+                    @if (Model.AllAccess.CanAccessWorkshops())
+                    {
+                        var jobsCount = Model.Workshops.Where(x => x.Workshop.Id == Model.Entity.PrimaryWorkshopId).Sum(x => x.Jobs);
+                        <p class="form-control-plaintext">
+                            <a asp-controller="Jobs" asp-action="Index" asp-route-client="@Model.Id" asp-route-workshop="@Model.Entity.PrimaryWorkshopId">@Model.Entity.PrimaryWorkshop.Name (@jobsCount @(jobsCount == 1 ? "job" : "jobs"))</a>
+                        </p>
+                    }
+                    else
+                    {
+                        <p class="form-control-plaintext">@Model.Entity.PrimaryWorkshop.Name</p>
+                    }
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+    
+    @if (Model.AllAccess.CanAccessWorkshops() && Model.Access.CanReadField(ClientEntityField.PrimaryWorkshop) && Model.Workshops.Any(x => x.Workshop.Id != Model.Entity.PrimaryWorkshopId))
+    {
+        <div class="col-12 col-sm-6 col-md-6 mb-2 mb-sm-0 order-3 order-md-5">
+            <div class="row">
+                <div class="col-5">
+                    <label>Other workshops</label>
+                </div>
+                <div class="col-7">
+                    @foreach (var workshop in Model.Workshops.Where(x => x.Workshop.Id != Model.Entity.PrimaryWorkshopId).OrderBy(x => x.Workshop.OrderNo))
+                    {
+                        <p class="form-control-plaintext">
+                            <a asp-controller="Jobs" asp-action="Index" asp-route-client="@Model.Id" asp-route-workshop="@workshop.Workshop.Id">@workshop.Workshop.Name (@workshop.Jobs @(workshop.Jobs == 1 ? "job" : "jobs"))</a>
+                        </p>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="col-12 col-sm-6 col-md-6 mb-2 mb-sm-0 order-4">
+        <div class="row">
+            <div class="col-5">
+                @Html.LabelFor(x => x.Entity.Corporate)
+            </div>
+            <div class="col-7">
+                @if (Model.Access.CanReadField(ClientEntityField.Corporate))
+                {
+                    @if (Model.Entity.CorporateId != null)
+                    {
+                        <a asp-action="Details" asp-controller="Corporates" asp-route-id="@Model.Entity.CorporateId">@Model.Entity.Corporate.Name</a>
+                    }
+                    else
+                    {
+                        <p class="form-control-plaintext">(none)</p>
+                    }
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+@*Contacts row*@
+<div class="row">
+    <div class="col-sm-5 col-md-6 mb-2">
+        <div class="row">
+            <div class="col-md-5">
+                <label asp-for="Entity.Email">Main email</label>
+            </div>
+            <div class="col-md-7">
+                @if (Model.Access.CanReadField(ClientEntityField.MainEmail))
+                {
+                    <a href="mailto:@Model.Entity.Email">@Model.Entity.Email</a>
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+                
+                @if (Model.Access.CanWriteComponent(ClientEntityComponent.Email) &&
+                     !Model.Entity.NotificationsOptions.HasFlag(ClientNotificationsOptions.DisabledEverything))
+                {
+                    <form asp-action="EnableEmail" asp-controller="Clients" asp-route-id="@Model.Id" method="post" style="display: inline-block">
+                        @if (Model.Entity.NotificationsOptions.HasFlag(ClientNotificationsOptions.Enabled))
+                        {
+                            <input type="hidden" name="Enable" value="false"/>
+                            <button type="submit" class="btn btn-sm btn-link">
+                                <span class="fas fa-fw fa-toggle-on" style="font-size: 1.5em; color: black;"></span>
+                            </button>
+                        }
+                        else
+                        {
+                            <input type="hidden" name="Enable" value="true"/>
+                            <button type="submit" class="btn btn-sm btn-link">
+                                <span class="fas fa-fw fa-toggle-off" style="font-size: 1.5em; color: black;"></span>
+                            </button>
+                        }
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-7 col-md-6 mb-2">
+        <div class="row">
+            <div class="col-md-5">
+                @Html.LabelFor(x => x.Entity.SecondaryEmails)
+            </div>
+            <div class="col-md-7">
+                @if (Model.Access.CanReadField(ClientEntityField.OtherEmails))
+                {
+                    @foreach (var email in Model.Entity.ParseSecondaryEmails())
+                    {
+                        <a href="mailto:@email">@email</a>
+                    }
+                }
+                else
+                {
+                   <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-12 mb-2">
+        <div class="row">
+            <div class="col-12 col-md-2_5">
+                <label>Email options</label>
+            </div>
+            <div class="col-12 col-md-9_5">
+                @if (Model.Access.CanReadField(ClientEntityField.MainEmail))
+                {
+                    @if (Model.Entity.NotificationsOptions.HasFlag(ClientNotificationsOptions.DisabledEverything))
+                    {
+                        <span class="text-danger">Disabled by the client</span>
+                    }
+                    else if (!Model.Entity.NotificationsOptions.HasFlag(ClientNotificationsOptions.Enabled))
+                    {
+                        <span>Disabled</span>
+                    }
+                    else if (Model.Entity.NotificationsOptions == ClientNotificationsOptions.Enabled)
+                    {
+                        <span>Enabled</span>
+                    }
+                    else
+                    {
+                        var list = new List<String>();
+                        if (Model.Entity.NotificationsOptions.HasFlag(ClientNotificationsOptions.DisabledManualEmails))
+                        {
+                            list.Add("manual emails");
+                        }
+                        if (Model.Entity.NotificationsOptions.HasFlag(ClientNotificationsOptions.DisabledHandpieceNotifications))
+                        {
+                            list.Add("handpiece received notifications");
+                        }
+                        if (Model.Entity.NotificationsOptions.HasFlag(ClientNotificationsOptions.DisabledFeedbackRequests))
+                        {
+                            list.Add("feedback requests");
+                        }
+                        if (Model.Entity.NotificationsOptions.HasFlag(ClientNotificationsOptions.DisabledMaintenanceReminders))
+                        {
+                            list.Add("maintenance reminders");
+                        }
+
+                        <span>Enabled, except for: @String.Join(", ", list)</span>
+                    }
+                }
+                else
+                {
+                   <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-5 col-md-6 mb-2 mb-sm-0">
+        <div class="row">
+            <div class="col-md-5">
+                @Html.LabelFor(x => x.Entity.Phone)
+            </div>
+            <div class="col-md-7">
+                @if (Model.Access.CanReadField(ClientEntityField.MainPhone))
+                {
+                    <a href="tel:@Model.Entity.Phone">@Model.Entity.Phone</a>
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-7 col-md-6 mb-0 mb-sm-0">
+        <div class="row">
+            <div class="col-md-5">
+                @Html.LabelFor(x => x.Entity.SecondaryPhones)
+            </div>
+            <div class="col-md-7">
+                @if (Model.Access.CanReadField(ClientEntityField.OtherPhones))
+                {
+                    @Html.DisplayTextFor(x => x.Entity.SecondaryPhones)
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+@*Address row*@
+<div class="row">
+    <div class="col-md-6 mb-2">
+        <div class="row">
+            <div class="col-sm-2 col-md-5">
+                @Html.LabelFor(x => x.Entity.Address)
+            </div>
+            <div class="col-sm-10 col-md-7">
+                @if (Model.Access.CanReadField(ClientEntityField.Address))
+                {
+                    @Html.DisplayTextFor(x => x.Entity.Address)
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-md-6 mb-2">
+        <div class="row">
+            <div class="col-sm-4 col-md-5">
+                @Html.LabelFor(x => x.Entity.Suburb)
+            </div>
+            <div class="col-sm-8 col-md-7">
+                @if (Model.Access.CanReadField(ClientEntityField.Address))
+                {
+                    @Html.DisplayTextFor(x => x.Entity.Suburb)
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-md-6 mb-0">
+        <div class="row">
+            <div class="col-sm-4 col-md-5">
+                @Html.LabelFor(x => x.Entity.ZoneId)
+            </div>
+            <div class="col-sm-8 col-md-7">
+                @if (Model.Access.CanReadField(ClientEntityField.Address))
+                {
+                    @Html.DisplayTextFor(x => x.Entity.Zone.Name)
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-sm-6 col-md-3 mb-2 mb-sm-0">
+        <div class="row">
+            <div class="col-sm-4 col-md-4">
+                @Html.LabelFor(x => x.Entity.StateId)
+            </div>
+            <div class="col-sm-8 col-md-8">
+                @if (Model.Access.CanReadField(ClientEntityField.Address))
+                {
+                    @Html.DisplayTextFor(x => x.Entity.State.Name)
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-sm-6 col-md-3 mb-2 mb-md-0">
+        <div class="row">
+            <div class="col-sm-4">
+                @Html.LabelFor(x => x.Entity.PostCode)
+            </div>
+            <div class="col-sm-8">
+                @if (Model.Access.CanReadField(ClientEntityField.Address))
+                {
+                    @Html.DisplayTextFor(x => x.Entity.PostCode)
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+@*Other info*@
+<div class="row">
+    <div class="col-md-6 mb-2">
+        <div class="row">
+            <div class="col-sm-5">
+                @Html.LabelFor(x => x.Entity.OtherContact)
+            </div>
+            <div class="col-sm-7">
+                @if (Model.Access.CanReadField(ClientEntityField.OtherContact))
+                {
+                    @Html.DisplayTextFor(x => x.Entity.OtherContact)
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-2">
+        <div class="row">
+            <div class="col-sm-5">
+                @Html.LabelFor(x => x.Entity.OpeningHours)
+            </div>
+            <div class="col-sm-7">
+                @if (Model.Access.CanReadField(ClientEntityField.OpeningHours))
+                {
+                    @Html.DisplayTextFor(x => x.Entity.OpeningHours)
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-0">
+        <div class="row">
+            <div class="col-sm-5">
+                @Html.LabelFor(x => x.Entity.Brands)
+            </div>
+            <div class="col-sm-7">
+                @if (Model.Access.CanReadField(ClientEntityField.Brands))
+                {
+                    @Html.DisplayTextFor(x => x.Entity.Brands)
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-0">
+        <div class="row">
+            <div class="col-sm-5">
+                @Html.LabelFor(x => x.Entity.PricingCategoryId)
+            </div>
+            <div class="col-sm-7">
+                @if (Model.Access.CanReadField(ClientEntityField.PricingCategory))
+                {
+                    @if (Model.Entity.PricingCategoryId.HasValue)
+                    {
+                        @Model.Entity.PricingCategory.Name
+                    }
+                    else
+                    {
+                        <p class="form-control-plaintext">(none)</p>
+                    }
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+@*Comments*@
+<div class="row">
+    <div class="col-12">
+        @Html.LabelFor(x => x.Entity.Comment)
+    </div>
+    <div class="col-12 mb-2">
+        @if (Model.Access.CanReadField(ClientEntityField.Comment))
+        {
+            @Html.DisplayTextFor(x => x.Entity.Comment)
+        }
+        else
+        {
+            <p class="form-control-plaintext">(hidden)</p>
+        }
+    </div>
+</div>

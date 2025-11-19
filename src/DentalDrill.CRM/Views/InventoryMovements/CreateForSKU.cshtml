@@ -1,0 +1,165 @@
+﻿@using DevGuild.AspNetCore.Controls.HybridForms
+@using DentalDrill.CRM.Extensions
+@using DentalDrill.CRM.Models.ViewModels.InventoryMovements
+@using DevGuild.AspNetCore.Services.Bundling.TagHelpers
+@using Kendo.Mvc.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Newtonsoft.Json
+@using TextAreaTagHelper = Microsoft.AspNetCore.Mvc.TagHelpers.TextAreaTagHelper
+@model DentalDrill.CRM.Models.ViewModels.InventoryMovements.InventoryMovementCreateForSKUModel
+@{
+    ViewBag.Title = "Move SKU";
+    this.ConfigureHybridPage("InventoryMovementsCreateForSKU");
+    var uniqueId = Guid.NewGuid().ToString("N");
+}
+
+<div class="editor" id="InventoryMovementCreateEditor_@uniqueId">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Move SKU</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Index" asp-controller="Inventory" class="editor__action"><span class="fas fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+
+    <form asp-action="CreateForSKU" asp-route-sku="@Model.SKU.Id" hybrid-form-id="InventoryMovementsCreateForSKU" id="InventoryMovementsCreateForSKUForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="row">
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-12">
+                        <label>SKU</label>
+                    </div>
+                    <div class="col-12">
+                        <p class="form-control-plaintext">[@Model.SKU.Type.Name] @Model.SKU.Name</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 mb-2">
+                <div class="row">
+                    <div class="col-12">
+                        <label asp-for="Type"></label>
+                    </div>
+                    <div class="col-12">
+                        <kendo-dropdownlist for="Type"
+                                            bind-to="@(Model.PreselectedWorkshop == null
+                                                         ? InventoryMovementCreateTypeHelper.AvailableTypes.Select(x => new { Value = x, Text = x.ToDisplayName() })
+                                                         : InventoryMovementCreateTypeHelper.AvailableTypesPreselectedWorkshop.Select(x => new { Value = x, Text = x.ToDisplayName() }))"
+                                            datavaluefield="Value"
+                                            datatextfield="Text"
+                                            value-primitive="true">
+                        </kendo-dropdownlist>
+                        <span asp-validation-for="Type" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 mb-2">
+                <div class="row">
+                    <div class="col-12">
+                        <label asp-for="Quantity"></label>
+                    </div>
+                    <div class="col-12">
+                        <input asp-for="Quantity" type="text" class="k-textbox" placeholder="Enter QTY" />
+                        <span asp-validation-for="Quantity" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-12 col-sm-6 mb-2">
+                <div class="row">
+                    <div class="col-12">
+                        <label asp-for="FromWorkshop"></label>
+                    </div>
+                    <div class="col-12">
+                        <kendo-dropdownlist for="FromWorkshop"
+                                            bind-to="@Model.AvailableWorkshops"
+                                            datavaluefield="Id"
+                                            datatextfield="Name"
+                                            value-primitive="true">
+                        </kendo-dropdownlist>
+                        <span asp-validation-for="FromWorkshop" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 mb-2">
+                <div class="row">
+                    <div class="col-12">
+                        <label asp-for="ToWorkshop"></label>
+                    </div>
+                    <div class="col-12">
+                        <kendo-dropdownlist for="ToWorkshop"
+                                            bind-to="@Model.AvailableWorkshops"
+                                            datavaluefield="Id"
+                                            datatextfield="Name"
+                                            value-primitive="true">
+                        </kendo-dropdownlist>
+                        <span asp-validation-for="ToWorkshop" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 mb-2">
+                <div class="row">
+                    <div class="col-12">
+                        <label asp-for="Status"></label>
+                    </div>
+                    <div class="col-12">
+                        <kendo-dropdownlist for="Status"
+                                            bind-to="@Model.AvailableStatuses.Select(x => new { Value = x, Text = x.ToDisplayName() })"
+                                            datavaluefield="Value"
+                                            datatextfield="Text"
+                                            value-primitive="true">
+
+                        </kendo-dropdownlist>
+                        <span asp-validation-for="Status" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="row">
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-12">
+                        <label asp-for="Comment"></label>
+                    </div>
+                    <div class="col-12">
+                        <textarea asp-for="Comment" class="k-textbox" placeholder="Comment or note for the movement"></textarea>
+                        <span asp-validation-for="Comment" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a asp-action="Index" asp-controller="Inventory" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+    <script type="text/javascript">
+        $(function() {
+            var editor = new DentalDrill.CRM.Pages.InventoryMovements.Create.InventoryMovementCreateEditor(
+                document.getElementById("InventoryMovementCreateEditor_@uniqueId"),
+                @(Html.Raw(JsonConvert.SerializeObject(Model.AvailableWorkshops.Select(x => new { Id = x.Id, Name = x.Name })))),
+                @(Html.Raw(JsonConvert.SerializeObject(Model.PreselectedWorkshop == null ? null : new { Id = Model.PreselectedWorkshop.Id, Name = Model.PreselectedWorkshop.Name }))));
+            editor.init();
+        });
+    </script>
+</div>
+
+@section Scripts
+{
+    <scripts-bundle path="/js/app/pages/inventoryMovements/create.min.js" />
+} 

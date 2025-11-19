@@ -1,0 +1,24 @@
+﻿@using Newtonsoft.Json
+@model DentalDrill.CRM.Models.ViewModels.InventoryMovements.InventoryMovementPreviewModel
+@{
+    Layout = null;
+    var previewId = $"inventory-movement-preview-{Guid.NewGuid():N}";
+}
+
+<div class="inventory-movement-preview" id="@previewId" style="height: 100%;">
+    <div class="grid-container"></div>
+</div>
+<script type="text/javascript">
+    $(function() {
+        var options = new DentalDrill.CRM.Pages.InventoryMovements.Preview.InventoryMovementsPreviewOptions();
+        options.sku = @Html.Raw(JsonConvert.SerializeObject(Model.RequestedSKU.Id));
+        @if (Model.Workshop != null)
+        {
+            <text>options.workshop = @Html.Raw(JsonConvert.SerializeObject(Model.Workshop.Id));</text>
+        }
+        options.tab = @Html.Raw(JsonConvert.SerializeObject(Model.Tab));
+        var previewRoot = document.getElementById(@Html.Raw(JsonConvert.SerializeObject(previewId)));
+        var previewPage = new DentalDrill.CRM.Pages.InventoryMovements.Preview.InventoryMovementsPreviewPage(previewRoot, options);
+        previewPage.init();
+    });
+</script>

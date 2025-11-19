@@ -1,0 +1,41 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DevGuild.AspNetCore.Controls.HybridForms
+@using DevGuild.AspNetCore.Services.Storage
+@model ClientEmailMessage
+@inject IStorageHub StorageHub
+@{
+    ViewBag.Title = Model.EmailMessage.Subject;
+    this.ConfigureHybridPage("ClientEmailsDetails");
+
+    var mimeMessage = await Model.EmailMessage.LoadMessageFromStorageAsync(StorageHub);
+    var selectedQueue = new Queue<Boolean>();
+    selectedQueue.Enqueue(true);
+    selectedQueue.Enqueue(false);
+    selectedQueue.Enqueue(false);
+
+    var htmlBody = mimeMessage?.PrepareHtml();
+}
+
+<div class="details">
+    <kendo-tabstrip name="ClientEmailsDetailsTabStrip">
+        <items>
+            @if (htmlBody != null)
+            {
+                <tabstrip-item selected="selectedQueue.Dequeue()" text="Html">
+                    <content>
+                        @Html.Raw(htmlBody)
+                    </content>
+                </tabstrip-item>
+            }
+            @if (mimeMessage?.TextBody != null)
+            {
+                <tabstrip-item selected="selectedQueue.Dequeue()" text="Text">
+                    <content>
+                        <div style="white-space: pre-wrap">@mimeMessage.TextBody</div>
+                    </content>
+                </tabstrip-item>
+            }
+            <tabstrip-item selected="selectedQueue.Dequeue()" text="Source" asp-action="DetailsTabSource" asp-route-id="@Model.EmailMessage.Id" />
+        </items>
+    </kendo-tabstrip>
+</div>

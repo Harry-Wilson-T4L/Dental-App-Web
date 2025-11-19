@@ -1,0 +1,251 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DentalDrill.CRM.Models.Permissions
+@using DevGuild.AspNetCore.Controls.HybridForms
+@using DentalDrill.CRM.Services.Theming
+@model DentalDrill.CRM.Models.ViewModels.HandpieceModelEditModel
+@inject IThemesService Theme
+@{
+    ViewBag.Title = $"{Model.Parent.Name} {Model.Original.Name}";
+    var editorStyles = new String[1];
+    editorStyles[0] = await Theme.ResolveResourcePath("/css/editor.min.css");
+}
+
+<div class="editor">
+    <div class="editor__header">
+        <div class="editor__title">
+            <h1>
+                @Model.Parent.Name @Model.Original.Name
+                @if (Model.Original.Type != HandpieceSpeed.Other)
+                {
+                    <small>@Model.Original.Type.ToDisplayString()</small>
+                }
+            </h1>
+        </div>
+        <div class="editor__actions">
+            <a asp-action="Index" asp-controller="HandpieceBrands" class="editor__action"><span class="fas fa-list"></span> List</a>
+            @if (Model.Access.Global.CanWriteComponent(GlobalComponent.HandpiecesDirectory))
+            {
+                <a asp-action="Delete" asp-route-id="@Model.Original.Id" class="details__action details__action_color_red"><span class="fas fa-trash-alt"></span> Delete</a>
+            }
+        </div>
+    </div>
+    <form asp-action="Edit" asp-route-id="@Model.Original.Id">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="row">
+            <div class="col-12 col-sm-5 col-md-4 mb-2">
+                <div class="row">
+                    <div class="col-12">
+                        <label asp-for="ImageId"></label>
+                    </div>
+                    <div class="col-12">
+                        <image-uploader asp-for="ImageId" configuration="HandpieceModel" preview-variation="300"></image-uploader>
+                        <span asp-validation-for="ImageId" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-7 col-md-8 mb-2">
+                <div class="row mb-2">
+                    <div class="col-12 col-lg-6 mb-2">
+                        <div class="row">
+                            <div class="col-5">
+                                <label asp-for="BrandId"></label>
+                            </div>
+                            <div class="col-7">
+                                @Html.Kendo().DropDownListFor(x => x.BrandId).BindTo(new SelectList(Model.Brands, "Id", "Name")).Enable(Model.Access.Global.CanWriteComponent(GlobalComponent.HandpiecesDirectory))
+                                <span asp-validation-for="BrandId" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-6 mb-2">
+                        <div class="row">
+                            <div class="col-5">
+                                <label asp-for="Name"></label>
+                            </div>
+                            <div class="col-7">
+                                <input asp-for="Name" class="k-textbox w-100" readonly="@(!Model.Access.Global.CanWriteComponent(GlobalComponent.HandpiecesDirectory) ? "readonly" : null)" />
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-6 mb-2">
+                        <div class="row">
+                            <div class="col-5">
+                                <label asp-for="Type"></label>
+                            </div>
+                            <div class="col-7">
+                                @Html.Kendo().DropDownListFor(x => x.Type).HtmlAttributes(new { @class = "w-100" }).BindTo(HandpieceSpeedHelper.MakeSelectList()).Value(Model.Type.ToString()).Enable(Model.Access.Global.CanWriteComponent(GlobalComponent.HandpiecesDirectory))
+                                <span asp-validation-for="Type" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-6 mb-2">
+                        <div class="row">
+                            <div class="col-5">
+                                <label asp-for="PriceNew"></label>
+                            </div>
+                            <div class="col-7">
+                                <input asp-for="PriceNew" class="k-textbox w-100" readonly="@(!Model.Access.Global.CanWriteComponent(GlobalComponent.HandpiecesDirectory) ? "readonly" : null)" />
+                                <span asp-validation-for="PriceNew" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-12">
+                        <label asp-for="Description"></label>
+                    </div>
+                    <div class="col-12">
+                        <textarea asp-for="Description" class="k-textbox w-100" readonly="@(!Model.Access.Global.CanWriteComponent(GlobalComponent.HandpiecesDirectory) ? "readonly" : null)"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-12">
+                        <label asp-for="WorkshopNotes"></label>
+                    </div>
+                    <div class="col-12">
+                        <kendo-editor name="WorkshopNotesEditor" for="WorkshopNotes" encoded="false" stylesheets="@editorStyles"></kendo-editor>
+                        <span asp-validation-for="WorkshopNotes" class="text-danger"></span>
+                    </div>
+                </div>
+                
+                @if (Model.Access.Global.CanWriteComponent(GlobalComponent.HandpiecesDirectory))
+                {
+                    <div class="row">
+                        <div class="col editor__submit">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                            <a asp-action="Index" asp-controller="HandpieceBrands" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </form>
+
+    <kendo-tabstrip name="HandpieceModelTabstrip">
+        <items>
+            <tabstrip-item text="Schematics and specs" selected="true">
+                <content>
+                    <kendo-grid name="HandpieceModelSchematicsGrid" class="k-grid-commandicons2 k-grid--dense" height="400" data-parent-id="@Model.Original.Id">
+                        <columns>
+                            <column field="ThumbnailUrl" title="Thumbnail" width="50" template="@("<img src=\"#: data.ThumbnailUrl #\" alt=\"#: data.Title #\" />")" />
+                            <column field="Title" title="Title" width="300" />
+                            <column field="Display" title="Display" width="100" template="@("<input type=\"checkbox\" class=\"k-checkbox\" #= data.Display ? \"checked=\\\"checked\\\"\" : \"\" # disabled=\"disabled\" /><label class=\"k-checkbox-label\"></label>")" />
+                            <column width="200">
+                                <commands>
+                                    <column-command name="CustomDetails" click="DentalDrill.CRM.Pages.HandpieceModels.Edit.HandpieceModelSchematicsGrid.handleDetails" text="@("<span class=\"fas fa-fw fa-external-link-alt\"></span>")" />
+                                    @if (Model.Access.Global.CanWriteComponent(GlobalComponent.HandpiecesDirectory))
+                                    {
+                                        <column-command name="CustomEdit" click="DentalDrill.CRM.Pages.HandpieceModels.Edit.HandpieceModelSchematicsGrid.handleEdit" text="@("<span class=\"fas fa-fw fa-pencil-alt\"></span>")" />
+                                        <column-command name="CustomDelete" click="DentalDrill.CRM.Pages.HandpieceModels.Edit.HandpieceModelSchematicsGrid.handleDelete" text="@("<span class=\"fas fa-fw fa-trash-alt\"></span>")" />
+                                        <column-command name="CustomMoveUp" click="DentalDrill.CRM.Pages.HandpieceModels.Edit.HandpieceModelSchematicsGrid.handleMoveUp" text="@("<span class=\"fas fa-fw fa-arrow-up\"></span>")" />
+                                        <column-command name="CustomMoveDown" click="DentalDrill.CRM.Pages.HandpieceModels.Edit.HandpieceModelSchematicsGrid.handleMoveDown" text="@("<span class=\"fas fa-fw fa-arrow-down\"></span>")" />
+                                    }
+                                </commands>
+                            </column>
+                        </columns>
+                        <toolbar>
+                            @if (Model.Access.Global.CanWriteComponent(GlobalComponent.HandpiecesDirectory))
+                            {
+                                <toolbar-button name="CustomCreateText" text="@("<span class=\"fas fa-fw fa-plus\"></span> Add Text")"/>
+                                <toolbar-button name="CustomCreateAttachment" text="@("<span class=\"fas fa-fw fa-plus\"></span> Add PDF")"/>
+                                <toolbar-button name="CustomCreateImage" text="@("<span class=\"fas fa-fw fa-plus\"></span> Add Image")"/>
+                            }
+                        </toolbar>
+                        <column-menu enabled="false" />
+                        <editable enabled="false" />
+                        <pageable enabled="true" />
+                        <sortable enabled="false" />
+                        <datasource type="DataSourceTagHelperType.Ajax">
+                            <transport>
+                                <read url="@Url.Action("Read", "HandpieceModelSchematics", new { parentId = Model.Original.Id })" />
+                            </transport>
+                            <schema>
+                                <model id="Id">
+                                    <fields>
+                                        <field name="Title" />
+                                        <field name="Display" type="boolean" />
+                                        <field name="Type" type="number" />
+                                        <field name="ThumbnailUrl" />
+                                    </fields>
+                                </model>
+                            </schema>
+                        </datasource>
+                    </kendo-grid>
+                </content>
+            </tabstrip-item>
+            @if (Model.Access.Global.CanReadComponent(GlobalComponent.HandpiecesStore))
+            {
+                <tabstrip-item text="Listings" selected="false">
+                    <content>
+                        <kendo-grid name="HandpieceModelListingsGrid" class="k-grid-commandicons2 k-grid--dense k-grid--small-text" height="400" data-parent-id="@Model.Original.Id">
+                            <columns>
+                                <column field="Status" title="Status" template="@("#: DentalDrill.CRM.Pages.HandpieceModels.Edit.HandpieceModelListingsGrid.formatStatus(data.Status) #")" width="80" />
+                                <column field="SerialNumber" title="S/N" width="80" />
+                                <column field="CreatedOn" title="Created On" format="{0:d}" width="80" />
+                                <column field="Price" title="Price" width="80" />
+                                <column field="Warranty" title="Warranty" width="100" />
+                                <column field="Notes" title="Notes" width="200" />
+                                <column field="Coupling" title="Coupling / Fitting" width="100" />
+                                <column field="CosmeticCondition" title="Cosmetic Condition" width="100" />
+                                <column field="FiberOpticBrightness" title="Fibre Optic Brightness" width="100" />
+                                <column width="100">
+                                    <commands>
+                                        @if (Model.Access.Global.CanWriteComponent(GlobalComponent.HandpiecesStore))
+                                        {
+                                            <column-command name="CustomEdit" click="DentalDrill.CRM.Pages.HandpieceModels.Edit.HandpieceModelListingsGrid.handleEdit" text="@("<span class=\"fas fa-fw fa-pencil-alt\"></span>")" />
+                                            <column-command name="CustomDelete" click="DentalDrill.CRM.Pages.HandpieceModels.Edit.HandpieceModelListingsGrid.handleDelete" text="@("<span class=\"fas fa-fw fa-trash-alt\"></span>")" />
+                                        }
+                                    </commands>
+                                </column>
+                            </columns>
+                            <toolbar>
+                                @if (Model.Access.Global.CanWriteComponent(GlobalComponent.HandpiecesStore))
+                                {
+                                    <toolbar-button name="CustomCreate" text="@("<span class=\"fas fa-fw fa-plus\"></span> Add")" />
+                                }
+                            </toolbar>
+                            <column-menu enabled="false" />
+                            <editable enabled="false" />
+                            <pageable enabled="true" />
+                            <sortable enabled="false" />
+                            <datasource type="DataSourceTagHelperType.Ajax">
+                                <transport>
+                                    <read url="@Url.Action("Read", "HandpieceModelListings", new { parentId = Model.Original.Id })" />
+                                </transport>
+                                <schema>
+                                    <model id="Id">
+                                        <fields>
+                                            <field name="Status" type="number" />
+                                            <field name="SerialNumber" />
+                                            <field name="CreatedOn" type="Date" />
+                                            <field name="Price" />
+                                            <field name="Warranty" />
+                                            <field name="Notes" />
+                                            <field name="Coupling" />
+                                            <field name="CosmeticCondition" />
+                                            <field name="FiberOpticBrightness" />
+                                        </fields>
+                                    </model>
+                                </schema>
+                            </datasource>
+                        </kendo-grid>
+                    </content>
+                </tabstrip-item>
+            }
+        </items>
+    </kendo-tabstrip>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript" src="/js/app/pages/handpieceModels/edit.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="/vendor/pdfjs.min.js" asp-append-version="true"></script>
+    <script type="text/javascript">
+        window.PDFJS.workerSrc = "/vendor/pdfjs.workier.min.js";
+    </script>
+}

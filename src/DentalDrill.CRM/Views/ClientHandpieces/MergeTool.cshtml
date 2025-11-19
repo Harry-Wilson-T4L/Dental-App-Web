@@ -1,0 +1,157 @@
+﻿@using DentalDrill.CRM.Models.ViewModels
+@model Client
+@{
+    ViewBag.Title = $"Merge Tool - {Model.Name}";
+}
+
+<div class="grid-wrapper">
+    <h1 class="grid-wrapper__header">Merge Tool - @Model.Name</h1>
+    <div class="grid-wrapper__grid">
+        @(Html.Kendo().Grid<ClientRepairedItemViewModel>()
+            .Name("RepairedItemsFirstGrid")
+            .HtmlAttributes(new { @class = "k-grid-commandicons2 k-grid--dense k-grid--small-text k-grid--auto-resize", style = "height: 100%" })
+            .Columns(columns =>
+            {
+                columns.Bound(c => c.Brand).Width(80).Title("Brand");
+                columns.Bound(c => c.Model).Width(80).Title("Model");
+                columns.Bound(c => c.Serial).Width(80).Title("Serial");
+                columns.Bound(c => c.LastRepair).Width(60).Title("Last Repair").ClientTemplate("<a href=\"#:LastRepairUrl#\" style=\"color: rgb(0, 123, 255)\">#:LastRepair#</a>");
+                columns.Bound(c => c.LastRepairDate).Width(80).Title("Last Repair Date").ClientTemplate("#: kendo.toString(LastRepairDate, \"dd/MM/yyyy\") #");
+                columns.Bound(c => c.LastRepairStatus).Width(100).Title("Last Repair Status").ClientTemplate("#= DentalDrill.CRM.Pages.Clients.Details.RepairHistoryGrid.formatLastRepairStatus(data) #");
+            })
+            .ClientDetailTemplateId("ClientHandpiece_Handpieces_Template_First")
+            .ColumnMenu(cm => cm.Enabled(false))
+            .Pageable()
+            .Scrollable(scrollable => scrollable.Enabled(true).Height("auto"))
+            .Sortable()
+            .DataSource(dataSource => dataSource
+                .Ajax()
+                .Model(model =>
+                {
+                    model.Id(f => f.Id);
+                    model.Field(f => f.Id);
+                    model.Field(f => f.Brand);
+                    model.Field(f => f.Model);
+                    model.Field(f => f.Serial);
+                    model.Field(f => f.LastRepair);
+                    model.Field(f => f.LastRepairUrl);
+                    model.Field(f => f.LastRepairDate);
+                    model.Field(f => f.Status);
+                })
+                .Sort(sort =>
+                {
+                    sort.Add(x => x.Brand);
+                    sort.Add(x => x.Model);
+                    sort.Add(x => x.Serial);
+                })
+                .Read(read => read.Action("Read", "ClientRepairHistory", new { parentId = Model.Id }))))
+        <script type="text/html" id="ClientHandpiece_Handpieces_Template_First">
+            @(Html.Kendo().Grid<HandpieceHistoryItemViewModel>()
+                .Name("ClientHandpiece_#=Id#_FirstGrid")
+                .HtmlAttributes(new { @class = "k-grid-commandicons2 k-grid--dense k-grid--small-text", style = "min-height: 200px;", data_chid = "#=Id#" })
+                .Columns(columns =>
+                {
+                    columns.Bound(c => c.JobNumber).Title("Estimate \\#").Width(75);
+                    columns.Bound(c => c.JobReceived).Title("Received").Format("{0:d}").Width(100);
+                    columns.Bound(c => c.CompletedOn).Title("Completed").Format("{0:d}").Width(100);
+                    columns.Bound(c => c.DiagnosticReport).Title("Report").Width(300);
+                    columns.Bound(c => c.Rating).Title("Rating").ClientTemplate("\\#:data.Rating\\#/10").Width(100);
+                    columns.Bound(c => c.TechnicianName).Title("Technician").Width(150);
+                    columns.Bound(c => c.CostOfRepair).Title("Cost").Format("{0:0.\\#\\#}").Width(100);
+                    columns.Command(command =>
+                    {
+                        command.Custom("CustomDrag").Text("<span></span>").IconClass("fas fa-fw fa-arrows-alt").Click("() => { }").HtmlAttributes(new { @class = "client-handpiece-items__draggable" });
+                    }).Width(50);
+                })
+                .ColumnMenu(cm => cm.Enabled(false))
+                .DataSource(dataSource => dataSource
+                    .Ajax()
+                    .Model(model =>
+                    {
+                        model.Id(f => f.Id);
+                    })
+                    .Read(read => read.Action("ReadHandpieces", "ClientHandpieces", new { clientHandpieceId = "#=Id#" })))
+                .Events(events => events.DataBound("DentalDrill.CRM.Pages.ClientHandpieces.MergeTool.ClientHandpieceItemsGrid.handleDataBound"))
+                .ToClientTemplate())
+        </script>
+    </div>
+    <div class="grid-wrapper__grid">
+        @(Html.Kendo().Grid<ClientRepairedItemViewModel>()
+            .Name("RepairedItemsSecondGrid")
+            .HtmlAttributes(new { @class = "k-grid-commandicons2 k-grid--dense k-grid--small-text k-grid--auto-resize", style = "height: 100%" })
+            .Columns(columns =>
+            {
+                columns.Bound(c => c.Brand).Width(80).Title("Brand");
+                columns.Bound(c => c.Model).Width(80).Title("Model");
+                columns.Bound(c => c.Serial).Width(80).Title("Serial");
+                columns.Bound(c => c.LastRepair).Width(60).Title("Last Repair").ClientTemplate("<a href=\"#:LastRepairUrl#\" style=\"color: rgb(0, 123, 255)\">#:LastRepair#</a>");
+                columns.Bound(c => c.LastRepairDate).Width(80).Title("Last Repair Date").ClientTemplate("#: kendo.toString(LastRepairDate, \"dd/MM/yyyy\") #");
+                columns.Bound(c => c.LastRepairStatus).Width(100).Title("Last Repair Status").ClientTemplate("#= DentalDrill.CRM.Pages.Clients.Details.RepairHistoryGrid.formatLastRepairStatus(data) #");
+            })
+            .ClientDetailTemplateId("ClientHandpiece_Handpieces_Template_Second")
+            .ColumnMenu(cm => cm.Enabled(false))
+            .Pageable()
+            .Scrollable(scrollable => scrollable.Enabled(true).Height("auto"))
+            .Sortable()
+            .DataSource(dataSource => dataSource
+                .Ajax()
+                .Model(model =>
+                {
+                    model.Id(f => f.Id);
+                    model.Field(f => f.Id);
+                    model.Field(f => f.Brand);
+                    model.Field(f => f.Model);
+                    model.Field(f => f.Serial);
+                    model.Field(f => f.LastRepair);
+                    model.Field(f => f.LastRepairUrl);
+                    model.Field(f => f.LastRepairDate);
+                    model.Field(f => f.Status);
+                })
+                .Sort(sort =>
+                {
+                    sort.Add(x => x.Brand);
+                    sort.Add(x => x.Model);
+                    sort.Add(x => x.Serial);
+                })
+                .Read(read => read.Action("Read", "ClientRepairHistory", new { parentId = Model.Id }))))
+        <script type="text/html" id="ClientHandpiece_Handpieces_Template_Second">
+            @(Html.Kendo().Grid<HandpieceHistoryItemViewModel>()
+                .Name("ClientHandpiece_#=Id#_SecondGrid")
+                .HtmlAttributes(new { @class = "k-grid-commandicons2 k-grid--dense k-grid--small-text", style = "min-height: 200px;", data_chid = "#=Id#" })
+                .Columns(columns =>
+                {
+                    columns.Bound(c => c.JobNumber).Title("Estimate \\#").Width(75);
+                    columns.Bound(c => c.JobReceived).Title("Received").Format("{0:d}").Width(100);
+                    columns.Bound(c => c.CompletedOn).Title("Completed").Format("{0:d}").Width(100);
+                    columns.Bound(c => c.DiagnosticReport).Title("Report").Width(300);
+                    columns.Bound(c => c.Rating).Title("Rating").ClientTemplate("\\#:data.Rating\\#/10").Width(100);
+                    columns.Bound(c => c.TechnicianName).Title("Technician").Width(150);
+                    columns.Bound(c => c.CostOfRepair).Title("Cost").Format("{0:0.\\#\\#}").Width(100);
+                    columns.Command(command =>
+                    {
+                        command.Custom("CustomDrag").Text("<span></span>").IconClass("fas fa-fw fa-arrows-alt").Click("() => { }").HtmlAttributes(new { @class = "client-handpiece-items__draggable" });
+                    }).Width(50);
+                })
+                .ColumnMenu(cm => cm.Enabled(false))
+                .DataSource(dataSource => dataSource
+                    .Ajax()
+                    .Model(model =>
+                    {
+                        model.Id(f => f.Id);
+                    })
+                    .Read(read => read.Action("ReadHandpieces", "ClientHandpieces", new { clientHandpieceId = "#=Id#" })))
+                .Events(events => events.DataBound("DentalDrill.CRM.Pages.ClientHandpieces.MergeTool.ClientHandpieceItemsGrid.handleDataBound"))
+                .ToClientTemplate())
+        </script>
+    </div>
+    <div class="grid-wrapper__content">
+        <div style="height: 50px; background-color: lightblue; text-align: center; line-height: 50px" id="ClientHandpieceNewArea">
+            <span>Drop here to create new entry</span>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/app/pages/clients/details/repairHistory.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/js/app/pages/clientHandpieces/mergeTool.js" asp-append-version="true"></script>
+}

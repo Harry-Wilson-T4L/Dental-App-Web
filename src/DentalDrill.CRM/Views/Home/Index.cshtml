@@ -1,0 +1,46 @@
+﻿@{
+    Layout = "_LandingLayout";
+    ViewData["Title"] = "Dental Drill Solutions";
+}
+@model DentalDrill.CRM.Models.ViewModels.Identity.Account.LoginViewModel
+@inject SignInManager<ApplicationUser> SignInManager
+
+<div class="container-fluid">
+    <div class="row align-items-center">
+        <video autoplay muted loop id="landingBackdrop" src="/media/landing_backdrop.mp4" poster="/img/video_thumbnail.png"></video>
+        <div class="col-12">
+            <div class="row justify-content-center">
+                <div class="col-10 col-md-6 col-lg-4 col-xl-4">
+                    <div class="landing__login">
+                        <form asp-action="Login" asp-controller="Account" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group">
+                                <input asp-for="UserName" placeholder="Login" class="form-control" />
+                                <span asp-validation-for="UserName" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <input asp-for="Password" placeholder="Password" class="form-control" />
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                            <input type="hidden" asp-for="RememberMe" value="true" />
+                            <div class="row">
+                                <div class="col-12 order-2 col-sm-8 order-sm-1">
+                                    <p>
+                                        <a asp-action="ForgotPassword" asp-controller="Account">Forgot your password?</a>
+                                    </p>
+                                </div>
+                                <div class="col-12 order-1 col-sm-4 order-sm-2">
+                                    <button type="submit" class="btn btn-block btn-primary">Log in</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/app/pages/home/index.js" asp-append-version="true"></script>
+}

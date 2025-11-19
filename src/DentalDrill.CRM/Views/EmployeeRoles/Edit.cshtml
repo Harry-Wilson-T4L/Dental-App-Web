@@ -1,0 +1,169 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DentalDrill.CRM.Models.Permissions
+@using DevGuild.AspNetCore.Controls.HybridForms
+@model DentalDrill.CRM.Models.ViewModels.EmployeeRoles.EmployeeRoleEditModel
+@{
+    ViewBag.Title = $"Edit employee role {Model.Original.Name}";
+    this.ConfigureHybridPage("EmployeeRolesEdit");
+}
+
+<div class="editor">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Edit employee role @Model.Original.Name</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Index" class="editor__action"><span class="fas fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+    <form asp-action="Edit" asp-route-id="@Model.Original.Id" hybrid-form-id="EmployeeRolesEdit" id="EmployeeRolesEditForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="row">
+            <div class="col-md-12 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="Name"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        <input asp-for="Name" class="k-textbox" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 mb-2">
+                <h5>Global Permissions</h5>
+                <table class="table mb-2">
+                    <colgroup><col style="width: 80%" /><col style="width: 10%" /><col style="width: 10%" /></colgroup>
+                    <thead>
+                    <tr>
+                        <th>Permission</th>
+                        <th>Read</th>
+                        <th>Write</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @for (var i = 0; i < Model.Global.Count; i++)
+                    {
+                        var index = i;
+                        <tr>
+                            <td>
+                                @Model.Global[index].Object.ToDisplayString()
+                                <input asp-for="Global[index].Object" type="hidden"/>
+                            </td>
+                            <td>
+                                <input asp-for="Global[index].Read" type="checkbox"/>
+                            </td>
+                            <td>
+                                <input asp-for="Global[index].Write" type="checkbox"/>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-md-12 mb-2">
+                <h5>Client Permissions</h5>
+                <table class="table mb-2">
+                    <colgroup><col style="width: 80%" /><col style="width: 10%" /><col style="width: 10%" /></colgroup>
+                    <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Read</th>
+                        <th>Write</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @for (var i = 0; i < Model.ClientComponents.Count; i++)
+                    {
+                        var index = i;
+                        <tr>
+                            <td>
+                                @Model.ClientComponents[index].Object.ToDisplayString()
+                                <input asp-for="ClientComponents[index].Object" type="hidden"/>
+                            </td>
+                            <td>
+                                <input asp-for="ClientComponents[index].Read" type="checkbox"/>
+                            </td>
+                            <td>
+                                <input asp-for="ClientComponents[index].Write" type="checkbox"/>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+                <table class="table mb-2">
+                    <colgroup><col style="width: 70%" /><col style="width: 10%" /><col style="width: 10%" /><col style="width: 10%" /></colgroup>
+                    <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Read</th>
+                        <th>Write</th>
+                        <th>Init</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @for (var i = 0; i < Model.ClientFields.Count; i++)
+                    {
+                        var index = i;
+                        <tr>
+                            <td>
+                                @Model.ClientFields[index].Object.ToDisplayString()
+                                <input asp-for="ClientFields[index].Object" type="hidden"/>
+                            </td>
+                            <td>
+                                <input asp-for="ClientFields[index].Read" type="checkbox"/>
+                            </td>
+                            <td>
+                                <input asp-for="ClientFields[index].Write" type="checkbox"/>
+                            </td>
+                            <td>
+                                <input asp-for="ClientFields[index].Init" type="checkbox"/>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-md-12 mb-2">
+                <h5>Inventory Permissions</h5>
+                <table class="table mb-2">
+                    <colgroup><col style="width: 90%" /><col style="width: 10%" /></colgroup>
+                    <thead>
+                    <tr>
+                        <th>Permission</th>
+                        <th>Enabled</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @for (var i = 0; i < Model.Inventory.Count; i++)
+                    {
+                        var index = i;
+                        <tr>
+                            <td>
+                                @Model.Inventory[index].Object.ToDisplayString()
+                                <input asp-for="Inventory[index].Object" type="hidden"/>
+                            </td>
+                            <td>
+                                <input asp-for="Inventory[index].Enabled" type="checkbox"/>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a asp-action="Index" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

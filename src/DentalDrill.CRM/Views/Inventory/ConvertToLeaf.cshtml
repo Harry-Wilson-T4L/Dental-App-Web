@@ -1,0 +1,37 @@
+﻿@using DevGuild.AspNetCore.Controls.HybridForms
+@using DentalDrill.CRM.Extensions
+@model DentalDrill.CRM.Models.ViewModels.Inventory.InventorySKUConvertToLeafModel
+@{
+    ViewBag.Title = "Convert SKU to leaf";
+    this.ConfigureHybridPage("InventoryConvertToLeaf");
+}
+
+<div class="editor">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Convert SKU to group</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Index" asp-controller="Inventory" class="editor__action"><span class="fas fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+
+    <form asp-action="ConvertToLeaf" asp-route-id="@Model.Entity.Id" hybrid-form-id="InventoryConvertToLeaf" id="InventoryConvertToLeafForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        @if (Model.HasChildren)
+        {
+            <div class="alert alert-danger">This SKU cannot be converted to leaf as it already has children.</div>
+        }
+
+        <div class="row">
+            <div class="col-12 editor__submit">
+                <button type="submit" class="btn btn-primary">Convert</button>
+                <a asp-action="Index" asp-controller="Inventory" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

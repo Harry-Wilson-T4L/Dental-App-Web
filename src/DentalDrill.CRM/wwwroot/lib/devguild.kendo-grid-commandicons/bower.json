@@ -1,0 +1,17 @@
+{
+  "name": "devguild.kendo-grid-commandicons",
+  "authors": [
+    "DevGuild <info@devguild.ru>"
+  ],
+  "description": "Reduces size of kendo-ui grid and treelist icons in icon-only mode.",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "homepage": "https://devguild.ru/",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

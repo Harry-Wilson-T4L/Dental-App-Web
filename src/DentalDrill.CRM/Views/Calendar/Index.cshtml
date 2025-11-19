@@ -1,0 +1,40 @@
+﻿@using DentalDrill.CRM.Models.ViewModels
+@model DentalDrill.CRM.Models.ViewModels.EmptyIndexViewModel
+@{
+    ViewBag.Title = "Calendar";
+}
+
+<h1 class="header">Calendar</h1>
+
+@(Html.Kendo().Grid<CalendarWeekViewModel>()
+      .Name("CalendarWeeksGrid")
+      .HtmlAttributes(new { @class = "k-grind-commandicons2", style = "height: 630px" })
+      .Columns(columns =>
+      {
+          columns.Bound(c => c.Year).Width(50);
+          columns.Bound(c => c.Week).Width(50);
+          columns.Bound(c => c.RangeStart).Width(200).Format("{0:F}");
+          columns.Bound(c => c.RangeEnd).Width(200).Format("{0:F}");
+      })
+      .ColumnMenu(cm => cm.Enabled(false))
+      .Editable(editable => editable.Enabled(false))
+      .Pageable()
+      .Scrollable(scrollable => scrollable.Enabled(true).Height("auto"))
+      .DataSource(dataSource => dataSource
+          .Ajax()
+          .Model(model =>
+          {
+              model.Id(f => f.Id);
+              model.Field(f => f.Id).DefaultValue(default(Guid));
+              model.Field(f => f.Year);
+              model.Field(f => f.Week);
+              model.Field(f => f.RangeStart);
+              model.Field(f => f.RangeEnd);
+          })
+          .Sort(sort =>
+          {
+              sort.Add(x => x.Year);
+              sort.Add(x => x.Week);
+          })
+          .Read(read => read.Action("Read", "Calendar"))
+          .Events(events => events.Error("DevGuild.AspNet.Controls.Grids.Errors.GridErrorHandler.handleGridError").RequestStart("DevGuild.AspNet.Controls.Grids.Errors.GridErrorHandler.handleRequestStart"))))

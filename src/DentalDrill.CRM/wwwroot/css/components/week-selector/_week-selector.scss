@@ -1,0 +1,28 @@
+﻿$week-selector-buttons-color: black !default;
+$week-selector-buttons-color-disabled: #6c757d !default;
+
+.week-selector {
+    &__name {
+        font-weight: bold;
+    }
+
+    &__previous {
+        cursor: not-allowed;
+        color: $week-selector-buttons-color-disabled;
+    }
+
+    &__next {
+        cursor: not-allowed;
+        color: $week-selector-buttons-color-disabled;
+    }
+
+    &--has-previous &__previous {
+        cursor: pointer;
+        color: $week-selector-buttons-color;
+    }
+
+    &--has-next &__next {
+        cursor: pointer;
+        color: $week-selector-buttons-color;
+    }
+}

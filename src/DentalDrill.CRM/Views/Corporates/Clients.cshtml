@@ -1,0 +1,64 @@
+﻿@model DentalDrill.CRM.Models.ViewModels.Corporates.CorporateDetailsModel
+@{
+    this.Layout = null;
+}
+
+@(Html.Kendo().Grid<DentalDrill.CRM.Models.ViewModels.CorporateClientReadModel>()
+          .Name("CorporateClientsGrid")
+          .HtmlAttributes(new { @class = "k-grid-commandicons k-grid--dense k-grid--small-text k-grid--dense-filter", style = "height: 630px" })
+          .Columns(columns =>
+          {
+              columns.Bound(c => c.ZoneName).Width(65);
+              columns.Bound(c => c.Name).Width(150);
+              columns.Bound(c => c.PrincipalDentist).Width(150);
+              columns.Bound(c => c.Phone).Width(100);
+              columns.Bound(c => c.Address).Width(150);
+              columns.Bound(c => c.Suburb).Width(100);
+              columns.Bound(c => c.StateName).Width(65);
+              columns.Bound(c => c.Postcode).Width(60);
+              var emailTemplate = @"#=(function(data) {
+if (data.Email) {
+var tag = document.createElement(""a"");
+tag.setAttribute(""data-toggle"", ""tooltip"");
+tag.setAttribute(""data-placement"", ""left"");
+tag.setAttribute(""title"", data.Email);
+tag.setAttribute(""style"", ""color: blue;"");
+tag.setAttribute(""href"", ""mailto:"" %2B data.Email);
+tag.innerText = data.Email;
+return tag.outerHTML;
+}
+
+return """"; })(data)#";
+              columns.Bound(c => c.Email).ClientTemplate(emailTemplate).Width(65);
+              columns.Bound(c => c.HandpiecesCount).Width(50);
+              columns.Bound(c => c.AverageRating).Width(50);
+              columns.Command(command =>
+              {
+                  command.Custom("CustomDetails").Text("<span class=\"fas fa-fw fa-external-link-alt\"></span>").Click("DentalDrill.CRM.Pages.Corporates.Details.CorporateClientsGrid.handleDetailsClick");
+              }).Width(40);
+          })
+          .ColumnMenu(cm => cm.Enabled(false))
+          .Pageable()
+          .Scrollable(scrollable => scrollable.Enabled(true).Height("auto"))
+          .Sortable()
+          .Filterable(filterable =>
+          {
+              filterable.Extra(false);
+              filterable.Operators(op =>
+              {
+                  op.ForString(str => str.Clear().Contains("Contains"));
+                  op.ForNumber(num => num.Clear().IsEqualTo("Equal to"));
+                  op.ForDate(date => date.Clear().IsGreaterThan("After").IsLessThan("Before"));
+              });
+          })
+          .DataSource(dataSource => dataSource
+              .Ajax()
+              .Model(model =>
+              {
+                  model.Id(f => f.Id);
+                  model.Field(f => f.Id).DefaultValue(default(Guid));
+                  model.Field(f => f.Name);
+              })
+              .Read(read => read.Action("ReadClients", "Corporates", new { parentId = Model.Id }))
+              .Events(events => events.Error("DevGuild.AspNet.Controls.Grids.Errors.GridErrorHandler.handleGridError").RequestStart("DevGuild.AspNet.Controls.Grids.Errors.GridErrorHandler.handleRequestStart")))
+          .Events(events => events.DataBound("DentalDrill.CRM.Pages.Corporates.Details.CorporateClientsGrid.handleDataBound")))

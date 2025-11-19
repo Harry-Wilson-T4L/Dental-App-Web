@@ -1,0 +1,41 @@
+﻿@model DentalDrill.CRM.Models.ViewModels.Identity.Account.AccountNotificationsViewModel
+@{
+    Layout = "_LandingFormLayout";
+    ViewData["Title"] = "Notifications";
+}
+
+<h1>Notifications</h1>
+<form asp-action="Notifications" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input asp-for="Token" type="hidden" />
+
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" asp-for="AllowManualEmails" />
+        <label class="form-check-label" asp-for="AllowManualEmails">Allow manually sent emails</label>
+        <span asp-validation-for="AllowManualEmails" class="text-danger"></span>
+    </div>
+            
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" asp-for="AllowHandpieceNotifications" />
+        <label class="form-check-label" asp-for="AllowHandpieceNotifications">Allow handpiece received notification emails</label>
+        <span asp-validation-for="AllowHandpieceNotifications" class="text-danger"></span>
+    </div>
+            
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" asp-for="AllowFeedbackRequests" />
+        <label class="form-check-label" asp-for="AllowFeedbackRequests">Allow feedback request emails</label>
+        <span asp-validation-for="AllowFeedbackRequests" class="text-danger"></span>
+    </div>
+            
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" asp-for="AllowMaintenanceReminders" />
+        <label class="form-check-label" asp-for="AllowMaintenanceReminders">Allow maintenance reminder emails</label>
+        <span asp-validation-for="AllowMaintenanceReminders" class="text-danger"></span>
+    </div>
+
+    <div class="row landing__form__actions">
+        <div class="col-12 col-sm-4 offset-sm-8">
+            <button type="submit" class="btn btn-block btn-primary">Save changes</button>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,89 @@
+﻿html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+body > header > nav.navbar {
+    padding-top: 0;
+    padding-bottom: 0;
+    background-color: white;
+    box-shadow: 0 3px 6px rgba(0,0,0,.16), 0 3px 6px rgba(0,0,0,.23);
+}
+
+body > header > nav a.navbar-brand {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+}
+
+body > header > nav img {
+    height: 4rem;
+}
+
+body > header li.nav-item > a.nav-link {
+    font-size: 1.5em;
+    /*color: var(--blue);*/
+    &[disabled] {
+        cursor: not-allowed;
+    }
+}
+
+body > main {
+    display: flex;
+    flex: 1;
+    padding-top: 4.5rem;
+    padding-bottom: 0;
+    position: relative;
+}
+
+body > main div.container-fluid > div.row {
+    height: 100%;
+    position: relative;
+}
+
+/*body > main > .container-fluid > .row {
+    height: 100%;
+    position: relative;
+}*/
+
+body video {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 101%;
+    width: 100%;
+}
+
+body {
+    .landing__login {
+        form .row p {
+            margin: 0;
+        }
+    }
+
+    .landing__form {
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+    }
+
+    .landing__login, .landing__form {
+        padding: 1rem;
+        background-color: rgba(255, 255, 255, 0.75);
+    }
+}
+
+body footer {
+    z-index: 1000;
+    background-color: white;
+    /*box-shadow: 6px 3px 0 rgba(0,0,0,.16), 6px 3px 0 rgba(0,0,0,.23);*/
+}
+
+body > footer > .container-fluid {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}

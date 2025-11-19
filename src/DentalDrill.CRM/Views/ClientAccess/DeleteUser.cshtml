@@ -1,0 +1,37 @@
+﻿@using DevGuild.AspNetCore.Controls.HybridForms
+@model DentalDrill.CRM.Models.ViewModels.ClientAccessDeleteUserOperationModel
+@{
+    ViewBag.Title = "Delete user";
+    this.ConfigureHybridPage("ClientAccessDeleteUser");
+}
+
+<div class="details">
+    <div class="details__header" ajax-rendering="NormalOnly">
+        <div class="details__title">
+            <h1>Delete user</h1>
+        </div>
+        <div class="details__actions">
+            <a asp-action="Details" asp-controller="Clients" asp-route-id="@Model.Client.Id" asp-route-Tab="Access" class="details__action"><span class="fas fa-fw fa-arrow-left"></span> Back</a>
+        </div>
+    </div>
+    
+    <div class="col-12 col-sm-5 col-md-6 mb-2">
+        <div class="row">
+            <div class="col-5">
+                <label>UserName</label>
+            </div>
+            <div class="col-7">
+                @Model.Client.User.UserName
+            </div>
+        </div>
+    </div>
+
+    <form asp-action="DeleteUser" asp-route-id="@Model.Client.Id" hybrid-form-id="ClientAccessDeleteUser">
+        <div class="row ">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-danger">Delete</button>
+                <a asp-action="Details" asp-controller="Clients" asp-route-id="@Model.Client.Id" asp-route-Tab="Access" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

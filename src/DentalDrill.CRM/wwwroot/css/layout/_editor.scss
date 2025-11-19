@@ -1,0 +1,212 @@
+﻿@import "../abstracts/_variables.scss";
+
+.editor, .details {
+    padding-bottom: 2rem;
+
+    &__header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        margin: 1rem 0;
+    }
+
+    &__header--right {
+        justify-content: flex-start;
+        align-items: center;
+
+        @media (min-width: 992px) {
+            justify-content: flex-end;
+        }
+    }
+
+    &__actions {
+        /* Empty */
+    }
+
+    &__action {
+        display: inline-block;
+        padding: 5px 10px;
+        border: 1px solid $action-border-color;
+        border-radius: 5px;
+        margin: 4px 0 0 4px;
+        font-weight: 300;
+        font-size: 18px;
+        line-height: 25px;
+        color: $action-color;
+        box-shadow: 0 2px 10px 0 rgba(0,0,0,.1);
+        transition: all .3s ease;
+        text-decoration: none;
+
+        &:hover {
+            background: $action-hover-background-color;
+            color: $action-hover-color;
+        }
+
+        &_color_red {
+            border: 1px solid red;
+            color: red;
+
+            &:hover {
+                background: red;
+                color: #fff;
+            }
+        }
+
+        &--disabled {
+            color: gray;
+            border-color: gray;
+
+            &:hover {
+                background: white;
+                color: gray;
+            }
+        }
+    }
+
+    &__inline-filter {
+        display: inline-flex;
+        margin-right: 1rem;
+
+        > label {
+            margin-top: 4px;
+            margin-right: 1rem;
+        }
+
+        > .k-widget {
+            min-width: 200px;
+        }
+    }
+
+    &__content {
+        /* Empty */
+    }
+
+    form > .row, & > .row {
+        /*margin-bottom: 0.5rem;*/ // Don't want to apply it solution-wise. Makes harder to control layouts with BS4 classes (mb-N and such)
+        &.separator {
+            border-top: 1px solid #ccc;
+            margin: 0 0 2rem;
+        }
+    }
+
+    label, &__label {
+        font-weight: 600;
+        font-size: 1.15rem;
+        white-space: nowrap;
+    }
+
+    &__label-normal {
+        font-weight: normal !important;
+    }
+
+    &__color-pickers {
+        .editor__label {
+            text-align: center;
+        }
+
+        .editor__value {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+
+    .col-checkbox {
+        padding-top: 0.375rem;
+    }
+
+    &__status {
+        flex: 1;
+        align-items: center;
+        display: flex;
+        flex-direction: row;
+        padding: 0 1rem;
+
+        h4 {
+            margin-bottom: 0;
+            font-size: 1rem;
+            padding-left: 1rem;
+            font-weight: 500;
+        }
+    }
+
+    .form-control-plaintext {
+        color: $main-color;
+    }
+}
+
+.editor {
+    &__submit {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+
+        &__cancel {
+            /* Empty */
+        }
+    }
+}
+
+.details {
+    &__field {
+        //border-left: 1px solid #eae6e6;
+        padding: 0.3rem 0.5rem;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: stretch;
+        margin-left: 1px;
+        margin-right: 1px;
+    }
+
+    &__value {
+        margin-left: 1rem;
+        font-size: 1.15rem;
+    }
+}
+
+.field-validation-error {
+    color: red;
+}
+
+.k-validator-tooltip.field-validation-error {
+    color: white;
+}
+
+input.text-box {
+    border-radius: 0.25rem;
+    border: 1px solid #dde2e7;
+    padding-left: 0.3rem;
+    position: relative;
+    left: calc(-0.3rem - 1px);
+    width: 100%;
+}
+
+.btn-borderless {
+    border: none;
+}
+
+.k-window-content {
+    .editor,.details {
+        & > form > .row,
+        & > .row,
+        & > form > .row-wrapper > .row,
+        & > .row-wrapper > .row {
+            margin-left: 0;
+            margin-right: 0;
+        }
+    }
+}
+
+.card {
+    background-color: $main-background-color;
+}
+
+input.manual-error, .k-widget.manual-error {
+    border-color: red !important;
+}
+
+.k-autocomplete.k-state-disabled {
+    background-color: #e9ecef;
+}

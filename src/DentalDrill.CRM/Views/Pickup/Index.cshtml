@@ -1,0 +1,547 @@
+﻿@model DentalDrill.CRM.Models.ViewModels.OrderCourierCombinedWrapperModel
+@{
+    ViewData["Title"] = $"Order courier";
+    Layout = "_CourierLayout";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="pickup-form col-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2">
+            <h2 class="my-4 text-white text-center">Request a Pick-Up</h2>
+            <kendo-tabstrip name="tabstrip" class="tabstrip__floating">
+                <scrollable enabled="false" />
+                <popup-animation>
+                    <open effects="fade:in" />
+                </popup-animation>
+                <items>
+                    <tabstrip-item text="Australia Wide Practices" class="tabstrip__floating-button btn btn-lg" selected="@(Model.Selected == PickupRequestType.Australia)">
+                        <content>
+                            <form asp-action="Australia" asp-controller="Pickup" class="pickup-form__australia">
+                                <div class="form-row">
+                                    <div class="col-12">
+                                        <div class="alert alert-warning" role="alert">
+                                            <strong>Country NSW / Interstate</strong> Practices ONLY
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    @if (User.Identity.IsAuthenticated && (User.IsInRole(ApplicationRoles.Administrator) ||
+                                                                         User.IsInRole(ApplicationRoles.CompanyAdministrator) ||
+                                                                         User.IsInRole(ApplicationRoles.OfficeAdministrator) ||
+                                                                         User.IsInRole(ApplicationRoles.Corporate)))
+                                    {
+                                        <div class="col-12 mb-2">
+                                            <script type="text/x-kendo-tmpl" id="Australia_ClientNo_HeaderTemplate">
+                                                <div class="dropdown-header k-widget k-header w-100">
+                                                    <table class="w-100">
+                                                        <colgroup>
+                                                            <col style="width: 40%" />
+                                                            <col style="width: 30%" />
+                                                            <col style="width: 30%" />
+                                                        </colgroup>
+                                                        <tr>
+                                                            <td>Surgery</td>
+                                                            <td>Principal Dentist</td>
+                                                            <td>Suburb</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </script>
+                                            <script type="text/x-kendo-tmpl" id="Australia_ClientNo_Template">
+                                                <table class="w-100">
+                                                    <colgroup>
+                                                        <col style="width: 40%" />
+                                                        <col style="width: 30%" />
+                                                        <col style="width: 30%" />
+                                                    </colgroup>
+                                                    <tr>
+                                                        <td>#: data.Name #</td>
+                                                        <td>#: data.PrincipalDentist #</td>
+                                                        <td>#: data.Suburb #</td>
+                                                    </tr>
+                                                </table>
+                                            </script>
+                                            <kendo-dropdownlist for="Australia.ClientNo"
+                                                                option-label="Select a surgery"
+                                                                datavaluefield="ClientNo"
+                                                                datatextfield="FullName"
+                                                                filter="FilterType.Contains"
+                                                                value="@Model.Australia.ClientNo"
+                                                                min-length="3"
+                                                                enforce-min-length="true"
+                                                                auto-width="true"
+                                                                height="400"
+                                                                template-id="Australia_ClientNo_Template"
+                                                                header-template-id="Australia_ClientNo_HeaderTemplate"
+                                                                class="w-100 pickup-form-field"
+                                                                data-field-name="ClientNo">
+                                                <datasource type="DataSourceTagHelperType.Ajax" server-operation="true">
+                                                    <transport>
+                                                        <read url="@Url.Action("ReadAvailableSurgeries", "Pickup")" />
+                                                    </transport>
+                                                    <sorts>
+                                                        <sort field="FullName" direction="asc" />
+                                                    </sorts>
+                                                </datasource>
+                                                <popup origin="bottom right" position="top right"></popup>
+                                            </kendo-dropdownlist>
+                                        </div>
+                                    }
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="Australia.PracticeName" class="form-control pickup-form-field" data-field-name="PracticeName" placeholder="Practice Name" />
+                                        <span asp-validation-for="Australia.PracticeName" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="Australia.ContactPerson" class="form-control pickup-form-field" data-field-name="ContactPerson" placeholder="Contact Person" />
+                                        <span asp-validation-for="Australia.ContactPerson" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="Australia.Email" class="form-control pickup-form-field" data-field-name="Email" placeholder="Email" />
+                                        <span asp-validation-for="Australia.Email" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="Australia.Phone" class="form-control pickup-form-field" data-field-name="Phone" placeholder="Phone" />
+                                        <span asp-validation-for="Australia.Phone" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="Australia.AddressLine1" class="form-control pickup-form-field" data-field-name="AddressLine1" placeholder="Pick-up Address" />
+                                        <span asp-validation-for="Australia.AddressLine1" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="Australia.AddressLine2" class="form-control pickup-form-field" data-field-name="AddressLine2" placeholder="Address Line 2" />
+                                        <span asp-validation-for="Australia.AddressLine2" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="Australia.Suburb" class="form-control pickup-form-field" data-field-name="Suburb" placeholder="Suburb" />
+                                        <span asp-validation-for="Australia.Suburb" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="Australia.State" class="form-control pickup-form-field" data-field-name="State" placeholder="State" />
+                                        <span asp-validation-for="Australia.State" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="Australia.Postcode" class="form-control pickup-form-field" data-field-name="Postcode" placeholder="Postcode" />
+                                        <span asp-validation-for="Australia.Postcode" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 pickup-form-field--warning-mb4-mb2">
+                                        <input asp-for="Australia.NumberOfHandpieces" class="form-control pickup-form-field" data-field-name="NumberOfHandpieces" placeholder="No. of Handpieces" />
+                                        <span asp-validation-for="Australia.NumberOfHandpieces" class="text-danger"></span>
+                                        <div class="alert alert-warning pickup-form-field__warning">
+                                            For our free courier service to apply you must send a minimum of 2 handpieces, otherwise a courier surcharge of $30 will apply. (If invoice totals less than $120)
+                                        </div>
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <textarea asp-for="Australia.Comment" class="form-control pickup-form-field" data-field-name="Comment" rows="3" placeholder="Any additional comments"></textarea>
+                                        <span asp-validation-for="Australia.Comment" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 mb-4">
+                                        <div class="custom-control custom-checkbox">
+                                            <input asp-for="Australia.PackageIsReady" class="custom-control-input" />
+                                            <label asp-for="Australia.PackageIsReady" class="custom-control-label">Is your package of handpieces ready to be collected straight away?<br /><small>(Your consignment note will only be generated if the package is ready to go)</small></label>
+                                            <span asp-validation-for="Australia.PackageIsReady" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-primary mb-2 text-left">Submit</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </content>
+                    </tabstrip-item>
+
+                    <tabstrip-item text="Greater Sydney Practices" class="tabstrip__floating-button btn btn-lg" selected="@(Model.Selected == null || Model.Selected == PickupRequestType.GreaterSydney)">
+                        <content>
+                            <form asp-action="GreaterSydney" asp-controller="Pickup" class="pickup-form__greater-sydney">
+                                <div class="form-row">
+                                    <div class="col-12">
+                                        <div class="alert alert-warning" role="alert">
+                                            <strong>Greater Sydney</strong> Practices ONLY
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    @if (User.Identity.IsAuthenticated && (User.IsInRole(ApplicationRoles.Administrator) ||
+                                                                           User.IsInRole(ApplicationRoles.CompanyAdministrator) ||
+                                                                           User.IsInRole(ApplicationRoles.OfficeAdministrator) ||
+                                                                           User.IsInRole(ApplicationRoles.Corporate)))
+                                    {
+                                        <div class="col-12 mb-2">
+                                            <script type="text/x-kendo-tmpl" id="GreaterSydney_ClientNo_HeaderTemplate">
+                                                <div class="dropdown-header k-widget k-header w-100">
+                                                    <table class="w-100">
+                                                        <colgroup>
+                                                            <col style="width: 40%" />
+                                                            <col style="width: 30%" />
+                                                            <col style="width: 30%" />
+                                                        </colgroup>
+                                                        <tr>
+                                                            <td>Surgery</td>
+                                                            <td>Principal Dentist</td>
+                                                            <td>Suburb</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </script>
+                                            <script type="text/x-kendo-tmpl" id="GreaterSydney_ClientNo_Template">
+                                                <table class="w-100">
+                                                    <colgroup>
+                                                        <col style="width: 40%" />
+                                                        <col style="width: 30%" />
+                                                        <col style="width: 30%" />
+                                                    </colgroup>
+                                                    <tr>
+                                                        <td>#: data.Name #</td>
+                                                        <td>#: data.PrincipalDentist #</td>
+                                                        <td>#: data.Suburb #</td>
+                                                    </tr>
+                                                </table>
+                                            </script>
+                                            <kendo-dropdownlist for="GreaterSydney.ClientNo"
+                                                                option-label="Select a surgery"
+                                                                datavaluefield="ClientNo"
+                                                                datatextfield="FullName"
+                                                                filter="FilterType.Contains"
+                                                                value="@Model.GreaterSydney.ClientNo"
+                                                                min-length="3"
+                                                                enforce-min-length="true"
+                                                                auto-width="true"
+                                                                height="400"
+                                                                template-id="GreaterSydney_ClientNo_Template"
+                                                                header-template-id="GreaterSydney_ClientNo_HeaderTemplate"
+                                                                class="w-100 pickup-form-field"
+                                                                data-field-name="ClientNo">
+                                                <datasource type="DataSourceTagHelperType.Ajax" server-operation="true">
+                                                    <transport>
+                                                        <read url="@Url.Action("ReadAvailableSurgeries", "Pickup")"/>
+                                                    </transport>
+                                                    <sorts>
+                                                        <sort field="FullName" direction="asc"/>
+                                                    </sorts>
+                                                </datasource>
+                                                <popup origin="bottom right" position="top right"></popup>
+                                            </kendo-dropdownlist>
+                                        </div>
+                                    }
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="GreaterSydney.PracticeName" class="form-control pickup-form-field" data-field-name="PracticeName" placeholder="Practice Name"/>
+                                        <span asp-validation-for="GreaterSydney.PracticeName" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="GreaterSydney.ContactPerson" class="form-control pickup-form-field" data-field-name="ContactPerson" placeholder="Contact Person"/>
+                                        <span asp-validation-for="GreaterSydney.ContactPerson" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="GreaterSydney.Email" class="form-control pickup-form-field" data-field-name="Email" placeholder="Email"/>
+                                        <span asp-validation-for="GreaterSydney.Email" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="GreaterSydney.Phone" class="form-control pickup-form-field" data-field-name="Phone" placeholder="Phone"/>
+                                        <span asp-validation-for="GreaterSydney.Phone" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="GreaterSydney.AddressLine1" class="form-control pickup-form-field" data-field-name="AddressLine1" placeholder="Pick-up Address"/>
+                                        <span asp-validation-for="GreaterSydney.AddressLine1" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="GreaterSydney.AddressLine2" class="form-control pickup-form-field" data-field-name="AddressLine2" placeholder="Address Line 2"/>
+                                        <span asp-validation-for="GreaterSydney.AddressLine2" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="GreaterSydney.Suburb" class="form-control pickup-form-field" data-field-name="Suburb" placeholder="Suburb"/>
+                                        <span asp-validation-for="GreaterSydney.Suburb" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="GreaterSydney.Postcode" class="form-control pickup-form-field" data-field-name="Postcode" placeholder="Postcode"/>
+                                        <span asp-validation-for="GreaterSydney.Postcode" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="GreaterSydney.NumberOfHandpieces" class="form-control pickup-form-field" data-field-name="NumberOfHandpieces" placeholder="No. of Handpieces" />
+                                        <span asp-validation-for="GreaterSydney.NumberOfHandpieces" class="text-danger"></span>
+                                        <div class="alert alert-warning pickup-form-field__warning">
+                                            For our free courier service to apply you must send a minimum of 2 handpieces, otherwise a courier surcharge of $30 will apply. (If invoice totals less than $120)
+                                        </div>
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <textarea asp-for="GreaterSydney.Comment" class="form-control pickup-form-field" data-field-name="Comment" rows="3" placeholder="Any additional comments"></textarea>
+                                        <span asp-validation-for="GreaterSydney.Comment" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-primary mb-2 text-left">Submit</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </content>
+                    </tabstrip-item>
+                
+                    <tabstrip-item text="Queensland Practices" class="tabstrip__floating-button btn btn-lg" selected="@(Model.Selected == PickupRequestType.Queensland)">
+                        <content>
+                            <form asp-action="Queensland" asp-controller="Pickup" class="pickup-form__queensland">
+                                <div class="form-row">
+                                    <div class="col-12">
+                                        <div class="alert alert-warning" role="alert">
+                                            <strong>Queensland</strong> Practices ONLY
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    @if (User.Identity.IsAuthenticated && (User.IsInRole(ApplicationRoles.Administrator) ||
+                                                                           User.IsInRole(ApplicationRoles.CompanyAdministrator) ||
+                                                                           User.IsInRole(ApplicationRoles.OfficeAdministrator) ||
+                                                                           User.IsInRole(ApplicationRoles.Corporate)))
+                                    {
+                                        <div class="col-12 mb-2">
+                                            <script type="text/x-kendo-tmpl" id="Queensland_ClientNo_HeaderTemplate">
+                                                <div class="dropdown-header k-widget k-header w-100">
+                                                    <table class="w-100">
+                                                        <colgroup>
+                                                            <col style="width: 40%" />
+                                                            <col style="width: 30%" />
+                                                            <col style="width: 30%" />
+                                                        </colgroup>
+                                                        <tr>
+                                                            <td>Surgery</td>
+                                                            <td>Principal Dentist</td>
+                                                            <td>Suburb</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </script>
+                                            <script type="text/x-kendo-tmpl" id="Queensland_ClientNo_Template">
+                                                <table class="w-100">
+                                                    <colgroup>
+                                                        <col style="width: 40%" />
+                                                        <col style="width: 30%" />
+                                                        <col style="width: 30%" />
+                                                    </colgroup>
+                                                    <tr>
+                                                        <td>#: data.Name #</td>
+                                                        <td>#: data.PrincipalDentist #</td>
+                                                        <td>#: data.Suburb #</td>
+                                                    </tr>
+                                                </table>
+                                            </script>
+                                            <kendo-dropdownlist for="Queensland.ClientNo"
+                                                            option-label="Select a surgery"
+                                                            datavaluefield="ClientNo"
+                                                            datatextfield="FullName"
+                                                            filter="FilterType.Contains"
+                                                            value="@Model.Queensland.ClientNo"
+                                                            min-length="3"
+                                                            enforce-min-length="true"
+                                                            auto-width="true"
+                                                            height="400"
+                                                            template-id="Queensland_ClientNo_Template"
+                                                            header-template-id="Queensland_ClientNo_HeaderTemplate"
+                                                                class="w-100 pickup-form-field"
+                                                                data-field-name="ClientNo">
+                                                <datasource type="DataSourceTagHelperType.Ajax" server-operation="true">
+                                                    <transport>
+                                                        <read url="@Url.Action("ReadAvailableSurgeries", "Pickup")" />
+                                                    </transport>
+                                                    <sorts>
+                                                        <sort field="FullName" direction="asc" />
+                                                    </sorts>
+                                                </datasource>
+                                                <popup origin="bottom right" position="top right"></popup>
+                                            </kendo-dropdownlist>
+                                        </div>
+                                    }
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="Queensland.PracticeName" class="form-control pickup-form-field" data-field-name="PracticeName" placeholder="Practice Name" />
+                                        <span asp-validation-for="Queensland.PracticeName" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="Queensland.ContactPerson" class="form-control pickup-form-field" data-field-name="ContactPerson" placeholder="Contact Person" />
+                                        <span asp-validation-for="Queensland.ContactPerson" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="Queensland.Email" class="form-control pickup-form-field" data-field-name="Email" placeholder="Email" />
+                                        <span asp-validation-for="Queensland.Email" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="Queensland.Phone" class="form-control pickup-form-field" data-field-name="Phone" placeholder="Phone" />
+                                        <span asp-validation-for="Queensland.Phone" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="Queensland.AddressLine1" class="form-control pickup-form-field" data-field-name="AddressLine1" placeholder="Pick-up Address" />
+                                        <span asp-validation-for="Queensland.AddressLine1" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="Queensland.AddressLine2" class="form-control pickup-form-field" data-field-name="AddressLine2" placeholder="Address Line 2" />
+                                        <span asp-validation-for="Queensland.AddressLine2" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="Queensland.Suburb" class="form-control pickup-form-field" data-field-name="Suburb" placeholder="Suburb" />
+                                        <span asp-validation-for="Queensland.Suburb" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="Queensland.Postcode" class="form-control pickup-form-field" data-field-name="Postcode" placeholder="Postcode" />
+                                        <span asp-validation-for="Queensland.Postcode" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="Queensland.NumberOfHandpieces" class="form-control pickup-form-field" data-field-name="NumberOfHandpieces" placeholder="No. of Handpieces" />
+                                        <span asp-validation-for="Queensland.NumberOfHandpieces" class="text-danger"></span>
+                                        <div class="alert alert-warning pickup-form-field__warning">
+                                            For our free courier service to apply you must send a minimum of 2 handpieces, otherwise a courier surcharge of $30 will apply. (If invoice totals less than $120)
+                                        </div>
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <textarea asp-for="Queensland.Comment" class="form-control pickup-form-field" data-field-name="Comment" rows="3" placeholder="Any additional comments"></textarea>
+                                        <span asp-validation-for="Queensland.Comment" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-primary mb-2 text-left">Submit</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </content>
+                    </tabstrip-item>
+
+                    <tabstrip-item text="NZ Practices" class="tabstrip__floating-button btn btn-lg" selected="@(Model.Selected == PickupRequestType.NewZealand)">
+                        <content>
+                            <form asp-action="NewZealand" asp-controller="Pickup" class="pickup-form__new-zealand">
+                                <div class="form-row">
+                                    <div class="col-12">
+                                        <div class="alert alert-warning" role="alert">
+                                            <strong>NZ</strong> Practices ONLY
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    @if (User.Identity.IsAuthenticated && (User.IsInRole(ApplicationRoles.Administrator) ||
+                                                                           User.IsInRole(ApplicationRoles.CompanyAdministrator) ||
+                                                                           User.IsInRole(ApplicationRoles.OfficeAdministrator) ||
+                                                                           User.IsInRole(ApplicationRoles.Corporate)))
+                                    {
+                                        <div class="col-12 mb-2">
+                                            <script type="text/x-kendo-tmpl" id="NewZealand_ClientNo_HeaderTemplate">
+                                                <div class="dropdown-header k-widget k-header w-100">
+                                                    <table class="w-100">
+                                                        <colgroup>
+                                                            <col style="width: 40%" />
+                                                            <col style="width: 30%" />
+                                                            <col style="width: 30%" />
+                                                        </colgroup>
+                                                        <tr>
+                                                            <td>Surgery</td>
+                                                            <td>Principal Dentist</td>
+                                                            <td>Suburb</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </script>
+                                            <script type="text/x-kendo-tmpl" id="NewZealand_ClientNo_Template">
+                                                <table class="w-100">
+                                                    <colgroup>
+                                                        <col style="width: 40%" />
+                                                        <col style="width: 30%" />
+                                                        <col style="width: 30%" />
+                                                    </colgroup>
+                                                    <tr>
+                                                        <td>#: data.Name #</td>
+                                                        <td>#: data.PrincipalDentist #</td>
+                                                        <td>#: data.Suburb #</td>
+                                                    </tr>
+                                                </table>
+                                            </script>
+                                            <kendo-dropdownlist for="NewZealand.ClientNo"
+                                                                option-label="Select a surgery"
+                                                                datavaluefield="ClientNo"
+                                                                datatextfield="FullName"
+                                                                filter="FilterType.Contains"
+                                                                value="@Model.NewZealand.ClientNo"
+                                                                min-length="3"
+                                                                enforce-min-length="true"
+                                                                auto-width="true"
+                                                                height="400"
+                                                                template-id="NewZealand_ClientNo_Template"
+                                                                header-template-id="NewZealand_ClientNo_HeaderTemplate"
+                                                                class="w-100 pickup-form-field"
+                                                                data-field-name="ClientNo">
+                                                <datasource type="DataSourceTagHelperType.Ajax" server-operation="true">
+                                                    <transport>
+                                                        <read url="@Url.Action("ReadAvailableSurgeries", "Pickup")"/>
+                                                    </transport>
+                                                    <sorts>
+                                                        <sort field="FullName" direction="asc"/>
+                                                    </sorts>
+                                                </datasource>
+                                                <popup origin="bottom right" position="top right"></popup>
+                                            </kendo-dropdownlist>
+                                        </div>
+                                    }
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="NewZealand.PracticeName" class="form-control pickup-form-field" data-field-name="PracticeName" placeholder="Practice Name">
+                                        <span asp-validation-for="NewZealand.PracticeName" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="NewZealand.ContactPerson" class="form-control pickup-form-field" data-field-name="ContactPerson" placeholder="Contact Person">
+                                        <span asp-validation-for="NewZealand.ContactPerson" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="NewZealand.Email" class="form-control pickup-form-field" data-field-name="Email" placeholder="Email">
+                                        <span asp-validation-for="NewZealand.Email" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="NewZealand.Phone" class="form-control pickup-form-field" data-field-name="Phone" placeholder="Phone">
+                                        <span asp-validation-for="NewZealand.Phone" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="NewZealand.AddressLine1" class="form-control pickup-form-field" data-field-name="AddressLine1" placeholder="Pick-up Address"/>
+                                        <span asp-validation-for="NewZealand.AddressLine1" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="NewZealand.AddressLine2" class="form-control pickup-form-field" data-field-name="AddressLine2" placeholder="Address Line 2"/>
+                                        <span asp-validation-for="NewZealand.AddressLine2" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="NewZealand.Suburb" class="form-control pickup-form-field" data-field-name="Suburb" placeholder="Suburb">
+                                        <span asp-validation-for="NewZealand.Suburb" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <input asp-for="NewZealand.Locality" class="form-control pickup-form-field" data-field-name="Locality" placeholder="Locality">
+                                        <span asp-validation-for="NewZealand.Locality" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 mb-2">
+                                        <select asp-for="NewZealand.Island" class="form-control pickup-form-field" data-field-name="Island" placeholder="Island">
+                                            <option value="NI">North Island</option>
+                                            <option value="SI">South Island</option>
+                                        </select>
+                                        <span asp-validation-for="NewZealand.Island" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 col-sm-6 pickup-form-field--warning-mb4-mb2">
+                                        <input asp-for="NewZealand.NumberOfHandpieces" class="form-control pickup-form-field" data-field-name="NumberOfHandpieces" placeholder="No. of Handpieces">
+                                        <span asp-validation-for="NewZealand.NumberOfHandpieces" class="text-danger"></span>
+                                        <div class="alert alert-warning pickup-form-field__warning">
+                                            For our free courier service to apply you must send a minimum of 2 handpieces, otherwise a courier surcharge of $30 will apply. (If invoice totals less than $120)
+                                        </div>
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <textarea asp-for="NewZealand.Comment" class="form-control pickup-form-field" data-field-name="Comment" rows="3" placeholder="Any additional comments"></textarea>
+                                        <span asp-validation-for="NewZealand.Comment" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-12 mb-4">
+                                        <div class="custom-control custom-checkbox">
+                                            <input asp-for="NewZealand.PackageIsReady" class="custom-control-input">
+                                            <label asp-for="NewZealand.PackageIsReady" class="custom-control-label">Is your package of handpieces ready to be collected straight away?<br/><small>(Your consignment note will only be generated if the package is ready to go)</small></label>
+                                            <span asp-validation-for="NewZealand.PackageIsReady" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-primary mb-2 text-left">Submit</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </content>
+                    </tabstrip-item>
+                </items>
+            </kendo-tabstrip>
+        </div>
+        
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript" src="~/js/app/pages/pickup/index.js"></script>
+}

@@ -1,0 +1,49 @@
+﻿@using DentalDrill.CRM.Models.Permissions
+@model DentalDrill.CRM.Models.ViewModels.ClientDetailsViewModel
+@{
+    Layout = null;
+}
+
+@(Html.Kendo().Grid<DentalDrill.CRM.Models.ViewModels.JobReadModel>()
+        .Name("RepairsGrid")
+        .HtmlAttributes(new { @class = "k-grid-commandicons", style = "height: 630px" })
+        .Columns(columns =>
+        {
+            columns.Bound(c => c.JobNumber).Width(100).Title("Est./Sale #").ClientTemplate("#:data.JobTypeName# #:data.JobNumber#");
+            columns.Bound(c => c.JobStatus).ClientTemplate("#= DentalDrill.CRM.Pages.Clients.Details.RepairsGrid.renderStatusIndicator(data) #").Width(150);
+            columns.Bound(c => c.JobStatusName).Width(150);
+            columns.Bound(c => c.HandpiecesCount).Title("# of HPs").Width(100);
+            columns.Bound(c => c.Received).ClientTemplate("#= kendo.toString(Received, \"dd/MM/yyyy\") #").Width(100);
+            columns.Command(command =>
+            {
+                command.Custom("CustomDetails").Text("<span class=\"fas fa-fw fa-external-link-alt\"></span>").Click("DentalDrill.CRM.Pages.Clients.Details.RepairsGrid.handleDetailsClick");
+            }).Width(100);
+        })
+        .ToolBar(toolbar =>
+        {
+            if (Model.Access.CanWriteComponent(ClientEntityComponent.Repair))
+            {
+                toolbar.Custom().Name("CustomCreateEstimate").Text("<span class='k-icon k-i-add'></span>" + "New Estimate").HtmlAttributes(new { href = Url.Action("Create", "Jobs", new { ClientId = Model.Id, type = "Estimate" }) });
+                toolbar.Custom().Name("CustomCreateSale").Text("<span class='k-icon k-i-add'></span>" + "New Sale").HtmlAttributes(new { href = Url.Action("Create", "Jobs", new { ClientId = Model.Id, type = "Sale" }) });
+            }
+        })
+        .ColumnMenu(cm => cm.Enabled(false))
+        .Pageable()
+        .Scrollable(scrollable => scrollable.Enabled(true).Height("auto"))
+        .Sortable()
+        .DataSource(dataSource => dataSource
+            .Ajax()
+            .Model(model =>
+            {
+                model.Id(f => f.Id);
+                model.Field(f => f.Id).DefaultValue(default(Guid));
+            })
+            .Sort(sort =>
+            {
+                sort.Add(f => f.JobNumber).Descending();
+            })
+            .Read(read => read.Action("ReadClientJobs", "Jobs", new {parentId = Model.Id}))
+            .Events(events => events.Error("DevGuild.AspNet.Controls.Grids.Errors.GridErrorHandler.handleGridError").RequestStart("DevGuild.AspNet.Controls.Grids.Errors.GridErrorHandler.handleRequestStart"))))
+
+
+

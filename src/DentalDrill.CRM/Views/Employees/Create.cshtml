@@ -1,0 +1,146 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DevGuild.AspNetCore.Controls.HybridForms
+@model DentalDrill.CRM.Models.ViewModels.EmployeeCreateModel
+@{
+    ViewBag.Title = "Create employee";
+    this.ConfigureHybridPage("EmployeesCreate");
+}
+
+<div class="editor">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Create employee</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Index" class="editor__action"><span class="fas fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+    <form asp-action="Create" hybrid-form-id="EmployeesCreate" id="EmployeesCreateForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="row">
+            <div class="col-md-6 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="FirstName"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        <input asp-for="FirstName" class="k-textbox" />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="LastName"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        <input asp-for="LastName" class="k-textbox" />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="RoleId"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        <kendo-dropdownlist for="RoleId" bind-to="@(new SelectList(Model.AvailableRoles, "Id", "Name"))" value="@Model.RoleId" />
+                        <span asp-validation-for="RoleId" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="Type"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        <kendo-dropdownlist for="Type" bind-to="@EmployeeTypeHelper.MakeSelectList()" value="@Model.Type.ToString()" />
+                        <span asp-validation-for="Type" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="AppearanceTheme"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        <kendo-dropdownlist for="AppearanceTheme" bind-to="@(new SelectList(Model.AvailableThemes, "Key", "Name"))" value="@Model.AppearanceTheme" />
+                        <span asp-validation-for="AppearanceTheme" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="AppearanceBackgroundId"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        <file-uploader asp-for="AppearanceBackgroundId" configuration="EmployeeBackground"></file-uploader>
+                        <span asp-validation-for="AppearanceBackgroundId" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="AppearanceOpacity"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        <div>
+                            <kendo-slider name="OpacitySlider" for="AppearanceOpacity" min="0" max="1" small-step="0.01" large-step="0.1"></kendo-slider>
+                        </div>
+                        <span asp-validation-for="AppearanceOpacity" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="UserName"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        <input asp-for="UserName" class="k-textbox" />
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="w-100 d-none d-md-block" />
+            <div class="col-md-6 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="Password"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        <input asp-for="Password" type="password" class="k-textbox" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="ConfirmPassword"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        <input asp-for="ConfirmPassword" type="password" class="k-textbox" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>                                  
+
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a asp-action="Index" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

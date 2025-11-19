@@ -1,0 +1,201 @@
+﻿@model DentalDrill.CRM.Models.ViewModels.HandpieceDirectoryImportModel
+@{
+    ViewBag.Title = "Import";
+}
+
+<div class="editor">
+    <div class="editor__header">
+        <div class="editor__title">
+            <h1>Import directory</h1>
+        </div>
+        <div class="editor__actions">
+            <a asp-action="Index" class="editor__action"><span class="fas fa-list"></span> List</a>
+        </div>
+    </div>
+    <form asp-action="Import">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="row">
+            <div class="col-12">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Import</th>
+                            <th>Type</th>
+                            <th>Normalized Name</th>
+                            <th>Status</th>
+                            <th>Canonical Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (var i = 0; i < Model.Brands.Count; i++)
+                        {
+                            var brand = Model.Brands[i];
+                            var existingBrand = Model.Brands[i].ExistingBrand;
+
+                            <tr class="import-row-brand" style="font-weight: bold; background-color: @(existingBrand != null ? "darkgreen; color: white" : "darkgray");" data-brand-name="@brand.NormalizedName">
+                                @if (existingBrand != null)
+                                {
+                                    <td>
+                                        <input type="hidden" asp-for="Brands[i].IsImported" />
+                                        <input type="checkbox" class="import-row-is-imported" checked="checked" disabled="disabled" />
+                                        <input type="checkbox" class="import-row-children" checked="@(brand.Models.All(x => x.IsImported) ? "checked" : null)" />
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        <input type="checkbox" class="import-row-is-imported" asp-for="Brands[i].IsImported">
+                                        <input type="checkbox" class="import-row-children" checked="@(brand.Models.All(x => x.IsImported) ? "checked" : null)" />
+                                    </td>
+                                }
+                                <td>Brand</td>
+                                <td>@Model.Brands[i].NormalizedName <input type="hidden" asp-for="Brands[i].NormalizedName"></td>
+                                @if (existingBrand != null)
+                                {
+                                    <td>Already exists</td>
+                                    <td>@existingBrand.Name <input type="hidden" asp-for="Brands[i].CanonicalName" /></td>
+                                }
+                                else
+                                {
+                                    <td>Can be imported</td>
+                                    <td>
+                                        @if (brand.AlternateNames.Count > 1)
+                                        {
+                                            <select class="form-control" asp-for="Brands[i].CanonicalName" asp-items="@new SelectList(Model.Brands[i].AlternateNames)"></select>
+                                        }
+                                        else
+                                        {
+                                            <text>@brand.CanonicalName <input type="hidden" asp-for="Brands[i].CanonicalName" /></text>
+                                        }
+                                    </td>
+                                }
+                            </tr>
+                            for (var j = 0; j < Model.Brands[i].Models.Count; j++)
+                            {
+                                var model = Model.Brands[i].Models[j];
+                                var existingModel = Model.Brands[i].Models[j].ExistingModel;
+
+                                <tr class="import-row-model" style="background-color: @(existingModel != null ? "lightgreen" : "lightgray");" data-brand-name="@brand.NormalizedName" data-model-name="@(model.NormalizedName)">
+                                    @if (existingModel != null)
+                                    {
+                                        <td style="padding-left: 1.85rem">
+                                            <input type="hidden" asp-for="Brands[i].Models[j].IsImported">
+                                            <input type="checkbox" class="import-row-is-imported" checked="checked" disabled="disabled" />
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td style="padding-left: 1.85rem">
+                                            <input type="checkbox" class="import-row-is-imported" asp-for="Brands[i].Models[j].IsImported">
+                                        </td>
+                                    }
+                                    <td>Model</td>
+                                    <td>@Model.Brands[i].Models[j].NormalizedName <input type="hidden" asp-for="Brands[i].Models[j].NormalizedName"></td>
+                                    @if (existingModel != null)
+                                    {
+                                        <td>Already exists</td>
+                                        <td><a asp-action="Details" asp-controller="HandpieceModels" asp-route-id="@existingModel.Id">@existingModel.Brand.Name @existingModel.Name</a> <input type="hidden" asp-for="Brands[i].Models[j].CanonicalName" /></td>
+                                    }
+                                    else
+                                    {
+                                        <td>Can be imported</td>
+                                        <td>
+                                            @if (model.AlternateNames.Count > 1)
+                                            {
+                                                <select class="form-control" asp-for="Brands[i].Models[j].CanonicalName" asp-items="@new SelectList(Model.Brands[i].Models[j].AlternateNames)"></select>
+                                            }
+                                            else
+                                            {
+                                                <text>@(model.CanonicalName) <input type="hidden" asp-for="Brands[i].Models[j].CanonicalName" /></text>
+                                            }
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-danger">Import</button>
+                <a asp-action="Index" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts 
+{
+    <script type="text/javascript">
+        (function () {
+            $(".import-row-brand .import-row-is-imported").on("click", function(e) {
+                var row = $(e.target).closest(".import-row-brand");
+                var brandName = row.attr("data-brand-name");
+                var checkbox = $(e.target).closest(".import-row-is-imported");
+                if (!checkbox.prop("checked")) {
+                    var models = $(".import-row-model[data-brand-name='" + brandName + "'");
+                    models.each(function(index, element) {
+                        var modelRow = $(element);
+                        var modelCheckbox = modelRow.find(".import-row-is-imported");
+                        if (!modelCheckbox.prop("disabled") && modelCheckbox.prop("checked")) {
+                            modelCheckbox.prop("checked", false);
+                        }
+                    });
+
+                    var childrenCheckbox = row.find(".import-row-children");
+                    if (childrenCheckbox.prop("checked")) {
+                        childrenCheckbox.prop("checked", false);
+                    }
+                }
+            });
+
+            $(".import-row-brand .import-row-children").on("click", function(e) {
+                var row = $(e.target).closest(".import-row-brand");
+                var brandName = row.attr("data-brand-name");
+                var checkbox = $(e.target).closest(".import-row-children");
+                if (checkbox.prop("checked")) {
+                    var models = $(".import-row-model[data-brand-name='" + brandName + "'");
+                    models.each(function(index, element) {
+                        var modelRow = $(element);
+                        var modelCheckbox = modelRow.find(".import-row-is-imported");
+                        if (!modelCheckbox.prop("disabled") && !modelCheckbox.prop("checked")) {
+                            modelCheckbox.prop("checked", true);
+                        }
+                    });
+
+                    var brandCheckbox = row.find(".import-row-is-imported");
+                    if (!brandCheckbox.prop("checked")) {
+                        brandCheckbox.prop("checked", true);
+                    }
+                } else {
+                    var models = $(".import-row-model[data-brand-name='" + brandName + "'");
+                    models.each(function(index, element) {
+                        var modelRow = $(element);
+                        var modelCheckbox = modelRow.find(".import-row-is-imported");
+                        if (!modelCheckbox.prop("disabled") && modelCheckbox.prop("checked")) {
+                            modelCheckbox.prop("checked", false);
+                        }
+                    });
+                }
+            });
+
+            $(".import-row-model .import-row-is-imported").on("click", function(e) {
+                var row = $(e.target).closest(".import-row-model");
+                var brandName = row.attr("data-brand-name");
+                var checkbox = $(e.target).closest(".import-row-is-imported");
+                var brandRow = $(".import-row-brand[data-brand-name='" + brandName + "'");
+
+                if (checkbox.prop("checked")) {
+                    var brandCheckbox = brandRow.find(".import-row-is-imported");
+                    if (!brandCheckbox.prop("checked")) {
+                        brandCheckbox.prop("checked", true);
+                    }
+                }
+            });
+        })();
+    </script>
+}

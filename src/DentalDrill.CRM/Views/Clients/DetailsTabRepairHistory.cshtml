@@ -1,0 +1,57 @@
+﻿@using DentalDrill.CRM.Models.ViewModels
+@using DentalDrill.CRM.Models.Permissions
+@model DentalDrill.CRM.Models.ViewModels.ClientDetailsViewModel
+@{
+    Layout = null;
+}
+
+@(Html.Kendo().Grid<ClientRepairedItemViewModel>()
+    .Name("RepairedItemsGrid")
+    .HtmlAttributes(new { @class = "k-grid-commandicons2 k-grid--dense k-grid--small-text", style = "height: 630px" })
+    .Columns(columns =>
+    {
+        columns.Bound(c => c.Brand).Width(80).Title("Brand");
+        columns.Bound(c => c.Model).Width(80).Title("Model");
+        columns.Bound(c => c.Serial).Width(80).Title("Serial");
+        columns.Bound(c => c.LastRepair).Width(60).Title("Last Repair").ClientTemplate("<a href=\"#:LastRepairUrl#\" style=\"color: rgb(0, 123, 255)\">#:LastRepair#</a>");
+        columns.Bound(c => c.LastRepairDate).Width(80).Title("Last Repair Date").ClientTemplate("#: kendo.toString(LastRepairDate, \"dd/MM/yyyy\") #");
+        columns.Bound(c => c.LastRepairStatus).Width(100).Title("Last Repair Status").ClientTemplate("#= DentalDrill.CRM.Pages.Clients.Details.RepairHistoryGrid.formatLastRepairStatus(data) #");
+        columns.Bound(c => c.RemindersLastDateTime).Width(80).Title("Last Reminder").ClientTemplate("#: RemindersLastDateTime ? kendo.toString(RemindersLastDateTime, \"dd/MM/yyyy\") : \"\" #");
+        columns.Bound(c => c.RemindersCount).Width(60).Title("Recent Rem.").ClientTemplate("<span class=\"d-flex align-items-center justify-content-between\"><span>#: RemindersCount #</span># if (RemindersCount) { # <span class=\"k-command-cell p-0 d-inline-block float-right\"><button class=\"k-button k-button-icontext client-repair-history-reset-count\"><span class=\"fas fa-fw fa-times\"></span></button></span> # } # </span>");
+        columns.Bound(c => c.TotalRemindersCount).Width(60).Title("Total Rem.");
+        columns.Bound(c => c.Status).Width(80).Title("Item Status").ClientTemplate("#= DentalDrill.CRM.Pages.Clients.Details.RepairHistoryGrid.formatStatus(data) #");
+        columns.Command(command =>
+        {
+            if (Model.Access.CanWriteComponent(ClientEntityComponent.Repair))
+            {
+                command.Custom("CustomToggle").Text("<span class=\"fas fa-fw fa-power-off\"></span>").Click("DentalDrill.CRM.Pages.Clients.Details.RepairHistoryGrid.handleToggle");
+            }
+        }).Width(50);
+    })
+    .ToolBar(toolbar =>
+    {
+        if (Model.Access.CanWriteComponent(ClientEntityComponent.Repair))
+        {
+            toolbar.Custom().Name("CustomMergeTool").Text("Merge Tool").HtmlAttributes(new { href = Url.Action("MergeTool", "ClientHandpieces", new { clientId = Model.Id }) });
+        }
+    })
+    .ColumnMenu(cm => cm.Enabled(false))
+    .Pageable()
+    .Scrollable(scrollable => scrollable.Enabled(true).Height("auto"))
+    .Sortable()
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .Model(model =>
+        {
+            model.Id(f => f.Id);
+            model.Field(f => f.Id);
+            model.Field(f => f.Brand);
+            model.Field(f => f.Model);
+            model.Field(f => f.Serial);
+            model.Field(f => f.LastRepair);
+            model.Field(f => f.LastRepairUrl);
+            model.Field(f => f.LastRepairDate);
+            model.Field(f => f.Status);
+        })
+        .Sort(sort => sort.Add(x => x.Status))
+        .Read(read => read.Action("Read", "ClientRepairHistory", new { parentId = Model.Id }))))

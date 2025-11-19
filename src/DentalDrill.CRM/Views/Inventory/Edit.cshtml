@@ -1,0 +1,97 @@
+﻿@using DevGuild.AspNetCore.Controls.HybridForms
+@using DentalDrill.CRM.Extensions
+@model DentalDrill.CRM.Models.ViewModels.Inventory.InventorySKUEditModel
+@{
+    ViewBag.Title = "Edit SKU";
+    this.ConfigureHybridPage("InventoryEdit");
+}
+
+<div class="editor">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Edit SKU</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Index" asp-controller="Inventory" class="editor__action"><span class="fas fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+    
+    <form asp-action="Edit" asp-route-id="@Model.Original.Id" hybrid-form-id="InventoryEdit" id="InventoryEditForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="row">
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-12">
+                        <label asp-for="Name"></label>
+                    </div>
+                    <div class="col-12 col-sm-9">
+                        <input asp-for="Name" class="k-textbox" placeholder="Enter Name of the SKU" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="col-12 col-sm-3 text-sm-right">
+                        <a asp-action="ConvertToGroup" asp-controller="Inventory" asp-route-id="@Model.Original.Id" class="btn btn-outline-secondary inventory-edit__convert-to-group">Convert to Group</a>
+                    </div>
+                </div>
+            </div>
+
+            @for (var i = 0; i < Model.WorkshopOptions.Count; i++)
+            {
+                <div class="col-12 col-sm-4 mb-2">
+                    <div class="row">
+                        <div class="col-12">
+                            <label asp-for="WorkshopOptions[i].WarningQuantity">Warning QTY (@Model.WorkshopOptions[i].Workshop.Name)</label>
+                            <input asp-for="WorkshopOptions[i].WorkshopId" type="hidden" />
+                        </div>
+                        <div class="col-12">
+                            <input asp-for="WorkshopOptions[i].WarningQuantity" class="k-textbox" placeholder="Enter QTY for Warning status (@Model.WorkshopOptions[i].Workshop.Name)" />
+                            <span asp-validation-for="WorkshopOptions[i].WarningQuantity" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div class="col-12 col-sm-4 mb-2">
+                <div class="row">
+                    <div class="col-12">
+                        <label asp-for="AveragePrice"></label>
+                    </div>
+                    <div class="col-12">
+                        <input asp-for="AveragePrice" class="k-textbox" placeholder="Enter Average Price in AUD" />
+                        <span asp-validation-for="AveragePrice" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-12">
+                        <label asp-for="Description"></label>
+                    </div>
+                    <div class="col-12">
+                        <textarea asp-for="Description" class="k-textbox" placeholder="Comment or note for the SKU - might be a description for the SKU (IDs, order URIs, etc)"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-12">
+                        @Html.Kendo().CheckBoxFor(x => x.HideFromStatistic)
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-12 editor__submit">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a asp-action="Index" asp-controller="Inventory" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,19 @@
+﻿@using DentalDrill.CRM.Views.Manage
+@inject SignInManager<ApplicationUser> SignInManager
+@{
+    var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+}
+
+<ul class="nav nav-pills flex-column">
+    @*<li class="nav-item"><a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" asp-action="Index">Profile</a></li>*@
+    <li class="nav-item"><a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" asp-action="ChangePassword">Password</a></li>
+    @if (User.IsInRole(ApplicationRoles.WorkshopTechnician) || User.IsInRole(ApplicationRoles.OfficeAdministrator) || User.IsInRole(ApplicationRoles.CompanyAdministrator) || User.IsInRole(ApplicationRoles.CompanyManager))
+    {
+        <li class="nav-item"><a class="nav-link @ManageNavPages.AppearanceNavClass(ViewContext)" asp-action="Appearance">Appearance</a></li>
+    }
+    @if (User.IsInRole(ApplicationRoles.Client))
+    {
+        <li class="nav-item"><a class="nav-link @ManageNavPages.NotificationsNavClass(ViewContext)" asp-action="Notifications">Notifications</a></li>
+    }
+</ul>
+

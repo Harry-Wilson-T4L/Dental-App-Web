@@ -1,0 +1,64 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DentalDrill.CRM.Models.ViewModels
+@using DevGuild.AspNetCore.Controls.HybridForms
+@model DentalDrill.CRM.Models.ClientNote
+@{
+    ViewData["Title"] = $"Delete Note";
+
+    this.ConfigureHybridPage("DeleteNote");
+}
+
+<div class="details mb-4">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="details__header">
+            <div class="details__title">
+                <h2>Delete note?</h2>
+            </div>
+            <div class="details__actions">
+                <a class="details__action" asp-action="Details" asp-controller="Clients" asp-route-id="@Model.ClientId" asp-route-Tab="Notes"><span class="fas fa-list"></span> List</a>
+                <a class="details__action" asp-action="Details" asp-route-id="@Model.Id"><span class="fas fa-external-link-alt"></span> Details</a>
+                <a class="details__action" asp-action="Edit" asp-route-id="@Model.Id"><span class="fas fa-pencil-alt"></span> Edit</a>
+            </div>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row details__field">
+                <div class="details__label">
+                    @Html.DisplayNameFor(x => x.Creator)
+                </div>
+                <div class="details__value">
+                    @Model.Creator.FirstName @Model.Creator.LastName
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row details__field">
+                <div class="details__label">
+                    @Html.DisplayNameFor(x => x.Created)
+                </div>
+                <div class="details__value">
+                    <local-date-time value="@Model.Created" format="g" />
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="row details__field" style="white-space: pre-wrap;">@Model.Text</div>
+        </div>
+    </div>
+
+    <form asp-action="Delete" asp-route-id="@Model.Id" hybrid-form-id="DeleteNote">
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-danger">Delete</button>
+                <a asp-action="Details" asp-controller="Clients" asp-route-id="@Model.ClientId" asp-route-Tab="Notes" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+
+}

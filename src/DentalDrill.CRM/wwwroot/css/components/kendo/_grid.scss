@@ -1,0 +1,135 @@
+﻿@import "../../abstracts/_variables.scss";
+
+.k-grid {
+    .k-grid {
+        &-pager {
+            background-color: $main-background-color;
+        }
+
+        &-header {
+            border-right: $main-background-color;
+        }
+
+        td {
+            border: none;
+
+            &.k-command-cell {
+                padding: 0.25rem;
+
+                & > a {
+                    margin: 0.1rem 0.25rem;
+                }
+            }
+        }
+    }
+
+    .k-filtercell {
+        .k-autocomplete.k-header {
+            border-left-width: unset;
+            width: unset;
+        }
+    }
+}
+
+.k-grid, .k-grid-toolbar, .k-grid th {
+    border: none;
+    background-color: $main-background-color;
+}
+
+.k-grid.k-grid-commandicons2 .k-command-cell .k-button-icontext {
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
+.k-grid.k-grid-commandicons2 .k-grid-edit-row .k-command-cell .k-button-icontext {
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.k-grid.k-grid--dense {
+    td, th {
+        padding-left: 0.25rem;
+        padding-right: 0.25rem;
+    }
+
+    .k-grid-edit-row {
+        td, th {
+            padding-left: 0.25rem;
+            padding-right: 0.25rem;
+        }
+    }
+}
+
+.k-grid.k-grid--dense-commands {
+    td.k-command-cell {
+        padding: 0 !important;
+    }
+}
+
+.k-grid.k-grid--small-text {
+    font-size: 0.75rem;
+
+    td .k-button {
+        font-size: 0.75rem;
+    }
+
+    tbody tr:not(.k-grid-edit-row) a.k-button.k-button-icontext {
+        min-width: unset;
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+
+    tbody tr.k-grid-edit-row a.k-button.k-button-icontext {
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+}
+
+.k-grid.k-grid--dense-filter {
+    .k-grid-header {
+        .k-grid-filter {
+            width: auto;
+            padding-left: 0;
+            padding-right: 0;
+            right: 0;
+        }
+    }
+}
+
+.k-grid {
+    .grid-email {
+        color: $kendo-grid-email-color;
+    }
+}
+
+.k-treelist.k-treelist--dense {
+    td, th {
+        padding-left: 0.25rem;
+        padding-right: 0.25rem;
+    }
+}
+
+.k-treelist.k-treelist--small-text {
+    font-size: 0.75rem;
+
+    td .k-button {
+        font-size: 0.75rem;
+    }
+
+    tbody tr:not(.k-grid-edit-row) a.k-button.k-button-icontext {
+        min-width: unset;
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+}
+
+
+.k-grid.k-grid--inline {
+    .k-button {
+        display: inline-flex;
+    }
+}
+
+.k-grid-toolbar .k-button.k-button-icontext .fas.fa-fw {
+    line-height: 1.5;
+}

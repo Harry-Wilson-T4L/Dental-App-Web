@@ -1,0 +1,190 @@
+﻿@using DevGuild.AspNetCore.Controls.HybridForms
+@using DentalDrill.CRM.Extensions
+@model DentalDrill.CRM.Models.ViewModels.HandpieceModelListingEditModel
+@{
+    ViewBag.Title = "Create listing";
+    this.ConfigureHybridPage("HandpieceModelListingCreate");
+}
+
+<div class="editor">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Create listing</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Details" asp-route-id="@Model.Parent.Id" asp-controller="HandpieceModels" asp-route-Tab="Listings" class="editor__action"><span class="fas fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+    
+    <form asp-action="Create" asp-route-parentId="@Model.Parent.Id" hybrid-form-id="HandpieceModelListingCreate" id="HandpieceModelListingCreateForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="row">
+            <div class="col-6">
+                <div class="image-uploader-multiple image-uploader-multiple--size-8" data-name="@Html.NameFor(x => x.Images)">
+                    <div class="image-uploader-multiple__ids">
+                        @foreach (var image in Model.Images)
+                        {
+                            <input type="hidden" class="image-uploader-multiple__ids__id" name="@Html.NameFor(x => x.Images)" value="@image" />
+                        }
+                    </div>
+                    <div class="image-uploader-multiple__previews">
+                        @foreach (var image in Model.Images)
+                        {
+                            <div class="image-uploader-multiple__previews__preview" data-id="@image">
+                                <img uploaded-id="@image" uploaded-variation="160" />
+                                <div class="image-uploader-multiple__previews__preview__remove"><span class="fas fa-fw fa-times"></span></div>
+                            </div>
+                        }
+                    </div>
+                    @(Html.Kendo().Upload()
+                        .Name($"image-uploader-multiple__instance-{Guid.NewGuid():N}")
+                        .HtmlAttributes(new { @class = "image-uploader-multiple__upload" })
+                        .Async(a => a
+                            .SaveField("file")
+                            .Save("Image", "Upload", new
+                            {
+                                configuration = "HandpieceStoreListing",
+                                previewVariation = "160"
+                            }))
+                        .ShowFileList(false)
+                        .Events(events => events
+                            .Success(@"function (e) {
+    var file = e.response;
+    var $container = e.sender.wrapper.closest("".image-uploader-multiple"");
+    var modelName = $container.attr(""data-name"");
+
+    var $ids = $container.find("".image-uploader-multiple__ids"");
+    var $id = $(""<input type=\""hidden\"" class=\""image-uploader-multiple__ids__id\"" />"");
+    $id.attr(""name"", modelName);
+    $id.val(file.id);
+    $ids.append($id);
+
+    var $previews = $container.find("".image-uploader-multiple__previews"");
+    var $preview = $(""<div class=\""image-uploader-multiple__previews__preview\""></div>"");
+    $preview.attr(""data-id"", file.id);
+    $preview.append($(""<img />"").attr(""src"", file.previewUrl));
+    $preview.append($(""<div class=\""image-uploader-multiple__previews__preview__remove\""><span class=\""fas fa-fw fa-times\""></span></div>""));
+    $previews.append($preview);
+}")
+                            .Error(@"function (e) { alert(""Failed to upload selected images!""); }")))
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-12 mb-2">
+                        <div class="row">
+                            <div class="col-5">
+                                <label asp-for="SerialNumber"></label>
+                            </div>
+                            <div class="col-7">
+                                <input asp-for="SerialNumber" class="k-textbox w-100" />
+                                <span asp-validation-for="SerialNumber" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 mb-2">
+                        <div class="row">
+                            <div class="col-5">
+                                <label asp-for="Price"></label>
+                            </div>
+                            <div class="col-7">
+                                <input asp-for="Price" class="k-textbox w-100" />
+                                <span asp-validation-for="Price" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 mb-2">
+                        <div class="row">
+                            <div class="col-5">
+                                <label asp-for="Warranty"></label>
+                            </div>
+                            <div class="col-7">
+                                <input asp-for="Warranty" class="k-textbox w-100" />
+                                <span asp-validation-for="Warranty" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 mb-2">
+                        <div class="row">
+                            <div class="col-5">
+                                <label asp-for="Notes"></label>
+                            </div>
+                            <div class="col-7">
+                                <textarea asp-for="Notes" class="k-textbox w-100"></textarea>
+                                <span asp-validation-for="Notes" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 mb-2">
+                        <div class="row">
+                            <div class="col-5">
+                                <label asp-for="Coupling"></label>
+                            </div>
+                            <div class="col-7">
+                                <input asp-for="Coupling" class="k-textbox w-100" />
+                                <span asp-validation-for="Coupling" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 mb-2">
+                        <div class="row">
+                            <div class="col-5">
+                                <label asp-for="CosmeticCondition"></label>
+                            </div>
+                            <div class="col-7">
+                                <select asp-for="CosmeticCondition" class="form-control w-100">
+                                    <option value=""></option>
+                                    <option value="Great Condition">Great Condition</option>
+                                    <option value="Good Condition">Good Condition</option>
+                                    <option value="Brand New">Brand New</option>
+                                    <option value="Ex Demo">Ex Demo</option>
+                                </select>
+                                <span asp-validation-for="CosmeticCondition" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 mb-2">
+                        <div class="row">
+                            <div class="col-5">
+                                <label asp-for="FiberOpticBrightness"></label>
+                            </div>
+                            <div class="col-7">
+                                <select asp-for="FiberOpticBrightness" class="form-control w-100">
+                                    <option value=""></option>
+                                    <option value="10%">10%</option>
+                                    <option value="20%">20%</option>
+                                    <option value="30%">30%</option>
+                                    <option value="40%">40%</option>
+                                    <option value="50%">50%</option>
+                                    <option value="60%">60%</option>
+                                    <option value="70%">70%</option>
+                                    <option value="80%">80%</option>
+                                    <option value="90%">90%</option>
+                                    <option value="100%">100%</option>
+                                </select>
+                                <span asp-validation-for="FiberOpticBrightness" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a asp-action="Details" asp-route-id="@Model.Parent.Id" asp-controller="HandpieceModels" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

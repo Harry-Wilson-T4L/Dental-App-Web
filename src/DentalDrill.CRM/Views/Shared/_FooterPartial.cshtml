@@ -1,0 +1,49 @@
+﻿<footer class="footer">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-4 footer__column">
+                <h5 class="footer__column_title">
+                    DDS, 2/11 Turbo Road
+                </h5>
+                <div class="footer__column_item">
+                    Kings Park NSW 2148
+                </div>
+                <div class="footer__column_item">
+                    <li class="nav-item btn btn-outline-light">
+                        <a class="nav-link text-light" asp-action="Index" asp-controller="Pickup">
+                            <i class="fas fa-shipping-fast"></i> Book a Pick-up
+                        </a>
+                    </li>
+                </div>
+            </div>
+
+            <div class="col-lg-4 footer__column">
+                <h5 class="footer__column_title">
+                    DENTAL DRILL SOLUTIONS
+                </h5>
+                <div class="footer__column_item">
+                    1300 337 300
+                </div>
+                <div class="footer__column_item footer__copyright text-center">
+                    &copy; Tronyk Pty Ltd 2018 - @DateTime.UtcNow.Year | Developed by <a href="https://devguild.net/" class="text-light"><u>DevGuild</u></a>
+                </div>
+            </div>
+
+            <div class="col-lg-4 footer__column">
+                <h5 class="footer__column_title">
+                    Contacts
+                </h5>
+                <div class="footer__column_item">
+                    @{
+                        var infoEmailAddress = "info@dds11.au";
+                        <a href="@($"mailto:{infoEmailAddress}")" class="footer__column_item link">@infoEmailAddress</a>
+                    }
+                </div>
+                <div class="footer__column_item">
+                    <a href="https://www.facebook.com/dentaldrillsolutions" class="footer__column_item link">facebook.com/dentaldrillsolutions</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

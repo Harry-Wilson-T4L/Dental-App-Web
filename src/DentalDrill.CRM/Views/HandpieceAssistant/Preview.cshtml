@@ -1,0 +1,53 @@
+﻿@model HandpieceModel
+@{
+    var schematicsList = Model.Schematics.Where(x => x.Display).OrderBy(x => x.OrderNo).ToList();
+    var index = 0;
+    var page = 0;
+    var schematicId = ViewBag.SchematicId as Guid?;
+    if (schematicId.HasValue)
+    {
+        page = schematicsList.FindIndex(x => x.Id == schematicId);
+        if (page < 0 || page >= schematicsList.Count)
+        {
+            page = 0;
+        }
+    }
+}
+
+<kendo-scrollview name="AssistantPreview" enable-pager="true" content-height="100%" page="page" class="handpiece-assistant-scrollview">
+    <items>
+        @foreach (var schematic in schematicsList)
+        {
+            switch (schematic.Type)
+            {
+                case HandpieceModelSchematicType.Text:
+                    <scrollview-item>
+                        <content class="handpiece-assistant-schematic-page" data-index="@index" data-id="@schematic.Id">
+                            <div class="handpiece-assistant-schematic-page__text">
+                                @Html.Raw(schematic.Text)
+                            </div>
+                        </content>
+                    </scrollview-item>
+                    break;
+                case HandpieceModelSchematicType.Attachment:
+                    <scrollview-item>
+                        <content class="handpiece-assistant-schematic-page" data-index="@index" data-id="@schematic.Id">
+                            @(Html.Kendo().PDFViewer()
+                                .Name($"HandpieceModelSchematic_{schematic.Id:N}_PdfContent")
+                                .PdfjsProcessing(pdf => pdf.File(Url.Action("DownloadAttachment", "HandpieceModelSchematics", new { id = schematic.Id }))))
+                        </content>
+                    </scrollview-item>
+                    break;
+                case HandpieceModelSchematicType.Image:
+                    <scrollview-item>
+                        <content class="handpiece-assistant-schematic-page" data-index="@index" data-id="@schematic.Id">
+                            <img uploaded-ref="schematic.Image" uploaded-variation="2560" alt="@schematic.Title" />
+                        </content>
+                    </scrollview-item>
+                    break;
+            }
+
+            index++;
+        }
+    </items>
+</kendo-scrollview>

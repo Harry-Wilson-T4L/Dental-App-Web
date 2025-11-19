@@ -1,0 +1,194 @@
+﻿@using DentalDrill.CRM.Models.ViewModels
+@using DevGuild.AspNetCore.Services.Uploads.Images
+@model DentalDrill.CRM.Models.ViewModels.SurgeryReportsViewModel
+@{
+    ViewData["Title"] = $"Reports - {Model.Surgery.Name}";
+    ViewData["SpecificClient"] = Model.Surgery.Id;
+    Layout = "_SurgeryLayout";
+}
+
+@inject IImageUploadService ImageUpload
+
+<style type="text/css">
+    @if (Model.Appearance.BackgroundImage != null)
+    {
+        var imageUrl = await ImageUpload.GetImageUrlAsync(Model.Appearance.BackgroundImage, "2560");
+        <text>
+        .main--surgery {
+        background-image: url(@imageUrl);
+    }
+    </text>
+    }
+    else
+    {
+        <text>
+        .main--surgery {
+        background-image: url("/img/SurgeryDefaultBackground-2560.jpg")
+    }
+    </text>
+    }
+
+    .k-grid th, .k-grid-header, .surgery-maintenance-header {
+        background-color: @Model.Appearance.SecondaryColor !important;
+        color: @Model.Appearance.HeaderTextColor;
+    }
+
+    .search__dates .label {
+        color: @Model.Appearance.HeaderTextColor !important;
+    }
+
+    .k-grid-header-wrap {
+        border-color: @Model.Appearance.SecondaryColor !important;
+    }
+</style>
+
+<div class="container reports" data-client-id="@Model.Surgery.Id" data-client-urlpath="@Model.Surgery.UrlPath">
+
+    <div class="surgery__main-search pt-3 pt-lg-5">
+        <h1> Reports </h1>
+        <a class="d-block btn mt-3 btn-info" asp-action="Index" asp-controller="Surgeries" asp-route-id="@Model.Surgery.UrlPath"><i class="fas fa-arrow-left"></i> Overview</a>
+    </div>
+
+    <div class="row reports__container mt-3 py-3">
+        <div class="col-12">
+            <div class="row mb-2">
+                <div class="col-lg-3 mb-2 mb-lg-0">
+                    <div class="dropdown filters__container">
+                        <button class="btn btn-secondary dropdown-toggle w-100" type="button" id="FiltersDatesPreset" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Select dates
+                        </button>
+                        <div class="dropdown-menu reports__dates-range date-range-selector" aria-labeledby="FiltersDatesPreset"
+                             data-range-target-from="#FilterDateFrom" data-range-target-to="#FilterDateTo"
+                             data-range-default-from="@Model.DefaultDateRange.From.ToString("yyyy-MM-dd")" data-range-default-to="@Model.DefaultDateRange.To.ToString("yyyy-MM-dd")">
+                            @for (var groupIndex = 0; groupIndex < Model.DateRanges.Count; groupIndex++)
+                            {
+                                if (groupIndex > 0)
+                                {
+                                    <div class="dropdown-divider"></div>
+                                }
+
+                                foreach (var item in Model.DateRanges[groupIndex])
+                                {
+                                    <button class="dropdown-item date-range-selector__item" data-range-from="@item.From.ToString("yyyy-MM-dd")" data-range-to="@item.To.ToString("yyyy-MM-dd")" type="button">@item.Title</button>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 mb-2 mb-lg-0">
+                    @(Html.Kendo().DatePicker()
+                                .HtmlAttributes(new { @class = "reports__dates-from w-100" })
+                                .Value(Model.DefaultDateRange.From)
+                                .Name("FilterDateFrom"))
+                </div>
+
+                <div class="col-lg-3 mb-2 mb-lg-0">
+                    @(Html.Kendo().DatePicker()
+                                .HtmlAttributes(new { @class = "reports__dates-to w-100" })
+                                .Value(Model.DefaultDateRange.To)
+                                .Name("FilterDateTo"))
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="btn-toolbar justify-content-between" role="group">
+                        <button class="reports__clear btn btn-danger" style="width: 48%">Clear</button>
+                        <button class="reports__search btn btn-primary" style="width: 48%">Search</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-12">
+                    <kendo-tabstrip name="CorporateReportsTabStrip">
+                        <items>
+                            <tabstrip-item text="Makes & Models" style="width: 50%" selected="true">
+                                <content>
+                                    <div class="reports__brands">
+                                        <div class="row">
+                                            <div class="col-lg-8">
+                                                <span>Display</span>
+                                                <div class="reports__brands__fields toggle-list d-inline-block">
+                                                    <button class="toggle-list__item toggle-list__item--active btn btn-sm btn-secondary mb-2" data-key="RatingAverage">Average Rating</button>
+                                                    <button class="toggle-list__item toggle-list__item--active btn btn-sm btn-secondary mb-2" data-key="UnrepairedPercent">% Unrepaired</button>
+                                                    <button class="toggle-list__item toggle-list__item--active btn btn-sm btn-secondary mb-2" data-key="CostSum">Cost</button>
+                                                    <button class="toggle-list__item toggle-list__item--active btn btn-sm btn-secondary mb-2" data-key="CostAverage">Average Cost</button>
+                                                    <button class="toggle-list__item toggle-list__item--active btn btn-sm btn-secondary mb-2" data-key="HandpiecesCount"># Handpieces</button>
+                                                    <button class="disabled btn btn-sm btn-secondary mb-2 d-none" disabled="disabled" data-key="PresencePercent">% Presence</button>
+                                                    <button class="disabled btn btn-sm btn-secondary mb-2 d-none" disabled="disabled" data-key="RecurringPercent">% Recurring</button>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <div class="row mb-2">
+                                                    <div class="col-12">
+                                                        <span>Date aggregate</span>
+                                                        @(Html.Kendo().DropDownList()
+                                                              .Name("BrandsFilterDateAggregate")
+                                                              .HtmlAttributes(new { @class = "reports__brands__date-aggregate" })
+                                                              .BindTo(ReportDateAggregateHelper.MakeSelectList()))
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-2">
+                                                    <div class="col-12">
+                                                        <button class="toggle-button reports__brands__insights btn btn-sm btn-secondary toggle-button--active"><span class="fas fa-fw fa-chart-bar"></span> Insights</button>
+                                                        <button class="reports__brands__export__pdf btn btn-sm btn-secondary"><span class="fas fa-fw fa-file-pdf"></span> Export pdf</button>
+                                                        <button class="reports__brands__export__excel btn btn-sm btn-secondary"><span class="fas fa-fw fa-file-excel"></span> Export xlsx</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-12 reports__brands__insights-container py-2"></div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-12 reports__brands__container"></div>
+                                        </div>
+                                    </div>
+                                </content>
+                            </tabstrip-item>
+
+                            <tabstrip-item text="Statuses" style="width: 50%">
+                                <content>
+                                    <div class="reports__statuses">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="row mb-2 mt-2">
+                                                    <div class="col-12 d-flex justify-content-end">
+                                                        <button class="toggle-button reports__statuses__insights ml-1 btn btn-sm btn-secondary toggle-button--active"><span class="fas fa-fw fa-chart-bar"></span> Insights</button>
+                                                        <button class="reports__statuses__export__pdf ml-1 btn btn-sm btn-secondary"><span class="fas fa-fw fa-file-pdf"></span> Export pdf</button>
+                                                        <button class="reports__statuses__export__excel ml-1 btn btn-sm btn-secondary"><span class="fas fa-fw fa-file-excel"></span> Export xlsx</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-12 reports__statuses__insights-container py-2"></div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-12 reports__statuses__container"></div>
+                                        </div>
+                                    </div>
+                                </content>
+                            </tabstrip-item>
+                        </items>
+                    </kendo-tabstrip>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <scripts-bundle path="/js/app/pages/surgeries/reports.min.js" />
+    <script type="text/javascript">
+        $(function () {
+            var page = new DentalDrill.CRM.Pages.Surgeries.Reports.ReportsPage($(".reports"));
+            page.initialize();
+            window.__page = page;
+        });
+    </script>
+}

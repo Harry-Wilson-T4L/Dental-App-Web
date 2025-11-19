@@ -1,0 +1,110 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DentalDrill.CRM.Models.Permissions
+@using DevGuild.AspNetCore.Controls.HybridForms
+@using Kendo.Mvc.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model DentalDrill.CRM.Models.ViewModels.WorkshopRoleJobTypeHandpieceExceptions.WorkshopRoleJobTypeHandpieceExceptionEditModel
+@{
+    ViewBag.Title = $"Workshop role {Model.Parent.JobType.Name} exception";
+    this.ConfigureHybridPage("WorkshopRoleJobTypeHandpieceExceptionsDetails");
+}
+
+<div class="editor">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Workshop role @Model.Parent.JobType.Name exception</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Details" asp-controller="WorkshopRoleJobTypes" asp-route-id="@Model.Parent.Id" class="editor__action"><span class="fas fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-12 mb-2">
+            <h5>When</h5>
+            <table class="table mb-2">
+                <colgroup><col style="width: 90%" /><col style="width: 10%" /></colgroup>
+                <thead>
+                <tr>
+                    <th>Job Status</th>
+                    <th>Selected</th>
+                </tr>
+                </thead>
+                <tbody>
+                @for (var i = 0; i < Model.WhenJobStatus.Count; i++)
+                {
+                    var index = i;
+                    <tr>
+                        <td>
+                            @Model.WhenJobStatus[index].Object.ToDisplayString()
+                            <input asp-for="WhenJobStatus[index].Object" type="hidden"/>
+                        </td>
+                        <td>
+                            <input asp-for="WhenJobStatus[index].Enabled" type="checkbox"/>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+            <table class="table mb-2">
+                <colgroup><col style="width: 90%" /><col style="width: 10%" /></colgroup>
+                <thead>
+                <tr>
+                    <th>Handpiece Status</th>
+                    <th>Selected</th>
+                </tr>
+                </thead>
+                <tbody>
+                @for (var i = 0; i < Model.WhenHandpieceStatus.Count; i++)
+                {
+                    var index = i;
+                    <tr>
+                        <td>
+                            @Model.WhenHandpieceStatus[index].Object.ToDisplayString()
+                            <input asp-for="WhenHandpieceStatus[index].Object" type="hidden"/>
+                        </td>
+                        <td>
+                            <input asp-for="WhenHandpieceStatus[index].Enabled" type="checkbox"/>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-md-12 mb-2">
+            <h5>Restrict Permissions</h5>
+            <table class="table mb-2">
+                <colgroup><col style="width: 80%" /><col style="width: 10%" /><col style="width: 10%" /></colgroup>
+                <thead>
+                <tr>
+                    <th>Field</th>
+                    <th>Read Only</th>
+                    <th>Hidden</th>
+                </tr>
+                </thead>
+                <tbody>
+                @for (var i = 0; i < Model.Fields.Count; i++)
+                {
+                    var index = i;
+                    <tr>
+                        <td>
+                            @Model.Fields[index].Object.ToDisplayString()
+                            <input asp-for="Fields[index].Object" type="hidden"/>
+                        </td>
+                        <td>
+                            <input asp-for="Fields[index].Write" type="checkbox"/>
+                        </td>
+                        <td>
+                            <input asp-for="Fields[index].Read" type="checkbox"/>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

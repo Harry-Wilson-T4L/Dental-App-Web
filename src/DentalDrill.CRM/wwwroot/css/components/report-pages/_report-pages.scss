@@ -1,0 +1,80 @@
+﻿$pixelsPerInch: 72px;
+
+.pdf-report {
+    &__window {
+        padding: 0 !important;
+    }
+
+    &__wrapper {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+
+    &__toolbar {
+        height: 40px;
+        line-height: 40px;
+        background-color: #ffffff;
+        z-index: 1;
+        text-align: center;
+    }
+
+    &__container-wrapper {
+        position: absolute;
+        top: 40px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        overflow-y: scroll;
+    }
+
+    &__container {
+        min-width: 100%;
+        min-height: 100%;
+        background-color: #dddddd;
+        overflow-y: auto;
+        font-size: 12px;
+
+        h1, .h1 {
+            font-size: 2.5em;
+        }
+
+        h2, .h2 {
+            font-size: 2em;
+        }
+
+        h3, .h3 {
+            font-size: 1.75em;
+        }
+
+        h4, .h4 {
+            font-size: 1.5em;
+        }
+
+        h5, .h5 {
+            font-size: 1.25em;
+        }
+
+        h6, .h6 {
+            font-size: 1em;
+        }
+    }
+
+    &__page {
+        background-color: white;
+        position: relative;
+        margin: .5in auto;
+        padding: .4in .3in;
+        overflow: hidden;
+
+        &--size-a4 {
+            width: $pixelsPerInch * 8.27;
+            height: $pixelsPerInch * 11.69;
+        }
+
+        &--size-letter {
+            width: $pixelsPerInch * 8.5;
+            height: $pixelsPerInch * 11.0;
+        }
+    }
+}

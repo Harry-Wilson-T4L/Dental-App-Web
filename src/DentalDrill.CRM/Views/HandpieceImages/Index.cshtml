@@ -1,0 +1,56 @@
+﻿@using Kendo.Mvc.UI
+@using DentalDrill.CRM.Models.ViewModels
+@model DentalDrill.CRM.Models.ViewModels.RepairDetailsViewModel
+@{
+    ViewBag.Title = "Images";
+    Layout = null;
+}
+
+<script type="text/javascript" src="~/js/app/pages/handpieceImages/index.js" asp-append-version="true"></script>
+
+@(Html.Kendo().Grid<HandpieceImageViewModel>()
+      .Name("HandpieceImagesGrid")
+      .HtmlAttributes(new { @class = "k-grid-commandicons2 k-grid--dense k-grid--small-text", style = "height: 320px" })
+      .Columns(columns =>
+      {
+          columns.Bound(c => c.Date).ClientTemplate("#= kendo.toString(Date, \"dd/MM/yyyy\") #");
+          columns.Bound(c => c.ImageUrl).ClientTemplate("<img class='handpiece-thumbnail' data-handpiece-id='#=HandpieceId#' data-image-id='#=Id#' src='#=ImageUrl#'/>");
+          columns.Bound(c => c.Description);
+          columns.Bound(c => c.Display).ClientTemplate("#: Display ? 'Yes' : 'No' #");
+
+          columns.Command(command =>
+          {
+              command.Edit().Text("<span></span>").IconClass("fas fa-fw fa-pencil-alt")
+                  .UpdateText("<span></span>").UpdateIconClass("fas fa-fw fa-check")
+                  .CancelText("<span></span>").CancelIconClass("fas fa-fw fa-ban");
+              command.Destroy().Text("<span></span>").IconClass("fas fa-fw fa-trash-alt");
+          });
+      })
+      .ToolBar(toolbar =>
+      {
+          toolbar.Custom().Name("CustomCreate")
+              .Text("<span class=\"k-icon k-i-add\"></span>" + "Attach image")
+              .HtmlAttributes(new { href = Url.Action("Create", "HandpieceImages", new { parentId = Model.Id }) });
+          toolbar.Custom().Name("CustomBatchCreate")
+              .Text("<span class=\"k-icon k-i-add\"></span>" + "Attach multiple images")
+              .HtmlAttributes(new { href = Url.Action("BatchCreate", "HandpieceImages", new { parentId = Model.Id }) });
+          toolbar.Custom().Name("CustomCreateVideo")
+              .Text("<span class=\"k-icon k-i-add\"></span>" + "Attach video")
+              .HtmlAttributes(new { href = Url.Action("CreateVideo", "HandpieceImages", new { parentId = Model.Id }) });
+      })
+      .ColumnMenu(cm => cm.Enabled(false))
+      .Editable(editable => editable.Mode(GridEditMode.InLine))
+      .Scrollable(scrollable => scrollable.Enabled(true).Height("auto"))
+      .DataSource(dataSource => dataSource
+        .Ajax()
+        .Model(model =>
+        {
+            model.Id(f => f.Id);
+            model.Field(f => f.Id).DefaultValue(default(Guid));
+            model.Field(f => f.Date).Editable(false);
+            model.Field(f => f.ImageUrl).Editable(false);
+        })
+        .Read(read => read.Action("Read", "HandpieceImages", new { parentId = Model.Id }))
+        .Update(update => update.Action("Update", "HandpieceImages"))
+        .Destroy(destroy => destroy.Action("Destroy", "HandpieceImages"))
+      .Events(events => events.Error("DevGuild.AspNet.Controls.Grids.Errors.GridErrorHandler.handleGridError").RequestStart("DevGuild.AspNet.Controls.Grids.Errors.GridErrorHandler.handleRequestStart"))))

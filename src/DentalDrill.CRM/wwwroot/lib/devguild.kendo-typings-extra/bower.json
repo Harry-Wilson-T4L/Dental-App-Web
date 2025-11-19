@@ -1,0 +1,17 @@
+{
+  "name": "devguild.kendo-typings-extra",
+  "authors": [
+    "DevGuild <info@devguild.ru>"
+  ],
+  "description": "Contains additional typings for kendo-ui library.",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "homepage": "https://devguild.ru/",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

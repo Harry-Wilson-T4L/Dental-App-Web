@@ -1,0 +1,85 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DevGuild.AspNetCore.Controls.HybridForms
+@model DentalDrill.CRM.Models.ViewModels.ClientFeedbackForms.ClientFeedbackFormSendNewModel
+@{
+    ViewBag.Title = "Send new feedback form";
+    this.ConfigureHybridPage("ClientFeedbackFormsSendNewForm");
+}
+
+<div class="editor mb-2">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Send new feedback form</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Details" asp-controller="Clients" asp-route-id="@Model.Client.Id" asp-route-Tab="Feedback" class="editor__action"><span class="fa fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+    
+    <form asp-action="SendNewForm" asp-route-clientId="@Model.Client.Id" method="post" hybrid-form-id="ClientFeedbackFormsSendNewForm">
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+        <div class="row">
+
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-3">
+                        <label asp-for="SendEmail"></label>
+                    </div>
+                    <div class="col-9">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" asp-for="SendEmail" />
+                            <label class="form-check-label" asp-for="SendEmail">&nbsp;</label>
+                        </div>
+                        <span class="text-danger" asp-validation-for="SendEmail"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-3">
+                        <label asp-for="RecipientAddress"></label>
+                    </div>
+                    <div class="col-9">
+                        <input asp-for="RecipientAddress" type="text" class="form-control" />
+                        <span class="text-danger" asp-validation-for="RecipientAddress"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-3">
+                        <label asp-for="SelectedQuestions"></label>
+                    </div>
+                    <div class="col-9">
+                        @foreach (var question in Model.Questions)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       name="SelectedQuestions"
+                                       id="@($"SelectedQuestions_{question.Id:N}")"
+                                       value="@question.Id"
+                                       checked="@(Model.SelectedQuestions.Contains(question.Id) ? "checked" : null)" />
+                                <label class="form-check-label" 
+                                       for="@($"SelectedQuestions_{question.Id:N}")">@question.Name</label>
+                            </div>
+                        }
+                        <span class="text-danger" asp-validation-for="SelectedQuestions"></span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-12 editor__submit">
+                <button type="submit" class="btn btn-primary">Send</button>
+                <a asp-action="Details" asp-controller="Clients" asp-route-id="@Model.Client.Id" asp-route-Tab="Feedback" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,101 @@
+﻿@use "sass:math";
+
+.handpiece-status-indicator {
+    $disabled-background: #e9ecef;
+    $enabled-background: green;
+    $danger-background: orange;
+    $override-background: red;
+
+    $progress-height: 0.5rem;
+    $point-radius: 1rem;
+    $text-color: white;
+    $text-size: 0.65rem;
+
+    margin-left: math.div($point-radius, 2);
+    margin-right: math.div($point-radius, 2);
+
+    &__progress {
+        height: $progress-height;
+
+        @mixin progress-width($value, $max) {
+            .handpiece-status-indicator[data-max='#{$max}'][data-value='#{$value}'] & {
+                width: math.div($value - 1, $max - 1) * 100%;
+            }
+        }
+
+        @mixin progress-width-max($max) {
+            @for $i from 1 through $max {
+                @include progress-width($i, $max);
+            }
+        }
+
+        .progress-bar {
+            background-color: $enabled-background;
+            @include progress-width-max(6);
+            @include progress-width-max(7);
+
+            .handpiece-status-indicator[data-danger='True'] & {
+                background-color: $danger-background;
+            }
+        }
+    }
+
+    &__points {
+        position: relative;
+        color: $text-color;
+        font-size: $text-size;
+
+        @mixin offset-position($value, $max) {
+            .handpiece-status-indicator[data-max='#{$max}'] &:nth-child(#{$value}) {
+                left: math.div($value - 1, $max - 1) * 100%;
+            }
+        }
+
+        @mixin offset-position-max($max) {
+            @for $i from 1 through $max {
+                @include offset-position($i, $max);
+            }
+        }
+
+        @mixin selected-background($value, $max, $background: $enabled-background, $extra-selector: "") {
+            @for $i from $value through $max {
+                .handpiece-status-indicator[data-value='#{$i}']#{$extra-selector} &:nth-child(#{$value}) {
+                    background-color: $background;
+                }
+            }
+        }
+
+        @mixin selected-background-max($max, $background: $enabled-background, $extra-selector: "") {
+            @for $i from 1 through $max {
+                @include selected-background($i, $max, $background, $extra-selector);
+            }
+        }
+
+        @mixin override-background($max) {
+            @for $i from 1 through $max {
+                .handpiece-status-indicator[data-override~='#{$i}'] &:nth-child(#{$i}) {
+                    background-color: $override-background;
+                }
+            }
+        }
+
+        &__point {
+            position: absolute;
+            width: $point-radius;
+            height: $point-radius;
+            border-radius: math.div($point-radius, 2);
+            top: -(math.div($point-radius + $progress-height, 2));
+            margin-left: -(math.div($point-radius, 2));
+            background-color: $disabled-background;
+            text-align: center;
+
+            @include offset-position-max(6);
+            @include offset-position-max(7);
+            @include selected-background-max(6);
+            @include selected-background-max(7);
+            @include selected-background-max(6, $danger-background, "[data-danger='True']");
+            @include selected-background-max(7, $danger-background, "[data-danger='True']");
+            @include override-background(6);
+        }
+    }
+}

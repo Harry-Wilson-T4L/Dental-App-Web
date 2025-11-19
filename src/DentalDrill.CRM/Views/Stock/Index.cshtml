@@ -1,0 +1,115 @@
+﻿@model dynamic
+@{
+    ViewBag.Title = "Stock Control By Status";
+}
+
+<h1 class="header">Stock Control</h1>
+<nav class="nav nav-material nav-pills nav-justified mt-3">
+    <a class="nav-item nav-link active" asp-action="Index" asp-controller="Stock">Needs Ordering</a>
+    <a class="nav-item nav-link" asp-action="Restock" asp-controller="Stock">Restock</a>
+</nav>
+
+<div class="collapse-container mt-3">
+    <h4 class="collapse-toggle" style="cursor: pointer">Being Repaired <span class="collapse-toggle-chevron fas fa-fw fa-chevron-right" data-chevron-expanded="fa-chevron-right" data-chevron-collapsed="fa-chevron-down"></span></h4>
+    <div class="collapse show">
+        <kendo-grid name="StockControlBeingRepairedGrid" height="450" class="k-grid-commandicons2 k-grid--dense k-grid--small-text">
+            <columns>
+                <column field="JobNumber" title="#" width="50"/>
+                <column field="Brand" title="Make" width="100"/>
+                <column field="Model" title="Model" width="100"/>
+                <column field="ServiceLevel" title="Service Level" width="100"/>
+                <column field="PartsComment" title="Parts Comment" width="200"/>
+                <column field="Amount" title="Amount" width="75" template="@("$#:kendo.toString(data.Amount, \"\\#,\\#\\#0.\\#\")#")"/>
+                <column field="Ordered" title="Ordered" width="75" template="@("<input id=\"stock__field__ordered__#=data.uid#\" type=\"checkbox\" class=\"stock__field__ordered k-checkbox\" #= data.Ordered ? \"checked=\\\"checked\\\"\" : \"\" # />" +
+                                                                                 "<label for=\"stock__field__ordered__#=data.uid#\" class=\"k-checkbox-label\"></label>")" />
+                <column width="100">
+                    <commands>
+                        <column-command name="CustomOpen" click="DentalDrill.CRM.Pages.Stock.Status.StockControlBeingRepairedGrid.handleOpen" text="@("<span class=\"fas fa-fw fa-external-link-alt\"></span> Handpiece")"/>
+                    </commands>
+                </column>
+            </columns>
+            <column-menu enabled="false" />
+            <editable enabled="false" />
+            <pageable enabled="true" />
+            <scrollable enabled="true" />
+            <sortable enabled="true" allow-unsort="true" mode="multiple" />
+            <filterable enabled="true" />
+            <datasource type="DataSourceTagHelperType.Ajax" page-size="50">
+                <transport>
+                    <read url="@Url.Action("ReadHandpiecesBeingRepaired", "Stock")" />
+                </transport>
+                <schema>
+                    <model id="Id">
+                        <fields>
+                            <field name="JobId" />
+                            <field name="JobNumber" type="number" />
+                            <field name="Brand" />
+                            <field name="Model" />
+                            <field name="ServiceLevel" />
+                            <field name="PartsComment" />
+                            <field name="Amount" type="number" />
+                        </fields>
+                    </model>
+                </schema>
+                <sorts>
+                    <sort field="JobNumber" direction="asc" />
+                </sorts>
+            </datasource>
+        </kendo-grid>
+    </div>
+</div>
+
+<div class="collapse-container mt-3">
+    <h4 class="collapse-toggle" style="cursor: pointer">Waiting Approval <span class="collapse-toggle-chevron fas fa-fw fa-chevron-right" data-chevron-expanded="fa-chevron-right" data-chevron-collapsed="fa-chevron-down"></span></h4>
+    <div class="collapse show">
+        <kendo-grid name="StockControlWaitingApprovalGrid" height="450" class="k-grid-commandicons2 k-grid--dense k-grid--small-text">
+            <columns>
+                <column field="JobNumber" title="#" width="50" />
+                <column field="Brand" title="Make" width="100" />
+                <column field="Model" title="Model" width="100" />
+                <column field="ServiceLevel" title="Service Level" width="100" />
+                <column field="PartsComment" title="Parts Comment" width="200" />
+                <column field="Amount" title="Amount" width="75" template="@("$#:kendo.toString(data.Amount, \"\\#,\\#\\#0.\\#\")#")" />
+                <column field="Ordered" title="Ordered" width="75" template="@("<input id=\"stock__field__ordered__#=data.uid#\" type=\"checkbox\" class=\"stock__field__ordered k-checkbox\" #= data.Ordered ? \"checked=\\\"checked\\\"\" : \"\" # />" +
+                                                                               "<label for=\"stock__field__ordered__#=data.uid#\" class=\"k-checkbox-label\"></label>")" />
+                <column width="100">
+                    <commands>
+                        <column-command name="CustomOpen" click="DentalDrill.CRM.Pages.Stock.Status.StockControlWaitingApprovalGrid.handleOpen" text="@("<span class=\"fas fa-fw fa-external-link-alt\"></span> Handpiece")" />
+                    </commands>
+                </column>
+            </columns>
+            <column-menu enabled="false" />
+            <editable enabled="false" />
+            <pageable enabled="true" />
+            <scrollable enabled="true" />
+            <sortable enabled="true" allow-unsort="true" mode="multiple" />
+            <filterable enabled="true" />
+            <datasource type="DataSourceTagHelperType.Ajax" page-size="50">
+                <transport>
+                    <read url="@Url.Action("ReadHandpiecesWaitingApproval", "Stock")" />
+                </transport>
+                <schema>
+                    <model id="Id">
+                        <fields>
+                            <field name="JobId" />
+                            <field name="JobNumber" type="number" />
+                            <field name="Brand" />
+                            <field name="Model" />
+                            <field name="ServiceLevel" />
+                            <field name="PartsComment" />
+                            <field name="Amount" type="number" />
+                        </fields>
+                    </model>
+                </schema>
+                <sorts>
+                    <sort field="JobNumber" direction="asc" />
+                </sorts>
+            </datasource>
+        </kendo-grid>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript" src="~/js/app/pages/stock/status.js" asp-append-version="true"></script>
+}

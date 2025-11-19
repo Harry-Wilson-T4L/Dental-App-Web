@@ -1,0 +1,108 @@
+﻿@using DevGuild.AspNetCore.Controls.HybridForms
+@using DevGuild.AspNetCore.Services.Uploads.Images
+@model DentalDrill.CRM.Models.ViewModels.HandpieceStoreDetailsModel
+@{
+    ViewBag.Title = $"Buy {Model.Listing.Model.Brand.Name} {Model.Listing.Model.Name}";
+    this.ConfigureHybridPage("HandpieceStoreBuy");
+}
+
+<div class="handpiece-store-buy">
+    <div class="row">
+        <div class="col-9"><h2>@Model.Listing.Model.Brand.Name @Model.Listing.Model.Name</h2></div>
+        <div class="col-3 handpiece-store-buy__price">
+            @if (Model.Listing.Model.PriceNew.HasValue)
+            {
+                <div class="handpiece-store-buy__price__new">RRP<br/>$@Model.Listing.Model.PriceNew.Value.ToString("#,##0.##")</div>
+            }
+            <div class="handpiece-store-buy__price__listing">$@Model.Listing.Price.ToString("#,##0.##")</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            @if (Model.Listing.Images.Count > 0)
+            {
+                var index = 0;
+                <kendo-scrollview name="HandpieceStoreBuyImagePreview" class="handpiece-shop-image-scrollview" enable-pager="true" content-height="100%" page="0">
+                    <items>
+                        @foreach (var image in Model.Listing.Images.OrderBy(x => x.OrderNo))
+                        {
+                            <scrollview-item>
+                                <content class="handpiece-shop-image-scrollview__page" data-index="@index" data-id="@image.Id">
+                                    <img uploaded-ref="image.Image" uploaded-variation="600" class="handpiece-image-show-carousel" data-id="@Model.Listing.Id" data-image="@image.Id" alt="@Model.Listing.Model.Brand.Name @Model.Listing.Model.Name" />
+                                </content>
+                            </scrollview-item>
+
+                            index++;
+                        }
+                    </items>
+                </kendo-scrollview>
+            }
+            else if (Model.Listing.Model.ImageId.HasValue)
+            {
+                <img class="handpiece-store-buy__image" alt="@Model.Listing.Model.Brand.Name @Model.Listing.Model.Name" uploaded-ref="Model.Listing.Model.Image" uploaded-variation="600" />
+            }
+            else
+            {
+                <img class="handpiece-store-buy__image" alt="@Model.Listing.Model.Brand.Name @Model.Listing.Model.Name" src="/img/hub-logo.png" />
+            }
+        </div>
+        <div class="col-6 handpiece-store-buy__info handpiece-store-buy__info--side">
+            <div class="handpiece-store-buy__info__section-header">Listing details</div>
+            @if (!String.IsNullOrEmpty(Model.Listing.Coupling))
+            {
+                <div class="handpiece-store-buy__info__section"><span class="handpiece-store-buy__info__key">Coupling / Fitting:</span> @Model.Listing.Coupling</div>
+            }
+            @if (!String.IsNullOrEmpty(Model.Listing.CosmeticCondition))
+            {
+                <div class="handpiece-store-buy__info__section"><span class="handpiece-store-buy__info__key">Cosmetic Condition:</span> @Model.Listing.CosmeticCondition</div>
+            }
+            @if (!String.IsNullOrEmpty(Model.Listing.FiberOpticBrightness))
+            {
+                <div class="handpiece-store-buy__info__section"><span class="handpiece-store-buy__info__key">Fibre Optic Brightness:</span> @Model.Listing.FiberOpticBrightness</div>
+            }
+            @if (!String.IsNullOrEmpty(Model.Listing.Warranty))
+            {
+                <div class="handpiece-store-buy__info__section"><span class="handpiece-store-buy__info__key">Warranty:</span> @Model.Listing.Warranty</div>
+            }
+            @if (!String.IsNullOrEmpty(Model.Listing.Notes))
+            {
+                <div class="handpiece-store-buy__info__section handpiece-store-buy__info__section-multiline">@Model.Listing.Notes</div>
+            }
+            <div class="handpiece-store-buy__info__section handpiece-store-buy__info__section-contact">Please contact us on 1300 337 300 number for any inquires about the handpiece</div>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-12 handpiece-store-buy__info">
+            <div class="handpiece-store-buy__info__section-header">Model description</div>
+            <div class="handpiece-store-buy__info__section-multiline">@Model.Listing.Model.Description</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <form asp-action="Buy" asp-route-id="@Model.Listing.Id" hybrid-form-id="HandpieceStoreBuy" id="HandpieceStoreBuyForm">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="row">
+                    <div class="col-3">
+                        @if (Model.Surgery != null)
+                        {
+                            <input asp-for="SurgeryName" type="hidden" />
+                        }
+                        else
+                        {
+                            <input asp-for="SurgeryName" placeholder="Surgery" class="k-textbox" />
+                        }
+                    </div>
+                    <div class="col-3">
+                        <input asp-for="ContactName" placeholder="Contact Name" class="k-textbox"/>
+                    </div>
+                    <div class="col-3">
+                        <input asp-for="ContactEmail" placeholder="Contact Email" class="k-textbox" />
+                    </div>
+                    <div class="col-3">
+                        <button type="submit" class="w-100 btn btn-success">Buy</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,28 @@
+﻿@using Newtonsoft.Json
+@model DentalDrill.CRM.Models.ViewModels.FeedbackForms.FeedbackFormIndexModel
+@{
+    ViewBag.Title = "Feedback";
+}
+
+<h1 class="header">Feedback</h1>
+
+<div id="FeedbackFormsIndex">
+    <div class="grid-container k-grid-commandicons2 k-grid--dense k-grid--small-text k-grid--dense-filter"></div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/app/pages/feedbackForms/index.js" asp-append-version="true"></script>
+    <script type="text/javascript">
+        $(function() {
+            var FeedbackFormsGrid = DentalDrill.CRM.Pages.FeedbackForms.Index.FeedbackFormsGrid;
+            var root = document.querySelector("#FeedbackFormsIndex");
+            var questions = @Html.Raw(JsonConvert.SerializeObject(Model.Questions.Select(x => new
+                            {
+                                id = x.Id,
+                                type = x.Type,
+                                shortName = x.ShortName,
+                            })));
+            FeedbackFormsGrid.initialize(root, questions);
+        });
+    </script>
+}

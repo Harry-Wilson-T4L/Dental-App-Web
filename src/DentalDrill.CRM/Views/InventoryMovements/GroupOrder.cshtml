@@ -1,0 +1,137 @@
+﻿@using DevGuild.AspNetCore.Controls.HybridForms
+@using Newtonsoft.Json
+@using DentalDrill.CRM.Extensions
+@model DentalDrill.CRM.Models.ViewModels.InventoryMovements.InventoryMovementGroupOrderModel
+@{
+    ViewBag.Title = "Order movements";
+    this.ConfigureHybridPage("InventoryMovementsGroupOrder");
+}
+
+<div class="editor inventory-group-editor" id="InventoryMovementsGroupOrderEditor">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Order movements</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Index" asp-controller="InventoryMovements" class="editor__action"><span class="fas fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+
+    <form asp-action="GroupOrder" asp-route-sku="@Model.SKU.Id" asp-route-workshop="@Model.Workshop.Id" hybrid-form-id="InventoryMovementsGroupOrder"
+          class="inventory-group-editor__form" id="InventoryMovementsGroupOrderForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="row">
+            <div class="col-12 col-sm-6 mb-2">
+                <div class="row">
+                    <div class="col-12">
+                        <h5 class="form-control-plaintext font-weight-bold">[@Model.SKU.Type.Name] @Model.SKU.Name</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col mb-2 grid-container">
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="row">
+            <div class="col-12 col-sm-3 mb-2">
+                <div class="row">
+                    <div class="col-12">
+                        <label>Average Price</label>
+                    </div>
+                    <div class="col-12">
+                        <p class="form-control-plaintext">@Model.SKU.AveragePrice?.ToString("'$'#,##0.##")</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-3 mb-2">
+                <div class="row">
+                    <div class="col-12">
+                        <label>&nbsp;</label>
+                    </div>
+                    <div class="col-12 text-sm-right pt-1">
+                        <label asp-for="SetPrice">Set Price</label>
+                        @Html.Kendo().CheckBoxFor(x => x.SetPrice).Label("")
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 mb-2">
+                <div class="row">
+                    <div class="col-12">
+                        <label asp-for="Price"></label>
+                    </div>
+                    <div class="col-12">
+                        <input asp-for="Price" class="k-textbox" placeholder="Enter Price" disabled />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-primary">Order</button>
+                <a asp-action="Index" asp-controller="InventoryMovements" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+    <script type="text/javascript">
+        $(function() {
+            var movements = new DentalDrill.CRM.Pages.InventoryMovements.Shared.InventoryMovementBulkCollection();
+            movements.direction = @Html.Raw(JsonConvert.SerializeObject((Int32)InventoryMovementDirection.Increase));
+            movements.type = @Html.Raw(JsonConvert.SerializeObject((Int32)InventoryMovementType.Order));
+            movements.status = @Html.Raw(JsonConvert.SerializeObject((Int32)InventoryMovementStatus.Approved));
+            movements.averagePrice = @Html.Raw(JsonConvert.SerializeObject(Model.SKU.AveragePrice));
+
+            @{
+                var missingQuantity = await Model.SKU.GetMissingQuantity(Model.Workshop);
+                if (missingQuantity.GreaterThan(0, InventorySKU.QuantityPrecision))
+                {
+                    <text>movements.extraInitialQuantity = @Html.Raw(JsonConvert.SerializeObject(missingQuantity));</text>
+                }
+            }
+
+            @foreach (var movement in Model.Movements)
+            {
+                var requiredPart = await movement.GetHandpieceRequiredPartAsync();
+                var poco = new
+                {
+                    Id = movement.Id,
+                    Direction = movement.Direction,
+                    Type = movement.Type,
+                    Status = movement.Status,
+                    HandpieceId = requiredPart?.Handpiece?.Id,
+                    HandpieceNumber = requiredPart?.Handpiece?.Number,
+                    HandpieceStatus = requiredPart?.Handpiece?.Status,
+                    RequiredQuantity = requiredPart != null ? await requiredPart.GetMissingQuantity() : (Decimal?)null,
+                    Quantity = movement.Quantity,
+                    QuantityAbsolute = movement.QuantityAbsolute,
+                    AveragePrice = Model.SKU.AveragePrice,
+                    Price = movement.Price,
+                    CreatedOn = movement.CreatedOn,
+                    CompletedOn = movement.CompletedOn,
+                    PartsComment = requiredPart?.Handpiece?.PartsComment,
+                    MovementComment = movement.Comment,
+                };
+
+                var json = JsonConvert.SerializeObject(poco, Formatting.None);
+
+                <text>movements.add(@Html.Raw(json));</text>
+            }
+
+            var editorRoot = document.getElementById("InventoryMovementsGroupOrderEditor");
+            var editor = new DentalDrill.CRM.Pages.InventoryMovements.GroupOrder.GroupOrderEditor(editorRoot, movements);
+            editor.init();
+        });
+    </script>
+</div>

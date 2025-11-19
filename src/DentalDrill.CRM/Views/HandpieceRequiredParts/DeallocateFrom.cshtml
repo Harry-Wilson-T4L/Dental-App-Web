@@ -1,0 +1,120 @@
+﻿@using DevGuild.AspNetCore.Controls.HybridForms
+@using DentalDrill.CRM.Extensions
+@using System.Globalization
+@using Newtonsoft.Json
+@model DentalDrill.CRM.Models.ViewModels.HandpieceRequiredParts.HandpieceRequiredPartDeallocateFromModel
+@{
+    ViewBag.Title = "Swap";
+    this.ConfigureHybridPage("HandpieceRequiredPartsDeallocateFrom");
+}
+
+<div class="editor" id="HandpieceRequiredPartsDeallocateFromEditor">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Swap</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Edit" asp-controller="Handpieces" asp-route-id="@Model.Handpiece.Id" class="editor__action"><span class="fas fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+
+    <form asp-action="DeallocateFrom" asp-route-handpiece="@Model.Handpiece.Id" asp-route-sku="@Model.SKU.Id"
+          hybrid-form-id="HandpieceRequiredPartsDeallocateFrom"
+          id="HandpieceRequiredPartsDeallocateFromForm">
+        <div asp-validation-summary="ModelOnly"></div>
+
+        <div class="row">
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-3">
+                        <label>SKU</label>
+                    </div>
+                    <div class="col-9">
+                        <p class="form-control-plaintext">[@Model.SKU.Type.Name] @Model.SKU.Name</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 mb-2">
+                <div class="row">
+                    <div class="col-6">
+                        <label>Allocated QTY</label>
+                    </div>
+                    <div class="col-6">
+                        <p class="form-control-plaintext">@Model.AllocatedQuantity.ToString("#,##0.##")</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 mb-2">
+                <div class="row">
+                    <div class="col-6">
+                        <label>Shelf QTY</label>
+                    </div>
+                    <div class="col-6">
+                        <p class="form-control-plaintext">@Model.ShelfQuantity.ToString("#,##0.##")</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 mb-2">
+                <div class="row editor__field" data-field="MoveToHandpieces">
+                    <div class="col-6">
+                        <label>Move to handpieces</label>
+                    </div>
+                    <div class="col-6">
+                        <p class="editor__field__value form-control-plaintext">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 mb-2">
+                <div class="row editor__field" data-field="MoveToShelf">
+                    <div class="col-6">
+                        <label>Move to shelf</label>
+                    </div>
+                    <div class="col-6">
+                        <p class="editor__field__value form-control-plaintext">@Model.AllocatedQuantity.ToString("#,##0.##")</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col mb-2 grid-container">
+            </div>
+        </div>
+
+        <div class="d-none editor__data">
+        </div>
+
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-primary">Swap</button>
+                <a asp-action="Edit" asp-controller="Handpieces" asp-route-id="@Model.Handpiece.Id" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+    <script type="text/javascript">
+        $(function () {
+            var ns = DentalDrill.CRM.Pages.HandpieceRequiredParts.DeallocateFrom;
+            var options = new ns.DeallocateFromOptions();
+            options.handpieceId = @Html.Raw(JsonConvert.SerializeObject(Model.Handpiece.Id));
+            options.skuId = @Html.Raw(JsonConvert.SerializeObject(Model.SKU.Id));
+            options.allocatedQuantity = @Html.Raw(JsonConvert.SerializeObject(Model.AllocatedQuantity));
+            options.shelfQuantity = @Html.Raw(JsonConvert.SerializeObject(Model.ShelfQuantity));
+
+            var editorRoot = document.getElementById("HandpieceRequiredPartsDeallocateFromEditor");
+            var editor = new ns.DeallocateFromEditor(editorRoot, options);
+            editor.init();
+        });
+    </script>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript" src="~/js/app/pages/handpieceRequiredParts/deallocateFrom.js" asp-append-version="true"></script>
+} 

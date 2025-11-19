@@ -1,0 +1,17 @@
+{
+  "name": "devguild.kendo-tabstrip-navigation",
+  "authors": [
+    "DevGuild <info@devguild.ru>"
+  ],
+  "description": "Extends kendo-ui tab strip to enable storing open tab name in url via history api.",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "homepage": "https://devguild.ru/",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

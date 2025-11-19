@@ -1,0 +1,200 @@
+﻿@model DentalDrill.CRM.Models.ViewModels.HandpieceDetailsModel
+@{
+    var acl = Model.PropertiesAccessControl;
+}
+
+<div class="row">
+    <div class="col-xl-4 col-12 mb-2">
+        <div class="row details__field">
+            <div class="details__label">Client</div>
+            <div class="details__value">@Model.Entity.Job.Client.FullName @(Model.Entity.Job.Client.Corporate != null ? $"({Model.Entity.Job.Client.Corporate.Name})" : "")</div>
+        </div>
+    </div>
+    <div class="col-xl-4 col-lg-6 mb-2">
+        <div class="row details__field">
+            <div class="details__label">Brand</div>
+            @if (acl.For(x => x.Brand).CanDisplay)
+            {
+                <div class="details__value">@Model.Entity.Brand</div>
+            }
+            else
+            {
+                <div class="details__value"><em>(hidden)</em></div>
+            }
+        </div>
+    </div>
+    <div class="col-xl-4 col-lg-6 mb-2">
+        <div class="row details__field">
+            <div class="details__label">Model</div>
+            @if (acl.For(x => x.MakeAndModel).CanDisplay)
+            {
+                <div class="details__value">@Model.Entity.MakeAndModel</div>
+            }
+            else
+            {
+                <div class="details__value"><em>(hidden)</em></div>
+            }
+        </div>
+    </div>
+    <div class="col-xl-4 col-lg-6 mb-2">
+        <div class="row details__field">
+            <div class="details__label">Serial #</div>
+            @if (acl.For(x => x.Serial).CanDisplay)
+            {
+                <div class="details__value">@Model.Entity.Serial</div>
+            }
+            else
+            {
+                <div class="details__value"><em>(hidden)</em></div>
+            }
+        </div>
+    </div>
+
+    <div class="col-xl-4 col-lg-6 mb-2">
+        <div class="row details__field">
+            <div class="details__label">Service Level</div>
+            @if (acl.For(x => x.ServiceLevelId).CanDisplay)
+            {
+                <div class="details__value">@Model.Entity.ServiceLevel?.Name</div>
+            }
+            else
+            {
+                <div class="details__value"><em>(hidden)</em></div>
+            }
+        </div>
+    </div>
+    <div class="col-xl-4 col-lg-6 mb-2">
+        <div class="row details__field">
+            <div class="details__label">Received Date</div>
+            <div class="details__value">@Model.Entity.Job.Received.ToString("d")</div>
+        </div>
+    </div>
+    <div class="col-xl-4 col-lg-6 mb-2">
+        <div class="row details__field">
+            <div class="details__label">Speed</div>
+            @if (acl.For(x => x.Speed).CanDisplay)
+            {
+                <div class="details__value">@Model.Entity.Speed (@Model.Entity.SpeedType.ToDisplayString())</div>
+            }
+            else
+            {
+                <div class="details__value"><em>(hidden)</em></div>
+            }
+        </div>
+    </div>
+    <div class="col-xl-4 col-lg-6 mb-2">
+        <div class="row details__field">
+            <div class="details__label">Rating</div>
+            @if (acl.For(x => x.Rating).CanDisplay)
+            {
+                <div class="details__value">@Model.Entity.Rating/10</div>
+            }
+            else
+            {
+                <div class="details__value"><em>(hidden)</em></div>
+            }
+        </div>
+    </div>
+    <div class="col-xl-4 col-lg-6 mb-2">
+        <div class="row details__field">
+            <div class="details__label">Parts #</div>
+            @if (acl.For(x => x.Parts).CanDisplay)
+            {
+                <div class="details__value">@Model.Entity.Parts</div>
+            }
+            else
+            {
+                <div class="details__value"><em>(hidden)</em></div>
+            }
+        </div>
+    </div>
+    <div class="col-12 mb-2">
+        <div class="row details__field">
+            <div class="details__label">Problem Description</div>
+            @if (acl.For(x => x.ProblemDescription).CanDisplay)
+            {
+                <div class="details__value">@Model.Entity.ProblemDescription</div>
+            }
+            else
+            {
+                <div class="details__value"><em>(hidden)</em></div>
+            }
+        </div>
+    </div>
+    <div class="col-12 mb-2">
+        <div class="row details__field">
+            <div class="details__label">Diagnostic Report</div>
+            @if (acl.For(x => x.DiagnosticReport).CanDisplay)
+            {
+                <div class="details__value handpiece-diagnostic-report">@Model.Entity.DiagnosticReport</div>
+            }
+            else
+            {
+                <div class="details__value"><em>(hidden)</em></div>
+            }
+        </div>
+    </div>
+    <div class="col-12 mb-2">
+        <div class="row details__field">
+            <div class="details__label">Estimate Comment</div>
+            <div class="details__value">@Model.Job.Comment</div>
+        </div>
+    </div>
+    <div class="col-12 mb-2">
+        <div class="row details__field">
+            <div class="details__label">Internal Comment</div>
+            @if (acl.For(x => x.InternalComment).CanDisplay)
+            {
+                <div class="details__value">@Model.Entity.InternalComment</div>
+            }
+            else
+            {
+                <div class="details__value"><em>(hidden)</em></div>
+            }
+        </div>
+    </div>
+    <div class="col-12 mb-2">
+        <div class="row details__field">
+            <div class="details__label">Public Comment</div>
+            @if (acl.For(x => x.PublicComment).CanDisplay)
+            {
+                <div class="details__value">@Model.Entity.PublicComment</div>
+            }
+            else
+            {
+                <div class="details__value"><em>(hidden)</em></div>
+            }
+        </div>
+    </div>
+</div>
+
+<hr />
+
+<div class="row">
+    <div class="col-xl-4 mb-2">
+        <div class="row details__field">
+            <div class="details__label">Return by</div>
+            @if (acl.For(x => x.ReturnById).CanDisplay)
+            {
+                <div class="details__value">@Model.Entity.ReturnBy?.Name</div>
+            }
+            else
+            {
+                <div class="details__value"><em>(hidden)</em></div>
+            }
+        </div>
+    </div>
+    <div class="col-xl-4 mb-2">
+        <div class="row details__field">
+            <div class="details__label">Cost of repair</div>
+            @if (acl.For(x => x.CostOfRepair).CanDisplay)
+            {
+                <div class="details__value">@Model.Entity.CostOfRepair?.ToString("0.##")</div>
+            }
+            else
+            {
+                <div class="details__value"><em>(hidden)</em></div>
+            }
+        </div>
+    </div>
+</div>

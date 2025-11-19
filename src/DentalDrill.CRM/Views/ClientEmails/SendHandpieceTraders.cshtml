@@ -1,0 +1,182 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DevGuild.AspNetCore.Controls.HybridForms
+@model DentalDrill.CRM.Models.ViewModels.ClientEmails.ClientEmailSendHandpieceTradersModel
+@{
+    ViewBag.Title = "Send Handpiece Traders";
+    this.ConfigureHybridPage("ClientEmailsSendHandpieceTraders");
+}
+
+<div class="editor mb-2">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Send Handpiece Traders</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Details" asp-controller="Clients" asp-route-id="@Model.Client.Id" asp-route-Tab="Emails" class="editor__action"><span class="fa fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+
+    <form asp-action="SendHandpieceTraders" method="post" hybrid-form-id="ClientEmailsSendHandpieceTraders">
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-12 mb-2">
+                        <div class="row">
+                            <div class="col-3">
+                                <label asp-for="To"></label>
+                            </div>
+                            <div class="col-9">
+                                @{
+                                    var emails = new List<String>();
+                                    emails.Add(Model.Client.Email);
+                                    emails.AddRange(Model.Client.ParseSecondaryEmails());
+                                }
+                                @Html.Kendo().DropDownListFor(x => x.To).BindTo(new SelectList(emails.Select(x => new { Email = x }), "Email", "Email"))
+                                <span class="text-danger" asp-validation-for="To"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-2">
+                        <div class="row">
+                            <div class="col-3">
+                                <label asp-for="Greeting"></label>
+                            </div>
+                            <div class="col-9">
+                                <input asp-for="Greeting" class="k-textbox" />
+                                <span class="text-danger" asp-validation-for="Greeting"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-2">
+                        <div class="row">
+                            <div class="col-3">
+                                <label>Subject</label>
+                            </div>
+                            <div class="col-9">
+                                <p class="form-control-plaintext">Handpiece Traders</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-2">
+                        <div class="row">
+                            <div class="col-12">
+                                <label>Text</label>
+                            </div>
+                            <div class="col-12">
+                                <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                    <tr>
+                                        <td align="center">
+                                            <table border="0" cellpadding="0" cellspacing="0" width="600">
+                                                <tr>
+                                                    <td>
+                                                        <div>
+                                                            <center>
+                                                                <img alt="Dental Drill Solutions are proud to announce our affiliation with Handpiece Traders" src="~/img/email/handpiece-traders-affiliation.jpg"></img>
+                                                            </center>
+                                                            <p style="font-size: 1.5em;"><b>Dental Drill Solutions</b> are proud to announce our affiliation with <b>Handpiece Traders</b></p>
+                                                            <p>Dental Drill Solutions (DDS) have formed an alliance with Handpiece Traders enabling DDS to close the loop in the maintenance, repair, and when necessary replacement of dental handpieces.</p>
+                                                            <p>Handpiece Traders are the only reconditioned dental handpiece store in Australia &amp; New Zealand and should be the first stop for all Dental Professionals to visit when looking to purchase more handpieces.</p>
+                                                            <p>This partnership enables DDS to not only supply handpiece maintenance and service requirements as it has done for many years, but we now can offer refurbished, pre-loved, high and low speed handpieces when the cost of repair outweighs the cost to replace or where a surgery, through natural organic growth needs more handpieces. Through Handpiece Traders you can contact and purchase using the online store.</p>
+                                                            <p>Now our clients get the comfort of being able to buy, maintain and repair handpieces &#x2013; all with the backing of DDS.</p>
+                                                            <p>Please visit <b><a href="https://handpiecetraders.com">HandpieceTraders.com</a></b> to see how much you can save on reconditioned handpieces.</p>
+                                                            @*<center>
+                                                                <img alt="HandpieceTraders.com" src="~/img/email/handpiece-traders-logo.jpg" width="400"></img>
+                                                            </center>*@
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="background-color: black; font-family: Verdana, Arial, sans-serif; color: white; padding-left: 60px; padding-right: 60px;">
+                                                        <div style="text-align: center; color: white; line-height: 1; font-size: 1.75em; margin-top: 1em;">
+                                                            Need More Genuine Handpieces
+                                                        </div>
+                                                        <div style="text-align: center; color: white; line-height: 1; font-size: 1.75em; margin-bottom: 0.5em;">
+                                                            but are on a Tight Budget?
+                                                        </div>
+                                                        <div style="text-align: center; color: white; line-height: 1.2;">
+                                                            Check out the Handpiece Traders Online Store for all
+                                                        </div>
+                                                        <div style="text-align: center; color: white; line-height: 1.2;">
+                                                            Genuine Brands of Reconditioned & Ex-Stock/Discontinued Models
+                                                        </div>
+                                                        <div style="text-align: center;">
+                                                            <img alt="All the Brands you Love and Trust!" src="~/img/email/handpiece-traders-brands.png" width="560" />
+                                                        </div>
+                                                        <div style="text-align: center;">
+                                                            <a href="https://www.handpiecetraders.com/shop">
+                                                                <img alt="Click HERE to visit our Store" src="~/img/email/handpiece-traders-store-link.png" width="300"/>
+                                                            </a>
+                                                        </div>
+                                                        <div style="text-align: center; color: red; font-size: 1.25em; margin-top: 1.5em;">
+                                                            ***********************************
+                                                        </div>
+                                                        <div style="text-align: center; color: white; line-height: 1; font-size: 1.5em;">
+                                                            If you can’t afford to buy brand new then
+                                                        </div>
+                                                        <div style="text-align: center; color: white; line-height: 1; font-size: 1.5em; margin-bottom: 1em;">
+                                                            Handpiece Traders is the next best thing!
+                                                        </div>
+                                                        <div style="color: white; line-height: 1.2; margin-bottom: 1em;">
+                                                            What We Offer: We stock all of the trusted brands that you are currently using, so why not add a few more to your collection?
+                                                        </div>
+                                                        <div style="color: white; line-height: 1.2; margin-bottom: 1em;">
+                                                            Secure Payment: PayPal is available at checkout for fast and secure online payments.
+                                                        </div>
+                                                        <div style="color: white; line-height: 1.2; margin-bottom: 1em;">
+                                                            Warranty: Each handpiece comes with standard 3 months warranty, with extended warranty options available. It gives you peace of mind that you are buying a quality handpiece with guaranteed longevity.
+                                                        </div>
+                                                        <div style="color: white; line-height: 1.2; margin-bottom: 1em;">
+                                                            Don’t take the gamble buying a cheap unknown handpiece, but the genuine brand names you trust.
+                                                        </div>
+                                                        <div style="text-align: center; color: white; margin-bottom: 1em;">
+                                                            To view over 200 handpieces and accessories in stock click on
+                                                        </div>
+                                                        <div style="text-align: center; color: white; font-size: 1.75em;  margin-bottom: 1em;">
+                                                            <a href="https://www.handpiecetraders.com" style="color: white; text-decoration: underline;">
+                                                                HandpieceTraders.com
+                                                            </a>
+                                                        </div>
+                                                        <div style="text-align: center; color: white; margin-bottom: 1em;">
+                                                            FOLLOW US
+                                                        </div>
+                                                        <div style="text-align: center; color: white; margin-bottom: 2em;">
+                                                            <a href="https://www.facebook.com/handpiecetraders">
+                                                                <img alt="Facebook" src="~/img/email/handpiece-traders-facebook.png" width="55"/>
+                                                            </a>
+                                                            <span> &nbsp; </span>
+                                                            <a href="https://www.instagram.com/handpiecetraders">
+                                                                <img alt="Instagram" src="~/img/email/handpiece-traders-instagram.png" width="55"/>
+                                                            </a>
+                                                            <span> &nbsp; </span>
+                                                            <a href="https://www.linkedin.com/company/handpiece-traders/">
+                                                                <img alt="LinkedIn" src="~/img/email/handpiece-traders-linkedin.png" width="55"/>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <h5>Attachments</h5>
+                <file-uploader-list asp-for="Attachments" configuration="EmailAttachments" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-primary">Send</button>
+                <a asp-action="Details" asp-controller="Clients" asp-route-id="@Model.Client.Id" asp-route-Tab="Emails" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

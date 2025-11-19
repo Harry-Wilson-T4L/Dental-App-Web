@@ -1,0 +1,78 @@
+﻿@using DevGuild.AspNetCore.Controls.HybridForms
+@using DentalDrill.CRM.Extensions
+@model InventorySKUType
+@{
+    ViewBag.Title = "Delete SKU Type";
+    this.ConfigureHybridPage("InventoryTypesDelete");
+}
+
+<div class="editor">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Delete SKU Type</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Index" asp-controller="Inventory" class="editor__action"><span class="fas fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+
+    <form asp-action="Delete" asp-route-id="@Model.Id" hybrid-form-id="InventoryTypesDelete" id="InventoryTypesDeleteForm">
+        @if (this.ViewBag.SKUCount > 0)
+        {
+            <div class="alert alert-danger">SKU Type with existing SKUs cannot be deleted</div>
+        }
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        
+        <div class="row">
+            <div class="col-12 col-sm-5 col-md-6 mb-2">
+                <div class="row">
+                    <div class="col-5">
+                        <label asp-for="Name"></label>
+                    </div>
+                    <div class="col-7">
+                        <input asp-for="Name" readonly="readonly" class="k-textbox" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-5 col-md-6 mb-2">
+                <div class="row">
+                    <div class="col-5">
+                        <label asp-for="HandpieceSpeedCompatibility"></label>
+                    </div>
+                    <div class="col-7">
+                        <kendo-multiselect for="HandpieceSpeedCompatibility"
+                                           bind-to="@HandpieceSpeedCompatibilityHelper.MakeSelectList()"
+                                           value-primitive="true"
+                                           value="@((Model.HandpieceSpeedCompatibility ?? HandpieceSpeedCompatibility.None).SplitValue().Select(x => x.ToString()).ToArray())"
+                                           auto-close="false"
+                                           datavaluefield="Value"
+                                           datatextfield="Text"
+                                           readonly="readonly">
+                        </kendo-multiselect>
+                        <span asp-validation-for="HandpieceSpeedCompatibility" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col editor__submit">
+                @if (this.ViewBag.SKUCount > 0)
+                {
+                    <button type="submit" class="btn btn-danger" disabled="disabled">Delete</button>
+                }
+                else
+                {
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                }
+                <a asp-action="Index" asp-controller="Inventory" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

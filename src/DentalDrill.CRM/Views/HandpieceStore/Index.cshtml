@@ -1,0 +1,191 @@
+﻿@using DentalDrill.CRM.Models.ViewModels
+@model DentalDrill.CRM.Models.ViewModels.HandpieceStoreIndexModel
+@{
+    ViewBag.Title = "Handpiece Store";
+}
+
+<div class="handpiece-store">
+    <div class="row">
+        <div class="col-9">
+            <h1>Handpiece Store</h1>
+        </div>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <div class="col-3 text-right">
+                <a class="btn btn-outline-secondary" asp-controller="HandpieceStoreOrders" asp-action="Index"><i class="fas fa-fw fa-bars"></i> Orders</a>
+            </div>
+        }
+    </div>
+    <div class="row handpiece-store-filters">
+        <div class="col-12 col-md-12 col-lg-8 mb-2 d-none">
+            <div class="row">
+                <div class="col-5 col-lg-2_5 label-wrapper">
+                    <label>Search</label>
+                </div>
+                <div class="col-7 col-lg-9_5">
+                    <input type="text" placeholder="Search" class="handpiece-store-filters__fields__search k-textbox w-100" />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-4 mb-2">
+            <div class="row">
+                <div class="col-5 label-wrapper">
+                    <label>Make</label>
+                </div>
+                <div class="col-7">
+                    <kendo-multiselect name="HandpieceStoreFilterBrand"
+                                       class="handpiece-store-filters__fields__brand"
+                                       placeholder="Select Make..."
+                                       datavaluefield="Id"
+                                       datatextfield="Name"
+                                       tag-mode="Single"
+                                       tag-template="@("#:values.length# items")"
+                                       auto-close="false">
+                        <datasource type="DataSourceTagHelperType.Ajax" page-size="100" server-filtering="true">
+                            <transport>
+                                <read url="@Url.Action("ReadBrands", "HandpieceStore")" />
+                            </transport>
+                        </datasource>
+                    </kendo-multiselect>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-4 mb-2">
+            <div class="row">
+                <div class="col-5 label-wrapper">
+                    <label>Model</label>
+                </div>
+                <div class="col-7">
+                    <kendo-multiselect name="HandpieceStoreFilterModel"
+                                       class="handpiece-store-filters__fields__model"
+                                       placeholder="Select Model..."
+                                       datavaluefield="Id"
+                                       datatextfield="Name"
+                                       tag-mode="Single"
+                                       tag-template="@("#:values.length# items")"
+                                       auto-close="false">
+                        <datasource type="DataSourceTagHelperType.Ajax" page-size="100" server-filtering="true">
+                            <transport>
+                                <read url="@Url.Action("ReadModels", "HandpieceStore")" />
+                            </transport>
+                        </datasource>
+                    </kendo-multiselect>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-4 mb-2">
+            <div class="row">
+                <div class="col-5 label-wrapper">
+                    <label>Price</label>
+                </div>
+                <div class="col-7">
+                    <div class="price-slider handpiece-store-filters__fields__price">
+                        <div class="price-slider__value">$0 - $@Model.MaxPrice.ToString("#,##0.##")</div>
+                        <div class="price-slider__slider">
+                            <kendo-rangeslider name="HandpieceStoreFilterPrice"
+                                               class="price-slider__slider__widget w-100"
+                                               min="0"
+                                               max="(Double)Model.MaxPrice"
+                                               small-step="1"
+                                               large-step="10"
+                                               tick-placement="SliderTickPlacement.None">
+                            </kendo-rangeslider>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-4 mb-2">
+            <div class="row">
+                <div class="col-5 label-wrapper">
+                    <label>High/Low Speed</label>
+                </div>
+                <div class="col-7">
+                    <kendo-multiselect name="HandpieceStoreFilterType"
+                                       class="handpiece-store-filters__fields__type"
+                                       placeholder="Select Type..."
+                                       tag-mode="Single"
+                                       tag-template="@("#:values.length# items")"
+                                       bind-to="@HandpieceSpeedHelper.MakeSelectList()"
+                                       auto-close="false">
+                    </kendo-multiselect>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-lg-4 mb-2">
+            <div class="row">
+                <div class="col-5 label-wrapper">
+                    <label>Coupling/Fitting</label>
+                </div>
+                <div class="col-7">
+                    <kendo-multiselect name="HandpieceStoreFilterCoupler"
+                                       class="handpiece-store-filters__fields__coupling"
+                                       placeholder="Select Coupling/Fitting..."
+                                       datavaluefield="Name"
+                                       datatextfield="Name"
+                                       tag-mode="Single"
+                                       tag-template="@("#:values.length# items")"
+                                       auto-close="false">
+                        <datasource type="DataSourceTagHelperType.Ajax" page-size="100" server-filtering="true">
+                            <transport>
+                                <read url="@Url.Action("ReadCouplers", "HandpieceStore")" />
+                            </transport>
+                        </datasource>
+                    </kendo-multiselect>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-12 col-md-6 col-lg-4 mb-2">
+            <div class="row">
+                <div class="col-12 text-right">
+                    <button class="btn btn-primary handpiece-store-filters__apply-button">Apply Filter</button>
+                    <button class="btn btn-outline-secondary handpiece-store-filters__reset-button">Reset Filter</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="handpiece-store-list">
+                @(Html
+                    .Kendo().ListView<HandpieceStoreReadModel>()
+                    .Name("HandpieceStoreListView")
+                    .TagName("div")
+                    .HtmlAttributes(new { @class = "handpiece-store-list__view" })
+                    .DataSource(dataSource => dataSource
+                        .Ajax()
+                        .Read(read => read
+                            .Action("Read", "HandpieceStore", new { })
+                            .Data("DentalDrill.CRM.Pages.HandpieceStore.Index.Global.getReadData")))
+                    .ClientTemplateId("HandpieceStoreListViewItemTemplate")
+                    .Deferred())
+
+                <script type="text/kendo-tmpl" id="HandpieceStoreListViewItemTemplate">
+                    <div class="card handpiece-store-list__item" data-id="#:Id#">
+                        <img src="#:ThumbnailUrl#" alt="#:Brand# #:Model#" class="card-img-top handpiece-store-list__item__actions__buy" />
+                        <div class="card-body">
+                            <h5 class="card-title text-left" title="#:Brand# #:Model#">#:Brand# #:Model#</h5>
+                            <div class="row">
+                                <div class="col-6 handpiece-store-list__item__price">$#:Price#</div>
+                                <div class="col-6 handpiece-store-list__item__actions text-right"><a href="/HandpieceStore/Details/#:Id#" class="btn btn-success handpiece-store-list__item__actions__buy">Buy</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript" src="/js/app/pages/handpieceStore/index.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="/js/app/pages/handpieceStore/listing.js" asp-append-version="true"></script>
+    @Html.Kendo().DeferredScriptsFor("HandpieceStoreListView")
+}

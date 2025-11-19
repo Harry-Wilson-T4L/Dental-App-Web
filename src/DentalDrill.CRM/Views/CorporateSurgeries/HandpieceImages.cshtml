@@ -1,0 +1,47 @@
+﻿@using DevGuild.AspNetCore.Services.Storage
+@model Handpiece
+@inject IStorageHub StorageHub
+@{
+    this.Layout = null;
+    var selectedImage = this.ViewBag.SelectedImage as Guid?;
+    var images = Model.Images.Where(x => x.Display).OrderByDescending(x => x.Date).ToList();
+    var page = 0;
+    var index = 0;
+    if (selectedImage.HasValue)
+    {
+        page = images.FindIndex(x => x.Id == selectedImage);
+        if (page < 0 || page >= images.Count)
+        {
+            page = 0;
+        }
+    }
+}
+
+@if (images.Count > 0)
+{
+    <kendo-scrollview name="@($"Handpiece_{Model.Id:N}_Images")" enable-pager="true" content-height="100%" page="page" class="handpiece-image-carousel">
+        <items>
+            @foreach (var image in images)
+            {
+                <scrollview-item>
+                    <content class="handpiece-image-carousel__page" data-index="@index" data-id="@image.Id">
+                        @if (image.Image != null)
+                        {
+                            <img uploaded-ref="@image.Image" uploaded-variation="2560" alt="@(String.IsNullOrEmpty(image.Description) ? $"{Model.Brand} {Model.MakeAndModel} {Model.Serial} - Image {index + 1}" : image.Description)"/>
+                        }
+                        else if (image.Video != null)
+                        {
+                            var videoUrl = StorageHub.GetContainer(image.Video.Container).GetFileUrl(image.Video.GetContainerPath());
+                            <video src="@videoUrl" controls></video>
+                        }
+                    </content>
+                </scrollview-item>
+                index++;
+            }
+        </items>
+    </kendo-scrollview>
+}
+else
+{
+    <p>No images</p>
+}

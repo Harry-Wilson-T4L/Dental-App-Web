@@ -1,0 +1,68 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DevGuild.AspNetCore.Controls.HybridForms
+@model DentalDrill.CRM.Models.ViewModels.EmployeeRoleWorkshops.EmployeeRoleWorkshopEditModel
+@{
+    ViewBag.Title = "Delete employee role workshop permissions";
+    this.ConfigureHybridPage("EmployeeRoleWorkshopsDelete");
+}
+
+<div class="editor">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Delete employee role workshop permissions</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Details" asp-controller="EmployeeRoles" asp-route-id="@Model.Parent.Id" class="editor__action"><span class="fas fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+    <form asp-action="Delete" asp-route-id="@Model.Original.Id" hybrid-form-id="EmployeeRoleWorkshopsDelete" id="EmployeeRoleWorkshopsDeleteForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="row">
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="WorkshopId"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        <kendo-dropdownlist for="WorkshopId" bind-to="@(new SelectList(Model.Workshops, "Id", "Name"))" value="@Model.WorkshopId" enable="false" />
+                        <span asp-validation-for="WorkshopId" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="WorkshopRoleId"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        <kendo-dropdownlist for="WorkshopRoleId" bind-to="@(new SelectList(Model.WorkshopRoles, "Id", "Name"))" value="@Model.WorkshopRoleId" enable="false" />
+                        <span asp-validation-for="WorkshopRoleId" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="EmployeeType"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        <kendo-dropdownlist for="EmployeeType" bind-to="@(EmployeeTypeHelper.MakeSelectList())" value="@Model.EmployeeType" enable="false" />
+                        <span asp-validation-for="EmployeeType" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-danger">Delete</button>
+                <a asp-action="Details" asp-controller="EmployeeRoles" asp-route-id="@Model.Parent.Id" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

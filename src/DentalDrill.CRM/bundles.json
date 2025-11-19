@@ -1,0 +1,504 @@
+﻿{
+  "styles": [
+    {
+      "output": "wwwroot/css/main.min.css",
+      "input": [
+        "wwwroot/css/main.css"
+      ],
+      "options": {
+        "minify": true
+      }
+    },
+    {
+      "output": "wwwroot/css/main-default.min.css",
+      "input": [
+        "wwwroot/css/main-default.css"
+      ],
+      "options": {
+        "minify": true
+      }
+    },
+    {
+      "output": "wwwroot/css/main-dark.min.css",
+      "input": [
+        "wwwroot/css/main-dark.css"
+      ],
+      "options": {
+        "minify": true
+      }
+    },
+    {
+      "output": "wwwroot/css/main-light2.min.css",
+      "input": [
+        "wwwroot/css/main-light2.css"
+      ],
+      "options": {
+        "minify": true
+      }
+    },
+    {
+      "output": "wwwroot/css/landing.min.css",
+      "input": [
+        "wwwroot/css/landing.css"
+      ],
+      "options": {
+        "minify": true
+      }
+    },
+    {
+      "output": "wwwroot/css/editor.min.css",
+      "input": [
+        "wwwroot/css/editor.css"
+      ],
+      "options": {
+        "minify": true
+      }
+    },
+    {
+      "output": "wwwroot/css/editor-dark.min.css",
+      "input": [
+        "wwwroot/css/editor-dark.css"
+      ],
+      "options": {
+        "minify": true
+      }
+    },
+    {
+      "output": "wwwroot/vendor/vendor.min.css",
+      "input": [
+        "wwwroot/lib/bootstrap/dist/css/bootstrap.css",
+        "wwwroot/lib/font-awesome/css/all.css"
+      ],
+      "options": {
+        "minify": true
+      }
+    },
+    {
+      "output": "wwwroot/vendor/kendo/kendo.min.css",
+      "input": [
+        "wwwroot/lib/kendo-ui/css/kendo.bootstrap-v4.min.css"
+      ]
+    },
+    {
+      "output": "wwwroot/vendor/kendo/kendo-dark.min.css",
+      "input": [
+        "wwwroot/css/themes/kendo/kendo.bootstrap-v4-dark.css"
+      ]
+    },
+    {
+      "output": "wwwroot/vendor/internal.min.css",
+      "input": [
+        "wwwroot/lib/devguild.kendo-grid-commandicons/grid-commandicons.css"
+      ],
+      "options": {
+        "minify": true
+      }
+    }
+  ],
+  "scripts": [
+    {
+      "output": "wwwroot/js/app/pages/clients/details.min.js",
+      "input": [
+        "wwwroot/js/app/pages/clients/details/details.js",
+        "wwwroot/js/app/pages/clients/details/notes.js",
+        "wwwroot/js/app/pages/clients/details/repairs.js",
+        "wwwroot/js/app/pages/clients/details/repairHistory.js",
+        "wwwroot/js/app/pages/clients/details/emails.js",
+        "wwwroot/js/app/pages/clients/details/invoices.js",
+        "wwwroot/js/app/pages/clients/details/feedback.js",
+        "wwwroot/js/app/pages/clients/details/callbackNotifications.js"
+      ]
+    },
+    {
+      "output": "wwwroot/js/app/pages/corporateSurgeries/reports.min.js",
+      "input": [
+        "wwwroot/js/app/pages/corporateSurgeries/reports/ReportSurgeryItem.js",
+        "wwwroot/js/app/pages/corporateSurgeries/reports/HandpieceBrandPieItem.js",
+        "wwwroot/js/app/pages/corporateSurgeries/reports/ChartBase.js",
+        "wwwroot/js/app/pages/corporateSurgeries/reports/ReportsPageMainControls.js",
+        "wwwroot/js/app/pages/corporateSurgeries/reports/ReportsTabBase.js",
+        "wwwroot/js/app/pages/corporateSurgeries/reports/ReportsTabSurgeries.js",
+        "wwwroot/js/app/pages/corporateSurgeries/reports/ReportsTabBrands.js",
+        "wwwroot/js/app/pages/corporateSurgeries/reports/ReportsTabStatuses.js",
+        "wwwroot/js/app/pages/corporateSurgeries/reports/ReportsPage.js"
+      ]
+    },
+    {
+      "output": "wwwroot/js/app/pages/globalReports/reports.min.js",
+      "input": [
+        "wwwroot/js/app/pages/globalReports/reports/ReportSurgeryItem.js",
+        "wwwroot/js/app/pages/globalReports/reports/ReportsTabGeneralStats.js",
+        "wwwroot/js/app/pages/globalReports/reports/ReportsTabServiceLevels.js",
+        "wwwroot/js/app/pages/globalReports/reports/ReportsTabOther.js",
+        "wwwroot/js/app/pages/globalReports/reports/ReportsTabHandpieces.js",
+        "wwwroot/js/app/pages/globalReports/reports/ReportsPage.js"
+      ]
+    },
+    {
+      "output": "wwwroot/js/app/pages/inventoryMovements/index.min.js",
+      "input": [
+        "wwwroot/js/app/pages/inventoryMovements/shared/HiddenInputList.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/HandpieceStatus.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementDirection.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementType.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementStatus.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementBulkModel.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementBulkCollection.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementBulkEditor.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementBulkViewer.js",
+
+        "wwwroot/js/app/pages/inventoryMovements/index/InventoryMovementsIndexOptions.js",
+        "wwwroot/js/app/pages/inventoryMovements/index/InventoryMovementsApi.js",
+        "wwwroot/js/app/pages/inventoryMovements/index/InventoryMovementsTabBase.js",
+        "wwwroot/js/app/pages/inventoryMovements/index/InventoryMovementsTabFactory.js",
+        "wwwroot/js/app/pages/inventoryMovements/index/InventoryMovementsIndexPage.js",
+
+        "wwwroot/js/app/pages/inventoryMovements/index/GridInventoryMovementsTabBase.js",
+        "wwwroot/js/app/pages/inventoryMovements/index/GridInventoryMovementsAllTab.js",
+        "wwwroot/js/app/pages/inventoryMovements/index/GridInventoryMovementsTrayTab.js",
+        "wwwroot/js/app/pages/inventoryMovements/index/GridInventoryMovementsApprovedTab.js",
+        "wwwroot/js/app/pages/inventoryMovements/index/GridInventoryMovementsCompleteTab.js",
+        "wwwroot/js/app/pages/inventoryMovements/index/GridInventoryMovementsOrderedTab.js",
+        "wwwroot/js/app/pages/inventoryMovements/index/GridInventoryMovementsRequestedTab.js",
+
+        "wwwroot/js/app/pages/inventoryMovements/index/GridInventoryGroupMovementsTabBase.js",
+        "wwwroot/js/app/pages/inventoryMovements/index/GridInventoryGroupMovementsAllTab.js",
+        "wwwroot/js/app/pages/inventoryMovements/index/GridInventoryGroupMovementsApprovedTab.js",
+        "wwwroot/js/app/pages/inventoryMovements/index/GridInventoryGroupMovementsCompleteTab.js",
+        "wwwroot/js/app/pages/inventoryMovements/index/GridInventoryGroupMovementsOrderedTab.js",
+        "wwwroot/js/app/pages/inventoryMovements/index/GridInventoryGroupMovementsRequestedTab.js",
+
+        "wwwroot/js/app/pages/inventoryMovements/index/StatsInventoryMovementsAvailableStockTab.js",
+
+        "wwwroot/js/app/pages/inventoryMovements/preview/InventoryMovementsPreviewOptions.js",
+        "wwwroot/js/app/pages/inventoryMovements/preview/InventoryMovementsPreviewPage.js",
+
+        "wwwroot/js/app/pages/inventoryMovements/group-approve/GroupApproveEditor.js",
+        "wwwroot/js/app/pages/inventoryMovements/group-approve-with-edit/GroupApproveWithEditEditor.js",
+        "wwwroot/js/app/pages/inventoryMovements/group-cancel/GroupCancelEditor.js",
+        "wwwroot/js/app/pages/inventoryMovements/group-order/GroupOrderEditor.js",
+        "wwwroot/js/app/pages/inventoryMovements/group-order-with-edit/GroupOrderWithEditEditor.js",
+        "wwwroot/js/app/pages/inventoryMovements/group-verify/GroupVerifyEditor.js",
+        "wwwroot/js/app/pages/inventoryMovements/group-verify-with-edit/GroupVerifyWithEditEditor.js",
+
+        "wwwroot/js/app/pages/inventoryMovements/create/InventoryMovementCreateEditor.js"
+      ]
+    },
+    {
+      "output": "wwwroot/js/app/pages/inventoryMovements/create.min.js",
+      "input": [
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementType.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementStatus.js",
+        "wwwroot/js/app/pages/inventoryMovements/create/InventoryMovementCreateEditor.js"
+      ]
+    },
+    {
+      "output": "wwwroot/js/app/pages/inventoryMovements/preview.min.js",
+      "input": [
+        "wwwroot/js/app/pages/inventoryMovements/shared/HandpieceStatus.js",
+        
+        "wwwroot/js/app/pages/inventoryMovements/preview/InventoryMovementsPreviewOptions.js",
+        "wwwroot/js/app/pages/inventoryMovements/preview/InventoryMovementsPreviewPage.js"
+      ]
+    },
+    {
+      "output": "wwwroot/js/app/pages/inventoryMovements/group-approve.min.js",
+      "input": [
+        "wwwroot/js/app/pages/inventoryMovements/shared/HiddenInputList.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/HandpieceStatus.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementDirection.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementType.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementStatus.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementBulkModel.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementBulkCollection.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementBulkViewer.js",
+
+        "wwwroot/js/app/pages/inventoryMovements/group-approve/GroupApproveEditor.js"
+      ]
+    },
+    {
+      "output": "wwwroot/js/app/pages/inventoryMovements/group-approve-with-edit.min.js",
+      "input": [
+        "wwwroot/js/app/pages/inventoryMovements/shared/HiddenInputList.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/HandpieceStatus.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementDirection.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementType.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementStatus.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementBulkModel.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementBulkCollection.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementBulkEditor.js",
+
+        "wwwroot/js/app/pages/inventoryMovements/group-approve-with-edit/GroupApproveWithEditEditor.js"
+      ]
+    },
+    {
+      "output": "wwwroot/js/app/pages/inventoryMovements/group-cancel.min.js",
+      "input": [
+        "wwwroot/js/app/pages/inventoryMovements/shared/HiddenInputList.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/HandpieceStatus.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementDirection.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementType.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementStatus.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementBulkModel.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementBulkCollection.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementBulkViewer.js",
+
+        "wwwroot/js/app/pages/inventoryMovements/group-cancel/GroupCancelEditor.js"
+      ]
+    },
+    {
+      "output": "wwwroot/js/app/pages/inventoryMovements/group-order.min.js",
+      "input": [
+        "wwwroot/js/app/pages/inventoryMovements/shared/HiddenInputList.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/HandpieceStatus.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementDirection.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementType.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementStatus.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementBulkModel.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementBulkCollection.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementBulkViewer.js",
+
+        "wwwroot/js/app/pages/inventoryMovements/group-order/GroupOrderEditor.js"
+      ]
+    },
+    {
+      "output": "wwwroot/js/app/pages/inventoryMovements/group-order-with-edit.min.js",
+      "input": [
+        "wwwroot/js/app/pages/inventoryMovements/shared/HiddenInputList.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/HandpieceStatus.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementDirection.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementType.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementStatus.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementBulkModel.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementBulkCollection.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementBulkEditor.js",
+
+        "wwwroot/js/app/pages/inventoryMovements/group-order-with-edit/GroupOrderWithEditEditor.js"
+      ]
+    },
+    {
+      "output": "wwwroot/js/app/pages/inventoryMovements/group-verify.min.js",
+      "input": [
+        "wwwroot/js/app/pages/inventoryMovements/shared/HiddenInputList.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/HandpieceStatus.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementDirection.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementType.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementStatus.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementBulkModel.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementBulkCollection.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementBulkViewer.js",
+
+        "wwwroot/js/app/pages/inventoryMovements/group-verify/GroupVerifyEditor.js"
+      ]
+    },
+    {
+      "output": "wwwroot/js/app/pages/inventoryMovements/group-verify-with-edit.min.js",
+      "input": [
+        "wwwroot/js/app/pages/inventoryMovements/shared/HiddenInputList.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/HandpieceStatus.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementDirection.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementType.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementStatus.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementBulkModel.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementBulkCollection.js",
+        "wwwroot/js/app/pages/inventoryMovements/shared/InventoryMovementBulkEditor.js",
+
+        "wwwroot/js/app/pages/inventoryMovements/group-verify-with-edit/GroupVerifyWithEditEditor.js"
+      ]
+    },
+    {
+      "output": "wwwroot/js/app/pages/surgeries/reports.min.js",
+      "input": [
+        "wwwroot/js/app/pages/surgeries/reports/ReportSurgeryItem.js",
+        "wwwroot/js/app/pages/surgeries/reports/HandpieceBrandPieItem.js",
+        "wwwroot/js/app/pages/surgeries/reports/ChartBase.js",
+        "wwwroot/js/app/pages/surgeries/reports/ReportsPageMainControls.js",
+        "wwwroot/js/app/pages/surgeries/reports/ReportsTabBase.js",
+        "wwwroot/js/app/pages/surgeries/reports/ReportsTabBrands.js",
+        "wwwroot/js/app/pages/surgeries/reports/ReportsTabStatuses.js",
+        "wwwroot/js/app/pages/surgeries/reports/ReportsPage.js"
+      ]
+    },
+    {
+      "output": "wwwroot/js/app/routing.min.js",
+      "input": [
+        "wwwroot/lib/devguild.aspnet-routing/routing-core.js",
+        "wwwroot/js/app/routing/pages/clients.js",
+        "wwwroot/js/app/routing/pages/clientNotes.js",
+        "wwwroot/js/app/routing/pages/clientInvoices.js",
+        "wwwroot/js/app/routing/pages/clientEmails.js",
+        "wwwroot/js/app/routing/pages/clientAttachments.js",
+        "wwwroot/js/app/routing/pages/clientCallbackNotifications.js",
+        "wwwroot/js/app/routing/pages/clientFeedback.js",
+        "wwwroot/js/app/routing/pages/diagnosticCheckItems.js",
+        "wwwroot/js/app/routing/pages/home.js",
+        "wwwroot/js/app/routing/pages/serviceLevels.js",
+        "wwwroot/js/app/routing/pages/states.js",
+        "wwwroot/js/app/routing/pages/zones.js",
+        "wwwroot/js/app/routing/pages/surgeries.js",
+        "wwwroot/js/app/routing/pages/handpieceBrands.js",
+        "wwwroot/js/app/routing/pages/handpieceModels.js",
+        "wwwroot/js/app/routing/pages/handpieceModelSchematics.js",
+        "wwwroot/js/app/routing/pages/handpieceModelListings.js",
+        "wwwroot/js/app/routing/pages/handpieceStore.js",
+        "wwwroot/js/app/routing/pages/handpieceStoreOrders.js",
+        "wwwroot/js/app/routing/pages/handpieceImages.js",
+        "wwwroot/js/app/routing/pages/employees.js",
+        "wwwroot/js/app/routing/pages/employeeRoles.js",
+        "wwwroot/js/app/routing/pages/employeeRoleWorkshops.js",
+        "wwwroot/js/app/routing/pages/corporates.js",
+        "wwwroot/js/app/routing/pages/corporateSurgeries.js",
+        "wwwroot/js/app/routing/pages/jobs.js",
+        "wwwroot/js/app/routing/pages/jobInvoices.js",
+        "wwwroot/js/app/routing/pages/handpieces.js",
+        "wwwroot/js/app/routing/pages/users.js",
+        "wwwroot/js/app/routing/pages/pickupRequests.js",
+        "wwwroot/js/app/routing/pages/feedbackForms.js",
+        "wwwroot/js/app/routing/pages/workshopRoles.js",
+        "wwwroot/js/app/routing/pages/workshopRoleJobTypes.js",
+        "wwwroot/js/app/routing/pages/workshopRoleJobTypeStatuses.js",
+        "wwwroot/js/app/routing/pages/workshopRoleJobTypeJobExceptions.js",
+        "wwwroot/js/app/routing/pages/workshopRoleJobTypeHandpieceExceptions.js",
+        "wwwroot/js/app/routing/app.js"
+      ],
+      "options": {
+        "uglify": {
+          "enabled": true,
+          "options": null
+        }
+      }
+    },
+    {
+      "output": "wwwroot/vendor/vendor.min.js",
+      "input": [
+        "wwwroot/lib/jquery/dist/jquery.js",
+        "wwwroot/lib/jquery-validation/dist/jquery.validate.js",
+        "wwwroot/lib/jquery-validation-unobtrusive/src/jquery.validate.unobtrusive.js",
+        "wwwroot/lib/jquery-ajax-unobtrusive/src/jquery.unobtrusive-ajax.js",
+        "wwwroot/lib/popper.js/dist/umd/popper.js",
+        "wwwroot/lib/bootstrap/dist/js/bootstrap.js",
+        "wwwroot/js/lib/aspnet-signalr/dist/signalr.js",
+        "wwwroot/js/app/config/validation.js"
+      ],
+      "options": {
+        "uglify": {
+          "enabled": true,
+          "options": null
+        }
+      }
+    },
+    {
+      "output": "wwwroot/vendor/pdfjs.min.js",
+      "input": [
+        "wwwroot/lib/pdfjs-dist/build/pdf.js"
+      ],
+      "options": {
+        "uglify": {
+          "enabled": true,
+          "options": null
+        }
+      }
+    },
+    {
+      "output": "wwwroot/vendor/pdfjs.worker.min.js",
+      "input": [
+        "wwwroot/lib/pdfjs-dist/build/pdf.worker.js"
+      ],
+      "options": {
+        "uglify": {
+          "enabled": true,
+          "options": null
+        }
+      }
+    },
+    {
+      "output": "wwwroot/vendor/kendo/kendo.min.js",
+      "input": [
+        "wwwroot/lib/kendo-ui/js/jszip.min.js",
+        "wwwroot/lib/kendo-ui/js/pako_deflate.min.js",
+        "wwwroot/lib/kendo-ui/js/kendo.all.min.js",
+        "wwwroot/js/lib/kendo.aspnetmvc.min.js",
+        "wwwroot/js/lib/kendo-grid-extensions.js",
+        "wwwroot/lib/kendo-ui/js/kendo.timezones.min.js",
+        "wwwroot/lib/kendo-ui/js/cultures/kendo.culture.en-AU.min.js",
+        "wwwroot/lib/kendo-ui/js/messages/kendo.messages.en-AU.min.js",
+        "wwwroot/js/app/config/culture.js"
+      ]
+    },
+    {
+      "output": "wwwroot/vendor/internal.min.js",
+      "input": [
+        "wwwroot/lib/devguild.utilities/event-handler.js",
+        "wwwroot/lib/devguild.utilities/query-string-item.js",
+        "wwwroot/lib/devguild.utilities/query-string.js",
+        "wwwroot/lib/devguild.utilities/url-builder.js",
+        "wwwroot/lib/devguild.ajax-forms/ajax-forms.js",
+        "wwwroot/lib/devguild.kendo-tabstrip-navigation/tabstrip-navigation.js",
+        "wwwroot/lib/devguild.kendo-grid-errors/grid-errors.js",
+        "wwwroot/lib/devguild.kendo-grid-handlers/grid-handlers.js",
+        "wwwroot/js/lib/devguild/gridFilters.js",
+        "wwwroot/js/lib/devguild/tabStripSpinner.js",
+        "wwwroot/js/lib/devguild/timezones.js",
+        "wwwroot/js/lib/devguild/collections.js",
+        "wwwroot/js/controls/collapsible/collapsible.js",
+        "wwwroot/js/controls/dropdown/dropdown.js",
+        "wwwroot/js/controls/dropdown-submenu/dropdown-submenu.js",
+        "wwwroot/js/app/controls/image-uploader-multiple/image-uploader-multiple.js",
+        "wwwroot/js/app/controls/handpiece-status-indicator/handpiece-status-indicator.js",
+        "wwwroot/js/app/controls/notifications-feed/notifications-connection.js",
+        "wwwroot/js/app/controls/notifications-feed/notifications-feed.js",
+        "wwwroot/js/app/controls/notifications-feed/notifications-indicator.js",
+        "wwwroot/js/app/controls/callback-feed/callback-feed.js",
+        "wwwroot/js/app/controls/callback-feed/callback-indicator.js",
+        "wwwroot/js/app/controls/clients-selector/clients-selector.js",
+        "wwwroot/js/app/controls/date-range-selector/date-range-selector.js",
+        "wwwroot/js/app/controls/multiselect-toggler/multiselect-toggler.js",
+        "wwwroot/js/app/controls/toggle-button/toggle-button.js",
+        "wwwroot/js/app/controls/toggle-list/toggle-list.js",
+        "wwwroot/js/app/controls/pdf-reports/IPage.js",
+        "wwwroot/js/app/controls/pdf-reports/PdfPageBuilder.js",
+        "wwwroot/js/app/controls/pdf-reports/PdfReportBuilder.js",
+        "wwwroot/js/app/controls/pdf-reports/PdfReportFlowWriter.js",
+        "wwwroot/js/app/controls/report-table/ReportTableColumn.js",
+        "wwwroot/js/app/controls/report-table/ReportTable.js",
+        "wwwroot/js/app/controls/report-writer-surgery/SurgeryReportFlowWriter.js",
+        "wwwroot/js/app/controls/report-insights/ChartBase.js",
+        "wwwroot/js/app/controls/report-insights/ReportInsightsContainer.js",
+        "wwwroot/js/app/controls/report-page/ReportsPageBase.js",
+        "wwwroot/js/app/controls/report-page/ReportsPageDataSourceGroupHelper.js",
+        "wwwroot/js/app/controls/report-page/ReportsPageDateRangeGlobalFilters.js",
+        "wwwroot/js/app/controls/report-page/ReportsPageDateRangeMainControls.js",
+        "wwwroot/js/app/controls/report-page/ReportsPageTabDateRangeBase.js",
+        "wwwroot/js/app/controls/report-page/ReportsPageGridColumn.js",
+        "wwwroot/js/app/controls/report-page/ReportsPageTabGridWithInsightsBase.js",
+        "wwwroot/js/app/controls/report-page/ReportsPageTabGridCollectionBase.js",
+        "wwwroot/js/app/controls/generic-flag/GenericFlagApiClient.js",
+        "wwwroot/js/app/controls/generic-flag/GenericFlagControl.js"
+      ],
+      "options": {
+        "uglify": {
+          "enabled": true,
+          "options": null
+        }
+      }
+    }
+  ],
+  "copy": [
+    {
+      "src": "wwwroot/lib/Font-Awesome/webfonts/*.*",
+      "dest": "wwwroot/webfonts/"
+    }
+  ],
+  "sass": [
+    "wwwroot/css/main.scss",
+    "wwwroot/css/main-default.scss",
+    "wwwroot/css/main-dark.scss",
+    "wwwroot/css/main-light2.scss",
+    "wwwroot/css/landing.scss",
+    "wwwroot/css/editor.scss",
+    "wwwroot/css/editor-dark.scss"
+  ],
+  "sass_watch": [
+    "wwwroot/css/**/*.scss"
+  ] 
+}

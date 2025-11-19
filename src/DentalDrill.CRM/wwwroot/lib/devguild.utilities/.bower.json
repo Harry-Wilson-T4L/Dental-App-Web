@@ -1,0 +1,27 @@
+{
+  "name": "devguild.utilities",
+  "authors": [
+    "DevGuild <info@devguild.ru>"
+  ],
+  "description": "Contains various utilities.",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "homepage": "https://devguild.ru/",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "version": "0.2.0",
+  "_release": "0.2.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.2.0",
+    "commit": "e054b37f61a0feecd0fd9012d467554d770217f5"
+  },
+  "_source": "https://devguildltd.visualstudio.com/DevGuild.Frontend/_git/utilities",
+  "_target": "v0.2.0",
+  "_originalSource": "git+https://devguildltd.visualstudio.com/DevGuild.Frontend/_git/utilities"
+}

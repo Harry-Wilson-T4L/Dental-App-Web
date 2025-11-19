@@ -1,0 +1,33 @@
+﻿.filters__clients, .filters__jobs {
+    .row {
+        margin-bottom: 0.25rem;
+    }
+
+    label {
+        white-space: nowrap;
+        line-height: 2;
+    }
+
+    .filter__buttons {
+        .col {
+            flex-grow: 0;
+        }
+
+        .editor__submit {
+            justify-content: center;
+        }
+    }
+
+    .filters__input_dates {
+        display: flex;
+        flex-direction: row;
+
+        .filters__input_date {
+            padding-right: 1rem;
+
+            &:last-child {
+                padding-right: 0;
+            }
+        }
+    }
+}

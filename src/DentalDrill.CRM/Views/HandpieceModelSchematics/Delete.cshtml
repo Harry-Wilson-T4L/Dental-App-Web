@@ -1,0 +1,69 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DevGuild.AspNetCore.Controls.HybridForms
+@model HandpieceModelSchematic
+@{
+    ViewBag.Title = $"Delete schematic {Model.Title}";
+    this.ConfigureHybridPage("HandpieceModelSchematicDelete");
+}
+
+<div class="editor">
+    @if (!Context.Request.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Delete schematic @Model.Title</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Details" asp-route-id="@Model.ModelId" asp-controller="HandpieceModels" class="editor__action"><span class="fas fa-list"></span> List</a>
+                @switch (Model.Type)
+                {
+                    case HandpieceModelSchematicType.Text:
+                        <a asp-action="EditText" asp-route-id="@Model.Id" class="editor__action"><span class="fas fa-pencil-alt"></span> Edit</a>
+                        break;
+                    case HandpieceModelSchematicType.Attachment:
+                        <a asp-action="EditAttachment" asp-route-id="@Model.Id" class="editor__action"><span class="fas fa-pencil-alt"></span> Edit</a>
+                        break;
+                    case HandpieceModelSchematicType.Image:
+                        <a asp-action="EditImage" asp-route-id="@Model.Id" class="editor__action"><span class="fas fa-pencil-alt"></span> Edit</a>
+                        break;
+                }
+                <a asp-action="Delete" asp-route-id="@Model.Id" class="editor__action editor__action_color_red"><span class="fas fa-trash-alt"></span> Delete</a>
+            </div>
+        </div>
+    }
+    <form asp-action="Delete" asp-route-id="@Model.Id" hybrid-form-id="HandpieceModelSchematicDelete" id="HandpieceModelSchematicDeleteForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="row">
+            <div class="col-12 col-sm-7 col-md-8 mb-2">
+                <div class="row">
+                    <div class="col-5">
+                        <label asp-for="Title"></label>
+                    </div>
+                    <div class="col-7">
+                        <input asp-for="Title" readonly="readonly" class="k-textbox w-100" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-5 col-md-4 mb-2">
+                <div class="row">
+                    <div class="col-5">
+                        <label asp-for="Display"></label>
+                    </div>
+                    <div class="col-7 col-checkbox">
+                        @(Html.Kendo().CheckBoxFor(x => x.Display).HtmlAttributes(new { disabled = "disabled" }).Label(""))
+                        <span asp-validation-for="Display" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-danger">Delete</button>
+                <a asp-action="Index" asp-controller="HandpieceBrands" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

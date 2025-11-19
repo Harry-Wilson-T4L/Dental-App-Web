@@ -1,0 +1,36 @@
+﻿@model DentalDrill.CRM.Models.ViewModels.HandpieceImagePreviewModel
+@{
+    Layout = null;
+    var index = 0;
+    var page = 0;
+    if (Model.SelectedImage.HasValue)
+    {
+        page = Model.Images.FindIndex(x => x.Id == Model.SelectedImage);
+        if (page < 0 || page >= Model.Images.Count)
+        {
+            page = 0;
+        }
+    }
+}
+
+<kendo-scrollview name="HandpieceImagesPreview" enable-pager="true" content-height="100%" page="page" class="handpiece-images-scrollview">
+    <items>
+        @foreach (var image in Model.Images)
+        {
+            <scrollview-item>
+                <content class="handpiece-images-preview-page" data-index="@index" data-id="@image.Id">
+                    @if (String.IsNullOrEmpty(image.VideoUrl))
+                    {
+                        <img src="@image.ImageUrl" alt="@image.Description"/>
+                    }
+                    else
+                    {
+                        <video src="@image.VideoUrl" controls></video>
+                    }
+                </content>
+            </scrollview-item>
+
+            index++;
+        }
+    </items>
+</kendo-scrollview>

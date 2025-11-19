@@ -1,0 +1,61 @@
+﻿@using DevGuild.AspNetCore.Controls.HybridForms
+@model DentalDrill.CRM.Models.ViewModels.ClientAccessManageUserOperationModel
+@{
+    this.ViewBag.Title = "Manage user";
+    this.ConfigureHybridPage("ClientAccessManageUser");
+}
+
+<div class="editor">
+    <div class="editor__header" ajax-rendering="NormalOnly">
+        <div class="editor__title">
+            <h1>Manage user</h1>
+        </div>
+        <div class="editor__actions">
+            <a asp-action="Details" asp-controller="Clients" asp-route-id="@Model.Client.Id" asp-route-Tab="Access" class="editor__action"><span class="fas fa-fw fa-arrow-left"></span> Back</a>
+        </div>
+    </div>
+
+    <form asp-action="ManageUser" asp-route-id="@Model.Client.Id" method="post" hybrid-form-id="ClientAccessManageUser">
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+        <div class="row">
+            <div class="col-12 col-sm-5 col-md-6 mb-2">
+                <div class="row">
+                    <div class="col-5">
+                        <label asp-for="UserName"></label>
+                    </div>
+                    <div class="col-7">
+                        @Html.Kendo().TextBoxFor(x => x.UserName)
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-5">
+                        <label>Email</label>
+                    </div>
+                    <div class="col-7">
+                        <input type="text" class="k-textbox" value="@Model.Client.Email" readonly="readonly"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-5 col-md-6 mb-2">
+                <div class="row">
+                    <div class="col-5">
+                        <label asp-for="Password"></label>
+                    </div>
+                    <div class="col-7">
+                        @Html.Kendo().TextBoxFor(x => x.Password)
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a asp-action="Details" asp-controller="Clients" asp-route-id="@Model.Client.Id" asp-route-Tab="Access" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

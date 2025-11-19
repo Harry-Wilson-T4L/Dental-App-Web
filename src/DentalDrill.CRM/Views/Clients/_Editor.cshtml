@@ -1,0 +1,448 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DentalDrill.CRM.Models.Permissions
+@model DentalDrill.CRM.Models.ViewModels.ClientEditViewModel
+
+@*Main info row*@
+<div class="row">
+    <div class="col-12 col-sm-6 col-md-6 mb-2">
+        <div class="row">
+            <div class="col-5">
+                @Html.LabelFor(x => x.ClientNo)
+            </div>
+            <div class="col-7">
+                @if (Model.Access.CanWriteOrInitField(ClientEntityField.ClientNo, Model.Original == null))
+                {
+                    @Html.Kendo().TextBoxFor(x => x.ClientNo)
+                    @Html.ValidationMessageFor(x => x.ClientNo)
+                }
+                else if (Model.Access.CanReadField(ClientEntityField.ClientNo))
+                {
+                    @Html.DisplayFor(x => x.Original.ClientNo)
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-12 col-sm-6 col-md-6 mb-0 mb-sm-0">
+        <div class="row">
+            <div class="col-5">
+                @Html.LabelFor(x => x.PrimaryWorkshopId)
+            </div>
+            <div class="col-7">
+                @if (Model.Access.CanWriteOrInitField(ClientEntityField.PrimaryWorkshop, Model.Original == null))
+                {
+                    @Html.Kendo().DropDownListFor(x => x.PrimaryWorkshopId).BindTo(new SelectList(Model.Workshops, "Id", "Name"))
+                    @Html.ValidationMessageFor(x => x.PrimaryWorkshopId)
+                }
+                else if (Model.Access.CanReadField(ClientEntityField.PrimaryWorkshop))
+                {
+                    @Html.DisplayFor(x => x.Original.PrimaryWorkshop.Name)
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 mb-2">
+        <div class="row">
+            <div class="col-2_5">
+                @Html.LabelFor(x => x.Name)
+            </div>
+            <div class="col-9_5">
+                @if (Model.Access.CanWriteOrInitField(ClientEntityField.Name, Model.Original == null))
+                {
+                    @Html.Kendo().TextBoxFor(x => x.Name)
+                    @Html.ValidationMessageFor(x => x.Name)
+                }
+                else if (Model.Access.CanReadField(ClientEntityField.Name))
+                {
+                    @Html.DisplayFor(x => x.Original.Name)
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 mb-2">
+        <div class="row">
+            <div class="col-2_5">
+                @Html.LabelFor(x => x.PrincipalDentist)
+            </div>
+            <div class="col-9_5">
+                @if (Model.Access.CanWriteOrInitField(ClientEntityField.PrincipalDentist, Model.Original == null))
+                {
+                    @Html.Kendo().TextBoxFor(x => x.PrincipalDentist)
+                    @Html.ValidationMessageFor(x => x.PrincipalDentist)
+                }
+                else if (Model.Access.CanReadField(ClientEntityField.PrincipalDentist))
+                {
+                    @Html.DisplayFor(x => x.Original.PrincipalDentist)
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-5 col-md-6 mb-0 mb-sm-0">
+        <div class="row">
+            <div class="col-5">
+                @Html.LabelFor(x => x.CorporateId)
+            </div>
+            <div class="col-7">
+                @if (Model.Access.CanWriteOrInitField(ClientEntityField.Corporate, Model.Original == null))
+                {
+                    @Html.Kendo().DropDownListFor(x => x.CorporateId).BindTo(new SelectList(Model.Corporates, "Id", "Name").WithNull("(none)"))
+                    @Html.ValidationMessageFor(x => x.CorporateId)
+                }
+                else if (Model.Access.CanReadField(ClientEntityField.Corporate))
+                {
+                    @Html.DisplayFor(x => x.Original.Corporate.Name)
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+@*Contacts row*@
+<div class="row">
+    <div class="col-sm-5 col-md-6 mb-2">
+        <div class="row">
+            <div class="col-md-5">
+                @Html.LabelFor(x => x.Email)
+            </div>
+            <div class="col-md-7">
+                @if (Model.Access.CanWriteOrInitField(ClientEntityField.MainEmail, Model.Original == null))
+                {
+                    @Html.Kendo().TextBoxFor(x => x.Email).HtmlAttributes(new { type = "email" })
+                    @Html.ValidationMessageFor(x => x.Email)
+                }
+                else if (Model.Access.CanReadField(ClientEntityField.MainEmail))
+                {
+                    @Html.DisplayFor(x => x.Original.Email)
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-7 col-md-6 mb-2">
+        <div class="row">
+            <div class="col-md-5">
+                @Html.LabelFor(x => x.SecondaryEmails)
+            </div>
+            <div class="col-md-7">
+                @if (Model.Access.CanWriteOrInitField(ClientEntityField.OtherEmails, Model.Original == null))
+                {
+                    @Html.Kendo().TextBoxFor(x => x.SecondaryEmails)
+                    @Html.ValidationMessageFor(x => x.SecondaryEmails)
+                }
+                else if (Model.Access.CanReadField(ClientEntityField.OtherEmails))
+                {
+                    @Html.DisplayFor(x => x.Original.SecondaryEmails)
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-5 col-md-6 mb-2 mb-sm-0">
+        <div class="row">
+            <div class="col-md-5">
+                @Html.LabelFor(x => x.Phone)
+            </div>
+            <div class="col-md-7">
+                @if (Model.Access.CanWriteOrInitField(ClientEntityField.MainPhone, Model.Original == null))
+                {
+                    @Html.Kendo().TextBoxFor(x => x.Phone)
+                    @Html.ValidationMessageFor(x => x.Phone)
+                }
+                else if (Model.Access.CanReadField(ClientEntityField.MainPhone))
+                {
+                    @Html.DisplayFor(x => x.Original.Phone)
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-7 col-md-6 mb-0 mb-sm-0">
+        <div class="row">
+            <div class="col-md-5">
+                @Html.LabelFor(x => x.SecondaryPhones)
+            </div>
+            <div class="col-md-7">
+                @if (Model.Access.CanWriteOrInitField(ClientEntityField.OtherPhones, Model.Original == null))
+                {
+                    @Html.Kendo().TextBoxFor(x => x.SecondaryPhones)
+                    @Html.ValidationMessageFor(x => x.SecondaryPhones)
+                }
+                else if (Model.Access.CanReadField(ClientEntityField.OtherPhones))
+                {
+                    @Html.DisplayFor(x => x.Original.SecondaryPhones)
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+@*Address row*@
+<div class="row">
+    <div class="col-md-6 mb-2">
+        <div class="row">
+            <div class="col-sm-2 col-md-5">
+                @Html.LabelFor(x => x.Address)
+            </div>
+            <div class="col-sm-10 col-md-7">
+                @if (Model.Access.CanWriteOrInitField(ClientEntityField.Address, Model.Original == null))
+                {
+                    @Html.Kendo().TextBoxFor(x => x.Address)
+                    @Html.ValidationMessageFor(x => x.Address)
+                }
+                else if (Model.Access.CanReadField(ClientEntityField.Address))
+                {
+                    @Html.DisplayFor(x => x.Original.Address)
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-md-6 mb-2">
+        <div class="row">
+            <div class="col-sm-4 col-md-5">
+                @Html.LabelFor(x => x.Suburb)
+            </div>
+            <div class="col-sm-8 col-md-7">
+                @if (Model.Access.CanWriteOrInitField(ClientEntityField.Address, Model.Original == null))
+                {
+                    @Html.Kendo().TextBoxFor(x => x.Suburb)
+                    @Html.ValidationMessageFor(x => x.Suburb)
+                }
+                else if (Model.Access.CanReadField(ClientEntityField.Address))
+                {
+                    @Html.DisplayFor(x => x.Original.Suburb)
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-md-6 mb-0">
+        <div class="row">
+            <div class="col-sm-4 col-md-5">
+                @Html.LabelFor(x => x.ZoneId)
+            </div>
+            <div class="col-sm-8 col-md-7">
+                @if (Model.Access.CanWriteOrInitField(ClientEntityField.Address, Model.Original == null))
+                {
+                    @Html.Kendo().DropDownListFor(x => x.ZoneId).BindTo(new SelectList(Model.Zones, "Id", "Name"))
+                    @Html.ValidationMessageFor(x => x.ZoneId)
+                }
+                else if (Model.Access.CanReadField(ClientEntityField.Address))
+                {
+                    @Html.DisplayFor(x => x.Original.Zone.Name)
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-sm-6 col-md-3 mb-2 mb-sm-0">
+        <div class="row">
+            <div class="col-sm-4 col-md-4">
+                @Html.LabelFor(x => x.StateId)
+            </div>
+            <div class="col-sm-8 col-md-8">
+                @if (Model.Access.CanWriteOrInitField(ClientEntityField.Address, Model.Original == null))
+                {
+                    @Html.Kendo().DropDownListFor(x => x.StateId).BindTo(new SelectList(Model.States, "Id", "Name"))
+                    @Html.ValidationMessageFor(x => x.StateId)
+                }
+                else if (Model.Access.CanReadField(ClientEntityField.Address))
+                {
+                    @Html.DisplayFor(x => x.Original.State.Name)
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-sm-6 col-md-3 mb-2 mb-md-0">
+        <div class="row">
+            <div class="col-sm-4">
+                @Html.LabelFor(x => x.PostCode)
+            </div>
+            <div class="col-sm-8">
+                @if (Model.Access.CanWriteOrInitField(ClientEntityField.Address, Model.Original == null))
+                {
+                    @Html.Kendo().TextBoxFor(x => x.PostCode)
+                    @Html.ValidationMessageFor(x => x.PostCode)
+                }
+                else if (Model.Access.CanReadField(ClientEntityField.Address))
+                {
+                    @Html.DisplayFor(x => x.Original.PostCode)
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr/>
+
+@*Other info*@
+<div class="row">
+    <div class="col-md-6 mb-2">
+        <div class="row">
+            <div class="col-sm-5">
+                @Html.LabelFor(x => x.OtherContact)
+            </div>
+            <div class="col-sm-7">
+                @if (Model.Access.CanWriteOrInitField(ClientEntityField.OtherContact, Model.Original == null))
+                {
+                    @Html.Kendo().TextBoxFor(x => x.OtherContact)
+                    @Html.ValidationMessageFor(x => x.OtherContact)
+                }
+                else if (Model.Access.CanReadField(ClientEntityField.OtherContact))
+                {
+                    @Html.DisplayFor(x => x.Original.OtherContact)
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-2">
+        <div class="row">
+            <div class="col-sm-5">
+                @Html.LabelFor(x => x.OpeningHours)
+            </div>
+            <div class="col-sm-7">
+                @if (Model.Access.CanWriteOrInitField(ClientEntityField.OpeningHours, Model.Original == null))
+                {
+                    @Html.Kendo().TextBoxFor(x => x.OpeningHours)
+                    @Html.ValidationMessageFor(x => x.OpeningHours)
+                }
+                else if (Model.Access.CanReadField(ClientEntityField.OpeningHours))
+                {
+                    @Html.DisplayFor(x => x.Original.OpeningHours)
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-0">
+        <div class="row">
+            <div class="col-sm-5">
+                @Html.LabelFor(x => x.Brands)
+            </div>
+            <div class="col-sm-7">
+                @if (Model.Access.CanWriteOrInitField(ClientEntityField.Brands, Model.Original == null))
+                {
+                    @Html.Kendo().TextBoxFor(x => x.Brands)
+                    @Html.ValidationMessageFor(x => x.Brands)
+                }
+                else if (Model.Access.CanReadField(ClientEntityField.Brands))
+                {
+                    @Html.DisplayFor(x => x.Original.Brands)
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-0">
+        <div class="row">
+            <div class="col-sm-5">
+                @Html.LabelFor(x => x.PricingCategoryId)
+            </div>
+            <div class="col-sm-7">
+                @if (Model.Access.CanWriteOrInitField(ClientEntityField.PricingCategory, Model.Original == null))
+                {
+                    @Html.Kendo().DropDownListFor(x => x.PricingCategoryId).BindTo(new SelectList(Model.PricingCategories, "Id", "Name").WithNull("(None)"))
+                    @Html.ValidationMessageFor(x => x.PricingCategoryId)
+                }
+                else if (Model.Access.CanReadField(ClientEntityField.PricingCategory))
+                {
+                    @Html.DisplayFor(x => x.Original.PricingCategory.Name)
+                }
+                else
+                {
+                    <p class="form-control-plaintext">(hidden)</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+@*Comments*@
+<div class="row">
+    <div class="col-12">
+        @Html.LabelFor(x => x.Comment)
+    </div>
+    <div class="col-12 mb-2">
+        @Html.TextAreaFor(x => x.Comment, new { @class = "k-textbox" })
+        @Html.ValidationMessageFor(x => x.Comment)
+    </div>
+</div>

@@ -1,0 +1,87 @@
+﻿@using DentalDrill.CRM.Extensions
+@model DentalDrill.CRM.Models.ViewModels.Inventory.InventorySKUIndexModel
+@{
+    Layout = "_FullLayout";
+    ViewBag.Title = "Inventory";
+
+
+    var canManage = User.IsInRole(ApplicationRoles.Administrator) ||
+                    User.IsInRole(ApplicationRoles.CompanyAdministrator);
+    var canManageMovements = User.IsInRole(ApplicationRoles.Administrator) ||
+                             User.IsInRole(ApplicationRoles.CompanyAdministrator) ||
+                             User.IsInRole(ApplicationRoles.CompanyManager);
+    var filterSKUOptions = new SelectList(new[]
+    {
+        Tuple.Create("All", "All"),
+        Tuple.Create("WarningOnly", "Warning Only"),
+    }, "Item1", "Item2");
+}
+
+<div id="InventoryIndexPage" class="grid-wrapper editor">
+    <div class="grid-wrapper__header editor__header">
+        <div class="editor__title">
+            <h1>Inventory Stock</h1>
+        </div>
+        <div class="editor__actions">
+            <div class="editor__inline-filter">
+                <label for="FilterSKUName">Search</label>
+                <input type="text" class="k-textbox filter-sku-name" id="FilterSKUName" />
+            </div>
+
+            <div class="editor__inline-filter">
+                <label for="FilterSKUStatus">SKUs</label>
+                <kendo-dropdownlist id="FilterSKUStatus"
+                                    class="filter-sku-status"
+                                    bind-to="filterSKUOptions"
+                                    datavaluefield="Value"
+                                    datatextfield="Text">
+                </kendo-dropdownlist>
+            </div>
+            
+            <div class="editor__inline-filter">
+                <label for="FilterWorkshop">Workshop</label>
+                <kendo-dropdownlist id="FilterWorkshop"
+                                    class="filter-workshop"
+                                    bind-to="@(Model.Workshops.Count > 1 ? new SelectList(Model.Workshops, "Id", "Name").WithNull("All") : new SelectList(Model.Workshops, "Id", "Name"))"
+                                    value-primitive="true"
+                                    value="@(Model.SelectedWorkshop?.Id ?? (Model.Workshops.Count == 1 ? Model.Workshops[0].Id : null))"
+                                    datavaluefield="Value"
+                                    datatextfield="Text">
+                </kendo-dropdownlist>
+            </div>
+
+            @if (canManage)
+            {
+                <a class="editor__action inventory-type-create-action" asp-action="Create" asp-controller="InventoryTypes"><span class="fas fa-plus"></span> Add Type</a>
+            }
+        </div>
+    </div>
+
+    <div class="grid-wrapper__grid">
+        <div class="grid-container k-grid-commandicons2"></div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript" src="/js/app/pages/inventory/index.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="/js/app/pages/inventoryTypes/sort.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="/js/app/pages/inventory/create.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="/js/app/pages/inventory/convertToGroup.js" asp-append-version="true"></script>
+    <scripts-bundle path="/js/app/pages/inventoryMovements/preview.min.js" />
+    <scripts-bundle path="/js/app/pages/inventoryMovements/create.min.js" />
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function() {
+            var page = new DentalDrill.CRM.Pages.Inventory.Index.InventoryIndexPage(document.getElementById("InventoryIndexPage"));
+            @if (canManage)
+            {
+                <text>page.setCanManage(true);</text>
+            }
+            @if (canManageMovements)
+            {
+                <text>page.setCanManageMovements(true);</text>
+            }
+            page.init();
+        });
+    </script>
+}

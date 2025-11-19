@@ -1,0 +1,80 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using DentalDrill.CRM.Models
+@using DentalDrill.CRM.Models.ViewModels
+@using DevGuild.AspNetCore.Services.Uploads.Images
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject IImageUploadService ImageUpload
+
+@if (SignInManager.IsSignedIn(User))
+{
+    if (User.Identity.IsAuthenticated && (User.IsInRole(ApplicationRoles.OfficeAdministrator) ||
+                                           User.IsInRole(ApplicationRoles.WorkshopTechnician) ||
+                                           User.IsInRole(ApplicationRoles.CompanyAdministrator)))
+    {
+        <ul class="nav navbar-nav navbar-right">
+            @if (User.IsInRole(ApplicationRoles.OfficeAdministrator) || User.IsInRole(ApplicationRoles.CompanyAdministrator))
+            {
+                <li class="nav-item mr-lg-2 btn btn-info dropdown callback-indicator callback-indicator--disconnected" id="navbar-callback-dropdown">
+                    <a class="nav-link dropdown-toggle callback-indicator__icon" href="#" id="navbar-callback" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="fas fa-fw fa-phone"></span>
+                        <span class="callback-indicator__number">0</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labeledby="navbar-callback">
+                        <partial name="../Callback/_Feed" model="@(new NotificationFeedModel { Init = true, LinkFullVersion = true, PageSize = 5 })"/>
+                    </div>
+                </li>
+            }
+            <li class="nav-item btn btn-info dropdown notifications-indicator notifications-indicator--disconnected" id="navbar-notifications-dropdown">
+                <a class="nav-link dropdown-toggle notifications-indicator__icon" href="#" id="navbar-notifications" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="fas fa-fw fa-bell"></span>
+                    <span class="notifications-indicator__number"></span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labeledby="navbar-notifications">
+                    <partial name="../Notifications/_Feed" model="new DentalDrill.CRM.Models.ViewModels.NotificationFeedModel { Init = false, LinkFullVersion = true }"/>
+                </div>
+            </li>
+        </ul>
+    }
+
+    <form asp-controller="Account" asp-action="Logout" method="post" class="form-inline navbar-right">
+        <ul class="nav navbar-nav navbar-right">
+            <li class="nav-item">
+                @if (User.Identity.IsAuthenticated && (User.IsInRole(ApplicationRoles.Client) && Model != null && Model.ClientAppearance.Logo != null))
+                {
+                    var logoUrl = await ImageUpload.GetImageUrlAsync(Model.ClientAppearance.Logo, "300");
+                    <img class="surgery__navbar__logo d-inline-block d-inline d-md-none d-lg-inline" src="@logoUrl" alt="@Model.Client.Name"/>
+                }
+                else if (User.Identity.IsAuthenticated && (User.IsInRole(ApplicationRoles.Corporate) && Model != null && Model.CorporateAppearance.Logo != null))
+                {
+                    var logoUrl = await ImageUpload.GetImageUrlAsync(Model.CorporateAppearance.Logo, "300");
+                    <img class="surgery__navbar__logo d-inline-block d-inline d-md-none d-lg-inline" src="@logoUrl" alt="@Model.Corporate.Name"/>
+                }
+                <a class="nav-link d-inline-block" asp-controller="Manage" asp-action="ChangePassword" title="Manage">
+                    @{
+                        var userName = UserManager.GetUserName(User);
+                        if (userName != null && userName.Length > 15)
+                        {
+                            <span class="d-none d-md-inline d-lg-none">@userName.Substring(0, 12)...</span>
+                        }
+                        else
+                        {
+                            <span class="d-none d-md-inline d-lg-none">@userName...</span>
+                        }
+                        <span class="d-inline d-md-none d-lg-inline">@userName</span>
+                    }
+                </a>
+            </li>
+            <li class="nav-item">
+                <button type="submit" class="btn btn-link btn-borderless nav-link">Log out</button>
+            </li>
+        </ul>
+    </form>
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li class="nav-item"><a class="nav-link" asp-controller="Account" asp-action="Login">Log in</a></li>
+    </ul>
+}

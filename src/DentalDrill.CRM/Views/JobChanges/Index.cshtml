@@ -1,0 +1,35 @@
+﻿@model DentalDrill.CRM.Models.ViewModels.JobChangeIndexViewModel
+@{
+    this.Layout = "";
+}
+
+<kendo-grid name="JobChangesGrid_@Model.Parent.Id" height="320" class="k-grid-commandicons2 k-grid--dense k-grid--small-text">
+    <columns>
+        <column field="ChangedOn" title="Changed on" format="{0:d} {0:t}" width="150" />
+        <column field="ChangedByName" title="Changed by" width="150" />
+        <column field="OldStatus" title="Old status" template="#: data.OldStatusName#" width="150" />
+        <column field="NewStatus" title="New status" template="#: data.NewStatusName#" width="150" />
+    </columns>
+    <column-menu enabled="false" />
+    <editable enabled="false" />
+    <pageable enabled="false" />
+    <scrollable enabled="true" />
+    <datasource type="DataSourceTagHelperType.Ajax" page-size="0">
+        <transport>
+            <read url="@Url.Action("Read", "JobChanges", new { parentId = Model.Parent.Id })" />
+        </transport>
+        <schema>
+            <model id="Id">
+                <fields>
+                    <field name="ChangedOn" type="date" />
+                    <field name="ChangedByName" />
+                    <field name="OldStatus" />
+                    <field name="NewStatus" />
+                </fields>
+            </model>
+        </schema>
+        <sorts>
+            <sort field="ChangedOn" direction="desc" />
+        </sorts>
+    </datasource>
+</kendo-grid>

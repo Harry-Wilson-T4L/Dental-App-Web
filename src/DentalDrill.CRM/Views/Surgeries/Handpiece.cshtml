@@ -1,0 +1,162 @@
+﻿@using DevGuild.AspNetCore.Controls.HybridForms
+@model Handpiece
+@{
+    this.ConfigureHybridPage($"Handpiece_{Model.Id:N}");
+}
+
+<div class="details repair__details-public">
+    <div class="row">
+        <div class="col-12 col-lg-6">
+            <div class="row">
+                <div class="col-sm-5">
+                    <label>Estimate #</label>
+                </div>
+                <div class="col-sm-7">
+                    <span>@Model.Job.JobNumber</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-12 col-lg-6">
+            <div class="row">
+                <div class="col-sm-5">
+                    <label>Received Date</label>
+                </div>
+                <div class="col-sm-7">
+                    <span>@Model.Job.Received.ToShortDateString()</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-12 col-lg-6">
+            <div class="row">
+                <div class="col-sm-5">
+                    <label>Make & Model</label>
+                </div>
+                <div class="col-sm-7">
+                    <span>@Model.Brand @Model.MakeAndModel</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-6">
+            <div class="row">
+                <div class="col-sm-5">
+                    <label>Serial #</label>
+                </div>
+                <div class="col-sm-7">
+                    <span>@Model.Serial</span>
+                </div>
+            </div>
+        </div>
+
+        @foreach (var component in Model.Components)
+        {
+            <div class="col-12 col-lg-6">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label>Make & Model</label>
+                    </div>
+                    <div class="col-sm-7">
+                        <span>@component.Brand @component.Model</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-6">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label>Serial #</label>
+                    </div>
+                    <div class="col-sm-7">
+                        <span>@component.Serial</span>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="col-12 col-lg-6">
+            <div class="row">
+                <div class="col-sm-5">
+                    <label>Service Level</label>
+                </div>
+                <div class="col-sm-7">
+                    <span>@Model.ServiceLevel?.Name</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-6">
+            <div class="row">
+                <div class="col-sm-5">
+                    <label>Rating</label>
+                </div>
+                <div class="col-sm-7">
+                    <span class="fa fa-star"></span><span> @Model.Rating/10</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="row">
+        @if (!String.IsNullOrEmpty(Model.PublicComment))
+        {
+            <div class="col-12">
+                <div class="row">
+                    <div class="col-md-5 col-lg-2_5">
+                        <label>Handpiece Comment</label>
+                    </div>
+                    <div class="col-md-7 col-lg-9_5">
+                        <span>@Model.PublicComment</span>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="col-12 col-lg-6">
+            <div class="row">
+                <div class="col-sm-5">
+                    <label>Return by</label>
+                </div>
+                <div class="col-sm-7">
+                    <span>@Model.ReturnBy?.Name</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-6">
+            <div class="row">
+                <div class="col-sm-5">
+                    <label>Cost of repair</label>
+                </div>
+                <div class="col-sm-7">
+                    <span>$@Model.CostOfRepair?.ToString("0.##")</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="row details__gallery justify-content-center">
+        @{
+            var images = Model.Images.Where(x => x.Display).OrderByDescending(x => x.Date).Take(3).ToList();
+            foreach (var image in images)
+            {
+                <div class="col-12 col-sm-6 col-md-4 text-center">
+                    @if (image.Image != null)
+                    {
+                        <img class="img-fluid handpiece-image-show-carousel" data-id="@Model.Id" data-image="@image.Id" uploaded-ref="@image.Image" uploaded-variation="300"/>
+                    }
+                    else if (image.Video != null)
+                    {
+                        <img class="img-fluid handpiece-image-show-carousel" data-id="@Model.Id" data-image="@image.Id" src="/img/video-placeholder.png" />
+                    }
+                </div>
+            }
+        }
+    </div>
+</div>
+

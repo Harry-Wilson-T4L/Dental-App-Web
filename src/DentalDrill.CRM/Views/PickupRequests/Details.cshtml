@@ -1,0 +1,163 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DevGuild.AspNetCore.Controls.HybridForms
+@model PickupRequest
+@{
+    ViewBag.Title = $"Pickup request from {Model.PracticeName}";
+    this.ConfigureHybridPage("PickupRequestsDetails");
+}
+
+
+<div class="details">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="details__header">
+            <div class="details__title">
+                <h1>Pickup request from @Model.PracticeName</h1>
+            </div>
+            <div class="details__actions">
+                <a asp-action="Index" class="details__action"><span class="fas fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+    <div class="row">
+        @if (Model.Status != PickupRequestStatus.Completed && Model.Status != PickupRequestStatus.Cancelled)
+        {
+            <div class="col-md-12 pickup-request-actions">
+                <div class="row details__field">
+                    <button type="button" class="btn btn-primary pickup-request-actions__complete" data-id="@Model.Id">Complete</button>
+                    <button type="button" class="btn btn-danger ml-2 pickup-request-actions__cancel" data-id="@Model.Id">Cancel</button>
+                </div>
+            </div>
+        }
+        <div class="col-md-6">
+            <div class="row details__field">
+                <div class="details__label">Created On</div>
+                <div class="details__value"><local-date-time format="g" value="@Model.CreatedOn"></local-date-time></div>
+            </div>
+        </div>
+        @if (Model.CreatedById != null)
+        {
+            <div class="col-md-6">
+                <div class="row details__field">
+                    <div class="details__label">Created By</div>
+                    <div class="details__value">@Model.CreatedBy.UserName</div>
+                </div>
+            </div>
+        }
+        @if (Model.EmployeeId != null)
+        {
+            <div class="col-md-12">
+                <div class="row details__field">
+                    <div class="details__label">Employee</div>
+                    <div class="details__value">@Model.Employee.FirstName @Model.Employee.LastName</div>
+                </div>
+            </div>
+        }
+        @if (Model.ClientId != null)
+        {
+            <div class="col-md-12">
+                <div class="row details__field">
+                    <div class="details__label">Client</div>
+                    <div class="details__value">@Model.Client.Name</div>
+                </div>
+            </div>
+        }
+        @if (Model.CorporateId != null)
+        {
+            <div class="col-md-12">
+                <div class="row details__field">
+                    <div class="details__label">Corporate</div>
+                    <div class="details__value">@Model.Corporate.Name</div>
+                </div>
+            </div>
+        }
+        <div class="col-md-6">
+            <div class="row details__field">
+                <div class="details__label">Type</div>
+                <div class="details__value">@Model.Type</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row details__field">
+                <div class="details__label">Status</div>
+                <div class="details__value">@Model.Status</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row details__field">
+                <div class="details__label">Practice Name</div>
+                <div class="details__value">@Model.PracticeName</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row details__field">
+                <div class="details__label">Contact Person</div>
+                <div class="details__value">@Model.ContactPerson</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row details__field">
+                <div class="details__label">Email</div>
+                <div class="details__value">@Model.Email</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row details__field">
+                <div class="details__label">Phone</div>
+                <div class="details__value">@Model.Phone</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row details__field">
+                <div class="details__label">Address Line 1</div>
+                <div class="details__value">@Model.AddressLine1</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row details__field">
+                <div class="details__label">Address Line 2</div>
+                <div class="details__value">@Model.AddressLine2</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row details__field">
+                <div class="details__label">Suburb</div>
+                <div class="details__value">@Model.Suburb</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row details__field">
+                <div class="details__label">State</div>
+                <div class="details__value">@Model.State</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row details__field">
+                <div class="details__label">Postcode</div>
+                <div class="details__value">@Model.Postcode</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row details__field">
+                <div class="details__label">Country</div>
+                <div class="details__value">@Model.Country</div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="row details__field">
+                <div class="details__label">Number of handpieces</div>
+                <div class="details__value">@Model.HandpiecesCount</div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="row details__field">
+                <div class="details__label">Comment</div>
+                <div class="details__value">@Model.Comment</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/app/pages/pickupRequests/details.js" asp-append-version="true"></script>
+}

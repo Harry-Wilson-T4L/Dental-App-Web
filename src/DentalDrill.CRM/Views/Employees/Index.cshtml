@@ -1,0 +1,70 @@
+﻿@using DentalDrill.CRM.Models.Permissions
+@using Kendo.Mvc.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model DentalDrill.CRM.Models.ViewModels.EmptyEmployeeIndexViewModel
+@{
+    ViewBag.Title = "Employees";
+    var showDeleted = Context.Request.Query.TryGetValue("ShowDeleted", out var deletedValues) && deletedValues.Equals("true");
+}
+
+<h1 class="header">Employees</h1>
+
+<kendo-grid name="EmployeesGrid" height="630">
+    <columns>
+        <column field="FirstName" title="First Name" width="125" />
+        <column field="LastName" title="Last Name" width="125" />
+        <column field="RoleName" title="Role" width="125" />
+        <column field="Type" title="Type" width="125" template="@("#: data.TypeName#")" />
+        <column field="UserName" title="User Name" width="125" />
+        @if (showDeleted)
+        {
+            <column field="DeletionStatus" title="Deletion Status" width="100" />
+        }
+        <column width="150">
+            <commands>
+                <column-command name="CustomDetails" click="DentalDrill.CRM.Pages.Employees.Index.EmployeesGrid.handleDetails" text="@("<span class=\"fas fa-fw fa-external-link-alt\"></span>")"></column-command>
+                @if (Model.Access.Global.CanWriteComponent(GlobalComponent.Employee))
+                {
+                    <column-command name="CustomEdit" click="DentalDrill.CRM.Pages.Employees.Index.EmployeesGrid.handleEdit" text="@("<span class=\"fas fa-fw fa-pencil-alt\"></span>")"></column-command>
+                    <column-command name="CustomDelete" click="DentalDrill.CRM.Pages.Employees.Index.EmployeesGrid.handleDelete" text="@("<span class=\"fas fa-fw fa-trash-alt\"></span>")"></column-command>
+                }
+            </commands>
+        </column>
+    </columns>
+    <toolbar>
+        @if (Model.Access.Global.CanWriteComponent(GlobalComponent.Employee))
+        {
+            <toolbar-button name="CustomCreate" text="@("<span class=\"fas fa-fw fa-plus\"></span> Create")"></toolbar-button>
+        }
+        
+        @if (!showDeleted)
+        {
+            <toolbar-button name="CustomShowDeleted" text="@("<span class=\"\"></span> Show Deleted")"></toolbar-button>
+        }
+    </toolbar>
+    <column-menu enabled="false" />
+    <editable enabled="false" />
+    <pageable enabled="true" />
+    <scrollable enabled="true" />
+    <datasource type="DataSourceTagHelperType.Ajax" page-size="100">
+        <transport>
+            <read url="@Url.Action("Read", "Employees", showDeleted ? new { ShowDeleted = "true" } : null)" />
+        </transport>
+        <schema>
+            <model id="Id">
+                <fields>
+                    <field name="FirstName"></field>
+                    <field name="LastName"></field>
+                    <field name="RoleName"></field>
+                    <field name="Type"></field>
+                    <field name="TypeName"></field>
+                    <field name="UserName"></field>
+                </fields>
+            </model>
+        </schema>
+    </datasource>
+</kendo-grid>
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/app/pages/employees/index.js" asp-append-version="true"></script>
+}

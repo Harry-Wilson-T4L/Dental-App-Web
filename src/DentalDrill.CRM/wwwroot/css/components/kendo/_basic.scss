@@ -1,0 +1,30 @@
+﻿@import "../../abstracts/_variables.scss";
+
+.k-textbox {
+    width: 100%;
+    transition: all 0.3s;
+
+    &:hover {
+        border-color: rgb(51, 51, 51);
+    }
+
+    &[disabled] {
+        background-color: #e9ecef;
+    }
+}
+
+.k-dropdown {
+    width: 100%;
+}
+
+textarea.k-textbox {
+    height: 7rem;
+    resize: none;
+    padding: 1rem 0.8rem;
+}
+
+.k-button.k-button-solid-primary {
+    color: $btn-primary-color;
+    background-color: $btn-primary-background;
+    border-color: $btn-primary-background;
+}

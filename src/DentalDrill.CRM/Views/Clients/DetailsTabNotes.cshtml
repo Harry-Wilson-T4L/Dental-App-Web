@@ -1,0 +1,47 @@
+﻿@using DentalDrill.CRM.Models.ViewModels
+@using DentalDrill.CRM.Models.Permissions
+@model DentalDrill.CRM.Models.ViewModels.ClientDetailsViewModel
+@{
+    Layout = null;
+}
+
+@(Html.Kendo().Grid<ClientNoteViewModel>()
+    .Name("ClientNotesGrid")
+    .HtmlAttributes(new { @class = "k-grid-commandicons", style = "height: 630px" })
+    .Columns(columns =>
+    {
+        columns.Bound(c => c.Created).ClientTemplate("#= kendo.toString(DevGuild.Utilities.TimeZones.treatAsUtc(Created), \"g\") #").Width(140);
+        columns.Bound(c => c.Text).Width(300).HtmlAttributes(new { style = "white-space: pre-wrap;" });
+        columns.Bound(c => c.CreatorName).Width(100);
+        columns.Command(command =>
+        {
+            command.Custom("CustomDetails").Text("<span class=\"fas fa-fw fa-external-link-alt\"></span>").Click("DentalDrill.CRM.Pages.Clients.Details.ClientNotesGrid.handleDetailsClick");
+            if (Model.Access.CanWriteComponent(ClientEntityComponent.Note))
+            {
+                command.Custom("CustomEdit").Text("<span class=\"fas fa-fw fa-pencil-alt\"></span>").Click("DentalDrill.CRM.Pages.Clients.Details.ClientNotesGrid.handleEditClick");
+                command.Custom("CustomDelete").Text("<span class=\"fas fa-fw fa-trash-alt\"></span>").Click("DentalDrill.CRM.Pages.Clients.Details.ClientNotesGrid.handleDeleteClick");
+            }
+        }).Width(150);
+    })
+    .ToolBar(toolbar =>
+    {
+        if (Model.Access.CanWriteComponent(ClientEntityComponent.Note))
+        {
+            toolbar.Custom().Name("CustomCreate")
+                .Text("<span class=\"k-icon k-i-add\"></span>" + "New Note")
+                .HtmlAttributes(new { href = Url.Action("Create", "ClientNotes", new { parentId = Model.Id }) });
+        }
+    })
+    .ColumnMenu(cm => cm.Enabled(false))
+    .Pageable()
+    .Scrollable(scrollable => scrollable.Enabled(true).Height("auto"))
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .Model(model =>
+        {
+            model.Id(f => f.Id);
+            model.Field(f => f.Id).DefaultValue(default(Guid));
+        })
+        .Read(read => read.Action("Read", "ClientNotes", new { parentId = Model.Id }))
+        .Events(events => events.Error("DevGuild.AspNet.Controls.Grids.Errors.GridErrorHandler.handleGridError")
+            .RequestStart("DevGuild.AspNet.Controls.Grids.Errors.GridErrorHandler.handleRequestStart"))))

@@ -1,0 +1,93 @@
+﻿@model DentalDrill.CRM.Models.ViewModels.FeedbackFormFillModel
+@{
+    Layout = null;
+}
+<html>
+<body>
+    <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="font-family: sans-serif;">
+        <tr>
+            <td align="center">
+                <table border="0" cellpadding="0" cellspacing="0" width="600" style="box-shadow: 0 0 2px 2px lightgrey; padding: 15px;">
+                    <tr>
+                        <td>
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-bottom: 2px solid #dadada; padding-bottom: 8px;">
+                                <tr>
+                                    <td><a href="https://www.dds11.au/"><img alt="Dental Drill Solutions" src="/img/email/dds-logo-small.jpg" /></a></td>
+                                    <td><h1 style="font-size: 28px; padding-top: 32px; text-align: right;">We value your feedback</h1></td>
+                                </tr>
+                            </table>
+                            <div style="margin-top: 8px; margin-bottom: 16px; font-weight: bold; text-align: center;">
+                                We would like your feedback to improve our service
+                            </div>
+                            <div style="margin-top: 8px; margin-bottom: 16px; font-weight: bold; text-align: center;">
+                                As a Thank You for your recent custom and feedback we will apply a further <span style="color: red;">5%&nbsp;Discount&nbsp;Off</span> your next handpiece repair bill!<sup style="color: red;">*</sup>
+                            </div>
+                            <div>
+                                @for (var i = 0; i < Model.Answers.Count; i++)
+                                {
+                                    var question = Model.Answers[i];
+                                    var stylesList = "margin-top: 16px; margin-bottom: 16px; border-bottom: 2px solid #dadada;";
+                                    if (i == Model.Answers.Count - 1)
+                                    {
+                                        stylesList = "margin-top: 16px; margin-bottom: 16px;";
+                                    }
+
+                                    <div style="@stylesList">
+                                        @switch (question.Question.Type)
+                                        {
+                                            case FeedbackFormQuestionType.Rating:
+                                                <div style="font-weight: bold; text-align: center;">@question.Question.Name</div>
+                                                <div style="margin-top: 16px; margin-bottom: 16px; text-align: center;">
+                                                    <a href="@Url.Action("Form", new { id = Model.Form.Id })" style="margin-left: 8px; margin-right: 8px;"><img src="/img/email/rating1.png" alt="Rate 1" /></a>
+                                                    <a href="@Url.Action("Form", new { id = Model.Form.Id })" style="margin-left: 8px; margin-right: 8px;"><img src="/img/email/rating2.png" alt="Rate 2" /></a>
+                                                    <a href="@Url.Action("Form", new { id = Model.Form.Id })" style="margin-left: 8px; margin-right: 8px;"><img src="/img/email/rating3.png" alt="Rate 3" /></a>
+                                                    <a href="@Url.Action("Form", new { id = Model.Form.Id })" style="margin-left: 8px; margin-right: 8px;"><img src="/img/email/rating4.png" alt="Rate 4" /></a>
+                                                    <a href="@Url.Action("Form", new { id = Model.Form.Id })" style="margin-left: 8px; margin-right: 8px;"><img src="/img/email/rating5.png" alt="Rate 5" /></a>
+                                                </div>
+                                                break;
+                                            case FeedbackFormQuestionType.MultilineText:
+                                                <div style="font-weight: bold; text-align: left; margin-bottom: 8px;">@question.Question.Name</div>
+                                                <div>
+                                                    <div style="border: 1px solid #ced4da; height: 100px;"></div>
+                                                </div>
+                                                break;
+                                        }
+                                    </div>
+                                }
+                            </div>
+                            <div style="margin-bottom: 16px; color: red;">
+                                *Discount is not applicable to new parts service/sales
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="height: 36px; width: 100px; border-radius: 4px; background-color: #007bff; margin-left: auto; margin-right: auto;">
+                                    <a href="@Url.Action("Form", new { id = Model.Form.Id })" style="color: #ffffff; line-height: 36px; text-decoration: none;">Open Form</a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <div>&nbsp;</div>
+                                <div>Kind regards</div>
+                                <div>&nbsp;</div>
+                                <div>Troy Garvin</div>
+                                <div>Dental Drill Solutions</div>
+                                <div>&nbsp;</div>
+                                <div><a href="https://www.dds11.au/"><img alt="Dental Drill Solutions" src="/img/email/dds-logo.jpg" /></a></div>
+                                <div>P: 1300 337 300</div>
+                                <div>A: 2/11 Turbo Road, Kings Park NSW 2148 Australia</div>
+                                <div>E: <a href="mailto:info@dds11.au">info@dds11.au</a></div>
+                                <div>W: <a href="https://www.dds11.au/">www.dds11.au</a></div>
+                                <div>ABN: 25 150 633 515</div>
+                                <div>&nbsp;</div>
+                                <div><a href="https://www.facebook.com/dentaldrillsolutions"><img alt="Like us on Facebook" src="/img/email/dds-fb-like.jpg" /></a></div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

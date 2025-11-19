@@ -1,0 +1,28 @@
+﻿@using DentalDrill.CRM.Models.ViewModels.CorporatePricingServiceLevels
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Newtonsoft.Json
+@using DentalDrill.CRM.Models.Permissions
+@model CorporatePricingServiceLevelIndexModel
+@{
+    ViewBag.Title = "Corporate Pricing";
+}
+
+<div id="CorporatePricingPage" class="grid-wrapper">
+    <h1 class="header grid-wrapper__header">Corporate Pricing</h1>
+    <div class="grid-wrapper__grid">
+        <div class="grid-container"></div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript" src="/js/app/pages/corporatePricing/index.js" asp-append-version="true"></script>
+    <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function() {
+            var canEdit = @(Model.Access.Global.CanWriteComponent(GlobalComponent.CorporatePricing).ToString().ToLower());
+            var page = new DentalDrill.CRM.Pages.CorporatePricing.Index.CorporatePricingPage(document.getElementById("CorporatePricingPage"), canEdit);
+            page.setCategories(@Html.Raw(JsonConvert.SerializeObject(Model.Categories.Select(x => new { x.Id, x.Name }))));
+            page.init();
+        });
+    </script>
+}

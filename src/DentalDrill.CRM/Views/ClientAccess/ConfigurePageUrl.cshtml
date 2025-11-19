@@ -1,0 +1,44 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DevGuild.AspNetCore.Controls.HybridForms
+@model DentalDrill.CRM.Models.ViewModels.ClientAccessConfigurePageUrlOperationModel
+@{
+    this.ViewBag.Title = "Configure page url";
+    this.ConfigureHybridPage("ClientAccessConfigurePageUrl");
+}
+
+<div class="editor">
+    <div class="editor__header" ajax-rendering="NormalOnly">
+        <div class="editor__title">
+            <h1>Configure page url</h1>
+        </div>
+        <div class="editor__actions">
+            <a asp-action="Details" asp-controller="Clients" asp-route-id="@Model.Client.Id" asp-route-Tab="Access" class="editor__action"><span class="fas fa-fw fa-arrow-left"></span> Back</a>
+        </div>
+    </div>
+    
+    <form asp-action="ConfigurePageUrl" asp-route-id="@Model.Client.Id" method="post" hybrid-form-id="ClientAccessConfigurePageUrl">
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+        <div class="row">
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label asp-for="UrlPath"></label>
+                    </div>
+                    <div class="col-md-9">
+                        <div style="display: flex">
+                            <div style="padding-top: 6px; padding-bottom: 6px">@($"{Context.Request.Scheme}://{Context.Request.Host}/Surgeries/")</div>
+                            @Html.Kendo().TextBoxFor(x => x.UrlPath)
+                        </div>
+                        <span asp-validation-for="UrlPath" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a asp-action="Details" asp-controller="Clients" asp-route-id="@Model.Client.Id" asp-route-Tab="Access" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

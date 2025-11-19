@@ -1,0 +1,6 @@
+﻿@model DentalDrill.CRM.Models.ViewModels.EmptyIndexViewModel
+@{
+    ViewBag.Title = "Callback";
+}
+
+<partial name="_Feed" model="new DentalDrill.CRM.Models.ViewModels.NotificationFeedModel { Init = true, PageSize = 10 }" />

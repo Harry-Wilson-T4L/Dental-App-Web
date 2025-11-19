@@ -1,0 +1,26 @@
+{
+  "name": "app",
+  "private": true,
+  "dependencies": {
+    "popper.js": "1.14.4",
+    "bootstrap": "v4.1.3",
+    "jquery": "3.4.1",
+    "jquery-validation": "1.19.1",
+    "jquery-validation-unobtrusive": "v3.2.11",
+    "kendo-ui": "git+https://devguildltd.visualstudio.com/DevGuild.Frontend/_git/kendo-ui#2021.1.224",
+    "devguild.utilities": "git+https://devguildltd.visualstudio.com/DevGuild.Frontend/_git/utilities#v0.2.0",
+    "devguild.aspnet-routing": "git+https://devguildltd.visualstudio.com/DevGuild.Frontend/_git/aspnet-routing#v0.2.0",
+    "devguild.ajax-forms": "git+https://devguildltd.visualstudio.com/DevGuild.Frontend/_git/ajax-forms#v0.2.0",
+    "devguild.kendo-grid-commandicons": "git+https://devguildltd.visualstudio.com/DevGuild.Frontend/_git/kendo-grid-commandicons#v0.2.0",
+    "devguild.kendo-grid-errors": "git+https://devguildltd.visualstudio.com/DevGuild.Frontend/_git/kendo-grid-errors#v0.3.0",
+    "devguild.kendo-grid-handlers": "git+https://devguildltd.visualstudio.com/DevGuild.Frontend/_git/kendo-grid-handlers#v0.3.0",
+    "devguild.kendo-tabstrip-navigation": "git+https://devguildltd.visualstudio.com/DevGuild.Frontend/_git/kendo-tabstrip-navigation#v0.2.0",
+    "devguild.kendo-typings-extra": "git+https://devguildltd.visualstudio.com/DevGuild.Frontend/_git/kendo-typings-extra#v0.2.0",
+    "jquery-ajax-unobtrusive": "v3.2.6",
+    "font-awesome": "5.11.1",
+    "pdfjs-dist": "v2.1.266" 
+  },
+  "resolutions": {
+    "jquery": "3.4.1"
+  }
+}

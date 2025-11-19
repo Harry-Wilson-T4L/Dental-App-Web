@@ -1,0 +1,68 @@
+﻿@using DevGuild.AspNetCore.Controls.HybridForms
+@using DentalDrill.CRM.Extensions
+@model DentalDrill.CRM.Models.ViewModels.InventoryMovements.InventoryMovementHistoryViewModel
+@{
+    ViewBag.Title = "Move history";
+    this.ConfigureHybridPage("InventoryMovementsHistory");
+}
+
+<div class="editor">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Move history</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Index" asp-controller="InventoryMovements" class="editor__action"><span class="fas fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+    
+    <kendo-grid name="@($"InventoryMovementsHistoryGrid_{Model.Movement.Id:N}")" height="450" class="k-grid--dense k-grid--small-text">
+        <columns>
+            <column field="ChangedOn" title="Changed On" width="80" template="@(@"#: kendo.toString(data.ChangedOn, ""d"") # #: kendo.toString(data.ChangedOn, ""t"") #")" />
+            <column field="ChangedBy" title="Changed By" width="100" template="#: data.ChangedByName #" />
+            <column field="Action" title="Action" width="60" template="#: data.ActionName #" />
+            <column field="OldStatus" title="Old Status" width="90" template="#: data.OldStatus ? data.OldStatusName : '' #" />
+            <column field="NewStatus" title="New Status" width="90" template="#: data.NewStatus ? data.NewStatusName : '' #" />
+            <column field="OldQuantity" title="Old QTY" width="60" />
+            <column field="NewQuantity" title="New QTY" width="60" />
+            <column field="OldPrice" title="Old Price" width="60" />
+            <column field="NewPrice" title="New Price" width="60" />
+            <column field="OldComment" title="Old Comment" width="100" />
+            <column field="NewComment" title="New Comment" width="100" />
+        </columns>
+        <column-menu enabled="false" />
+        <editable enabled="false" />
+        <pageable enabled="false" />
+        <scrollable enabled="true" />
+        <sortable enabled="false" />
+        <datasource type="DataSourceTagHelperType.Ajax" page-size="0">
+            <transport>
+                <read url="@Url.Action("ReadChanges", "InventoryMovements", new { movement = Model.Movement.Id })" />
+            </transport>
+            <schema>
+                <model id="Id">
+                    <fields>
+                        <field name="ChangedOn" type="Date" />
+                        <field name="ChangedBy" type="string" />
+                        <field name="ChangedByName" type="string" />
+                        <field name="Action" type="number" />
+                        <field name="ActionName" type="string" />
+                        <field name="OldStatus" type="number" />
+                        <field name="OldStatusName" type="string" />
+                        <field name="NewStatus" type="number" />
+                        <field name="NewStatusName" type="string" />
+                        <field name="OldQuantity" type="number" />
+                        <field name="NewQuantity" type="number" />
+                        <field name="OldPrice" type="number" />
+                        <field name="NewPrice" type="number" />
+                        <field name="OldComment" type="string" />
+                        <field name="NewComment" type="string" />
+                    </fields>
+                </model>
+            </schema>
+        </datasource>
+    </kendo-grid>
+</div>

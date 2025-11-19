@@ -1,0 +1,86 @@
+﻿@using DentalDrill.CRM.Models.ViewModels.ClientEmails
+@using Kendo.Mvc.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using DentalDrill.CRM.Models.Permissions
+@model DentalDrill.CRM.Models.ViewModels.ClientDetailsViewModel
+@{
+    Layout = null;
+}
+
+@if (Model.Access.CanWriteComponent(ClientEntityComponent.Email))
+{
+    <div class="row">
+        <div class="col-12">
+            <div class="dropdown mt-2 ml-2">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="ClientEmailsSendDropdownButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="fas fa-envelope"></span> Send message
+                </button>
+                <div class="dropdown-menu" aria-labeledby="ClientEmailsSendDropdownButton">
+                    <a class="dropdown-item client-email-send-button" data-title="Send custom email" data-hybrid-id="ClientEmailsSendCustom"
+                       asp-action="SendCustom" asp-controller="ClientEmails" asp-route-id="@Model.Id">Custom</a>
+
+                    <a class="dropdown-item client-email-send-button" data-title="Send Sydney Clients General Email" data-hybrid-id="ClientEmailsSendNewClient" data-height="800px"
+                       asp-action="SendNewClient" asp-controller="ClientEmails" asp-route-id="@Model.Id">Sydney Clients General Email</a>
+
+                    <a class="dropdown-item client-email-send-button" data-title="Send Queensland Clients General Email" data-hybrid-id="ClientEmailsSendNewQueenslandClient" data-height="800px"
+                       asp-action="SendNewQueenslandClient" asp-controller="ClientEmails" asp-route-id="@Model.Id">Queensland Clients General Email</a>
+
+                    <a class="dropdown-item client-email-send-button" data-title="Send Interstate Clients General Email" data-hybrid-id="ClientEmailsSendNewInterstateClient" data-height="800px"
+                       asp-action="SendNewInterstateClient" asp-controller="ClientEmails" asp-route-id="@Model.Id">Interstate Clients General Email</a>
+
+                    <a class="dropdown-item client-email-send-button" data-title="Send maintenance instructions" data-hybrid-id="ClientEmailsSendMaintenanceInstructions" data-height="800px"
+                       asp-action="SendMaintenanceInstructions" asp-controller="ClientEmails" asp-route-id="@Model.Id">Maintenance Instructions</a>
+
+                    <a class="dropdown-item client-email-send-button" data-title="Send scaler information" data-hybrid-id="ClientEmailsSendScalerInformation" data-height="800px"
+                       asp-action="SendScalerInformation" asp-controller="ClientEmails" asp-route-id="@Model.Id">Scaler Information</a>
+
+                    <a class="dropdown-item client-email-send-button" data-title="Send chair technician's details" data-hybrid-id="ClientEmailsSendChairTechnicianDetails" data-height="800px"
+                       asp-action="SendChairTechnicianDetails" asp-controller="ClientEmails" asp-route-id="@Model.Id">Chair Technician's Details</a>
+
+                    @if (Model.Entity.UserId.HasValue)
+                    {
+                        <a class="dropdown-item client-email-send-button" data-title="Send welcome" data-hybrid-id="ClientEmailsSendWelcome" data-height="800px"
+                           asp-action="SendWelcome" asp-controller="ClientEmails" asp-route-id="@Model.Id">Welcome email</a>
+                    }
+
+                    <a class="dropdown-item client-email-send-button" data-title="Send Handpiece Traders" data-hybrid-id="ClientEmailsSendHandpieceTraders" data-height="800px"
+                       asp-action="SendHandpieceTraders" asp-controller="ClientEmails" asp-route-id="@Model.Id">Handpiece Traders</a>
+
+                    <a class="dropdown-item client-email-send-button" data-title="Send Maintenance Required" data-hybrid-id="ClientEmailsSendMaintenanceRequired" data-height="800px"
+                       asp-action="SendMaintenanceRequired" asp-controller="ClientEmails" asp-route-id="@Model.Id">Maintenance Required</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@(Html.Kendo().Grid<ClientEmailReadModel>()
+      .Name("ClientEmailsGrid")
+      .HtmlAttributes(new { @class = "k-grid-commandicons2", style = "height: 630px" })
+      .Columns(columns =>
+      {
+          columns.Bound(c => c.Created).ClientTemplate("#= kendo.toString(DevGuild.Utilities.TimeZones.treatAsUtc(data.Created), \"g\") #").Width(125);
+          columns.Bound(c => c.To).Width(200);
+          columns.Bound(c => c.Subject).Width(220);
+          columns.Bound(c => c.Status).Width(80);
+          columns.Command(command =>
+          {
+              command.Custom("CustomDetails").Text("<span class=\"fas fa-fw fa-external-link-alt\"></span>").Click("DentalDrill.CRM.Pages.Clients.Details.ClientEmailsGrid.handleDetails");
+          }).Width(75);
+      })
+      .ColumnMenu(cm => cm.Enabled(false))
+      .Pageable()
+      .Scrollable(scrollable => scrollable.Enabled(true).Height("auto"))
+      .DataSource(dataSource => dataSource
+          .Ajax()
+          .Model(model =>
+          {
+              model.Id(f => f.Id);
+          })
+          .Sort(sort =>
+          {
+              sort.Add(f => f.Created).Descending();
+          })
+          .Read(read => read.Action("Read", "ClientEmails", new { parentId = Model.Id }))
+          .Events(events => events.Error("DevGuild.AspNet.Controls.Grids.Errors.GridErrorHandler.handleGridError")
+              .RequestStart("DevGuild.AspNet.Controls.Grids.Errors.GridErrorHandler.handleRequestStart"))))

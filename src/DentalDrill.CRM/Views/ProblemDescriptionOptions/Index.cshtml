@@ -1,0 +1,49 @@
+﻿@using DentalDrill.CRM.Models.Permissions
+@model DentalDrill.CRM.Models.ViewModels.EmptyEmployeeIndexViewModel
+@{
+    ViewBag.Title = "Problem description options";
+}
+
+<h1 class="header">Problem description options</h1>
+
+@(Html.Kendo().Grid<DentalDrill.CRM.Models.ViewModels.ProblemDescriptionOptionViewModel>()
+      .Name("ProblemDescriptionOptionsGrid")
+      .HtmlAttributes(new { @class = "k-grid-commandicons2", style = "height: 630px" })
+      .Columns(columns =>
+      {
+          columns.Bound(c => c.Name);
+          columns.Command(command =>
+          {
+              if (Model.Access.Global.CanWriteComponent(GlobalComponent.ProblemOption))
+              {
+                  command.Edit().Text("<span></span>").IconClass("fas fa-fw fa-pencil-alt")
+                      .UpdateText("<span></span>").UpdateIconClass("fas fa-fw fa-check")
+                      .CancelText("<span></span>").CancelIconClass("fas fa-fw fa-ban");
+                  command.Destroy().Text("<span></span>").IconClass("fas fa-fw fa-trash-alt");
+              }
+          });
+      })
+      .ToolBar(toolbar =>
+      {
+          if (Model.Access.Global.CanWriteComponent(GlobalComponent.ProblemOption))
+          {
+              toolbar.Create();
+          }
+      })
+      .ColumnMenu(cm => cm.Enabled(false))
+      .Editable(editable => editable.Mode(GridEditMode.InLine))
+      .Pageable()
+      .Scrollable(scrollable => scrollable.Enabled(true).Height("auto"))
+      .DataSource(dataSource => dataSource
+          .Ajax()
+          .Model(model =>
+          {
+              model.Id(f => f.Id);
+              model.Field(f => f.Id).DefaultValue(default(Guid));
+              model.Field(f => f.Name);
+          })
+          .Read(read => read.Action("Read", "ProblemDescriptionOptions"))
+          .Create(create => create.Action("Create", "ProblemDescriptionOptions"))
+          .Update(update => update.Action("Update", "ProblemDescriptionOptions"))
+          .Destroy(destroy => destroy.Action("Destroy", "ProblemDescriptionOptions"))
+          .Events(events => events.Error("DevGuild.AspNet.Controls.Grids.Errors.GridErrorHandler.handleGridError").RequestStart("DevGuild.AspNet.Controls.Grids.Errors.GridErrorHandler.handleRequestStart"))))

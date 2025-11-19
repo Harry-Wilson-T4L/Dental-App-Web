@@ -1,0 +1,25 @@
+﻿@{
+    ViewBag.Title = "Full SKU Check";
+}
+
+<div class="editor">
+    <div class="editor__header">
+        <div class="editor__title">
+            <h1>Full SKU Check</h1>
+        </div>
+        <div class="editor__actions">
+            <a asp-action="Index" asp-controller="Inventory" class="editor__action"><span class="fas fa-list"></span> List</a>
+        </div>
+    </div>
+    <form asp-action="FullCheck">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-danger">Start</button>
+                <a asp-action="Index" asp-controller="Inventory" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>
+

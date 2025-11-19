@@ -1,0 +1,89 @@
+﻿@model DentalDrill.CRM.Models.ViewModels.NotificationFeedModel
+
+<div class="notifications-feed @(Model.Init == true ? "notifications-feed--init" : "")" data-page-size="@Model.PageSize" data-link-full-version="@Model.LinkFullVersion" data-show-read="@(!Model.LinkFullVersion)">
+    <div class="notifications-feed__list-view"></div>
+    <div class="notifications-feed__pager"></div>
+
+    <div class="notifications-feed__templates">
+        <script type="text/x-kendo-template" class="notifications-feed__templates__item" data-type="JobCreated">
+            <div class="notification notification--job-created" data-status="#=data.Status#">
+                <div class="notification__date">#: kendo.toString(DevGuild.Utilities.TimeZones.treatAsUtc(data.CreatedOn), "g") #</div>
+                <div class="notification__text">
+                    New Estimate #: data.Payload.JobNumber # (#: data.Payload.SurgeryName #) is created and is available for estimation.
+                </div>
+                <div class="notification__actions">
+                    <a class="btn btn-sm btn-secondary" href="/Jobs/Edit/#= data.Payload.JobId#" target="_blank">Open Estimate</a>
+                    @if (User.IsInRole(ApplicationRoles.OfficeAdministrator) || User.IsInRole(ApplicationRoles.CompanyAdministrator))
+                    {
+                        <text># if (data.Payload.SurgeryId) { #</text>
+                        <a class="btn btn-sm btn-secondary" href="/Clients/Details/#= data.Payload.SurgeryId#" target="_blank">Open Surgery</a>
+                        <text># } #</text>
+                    }
+                </div>
+            </div>
+
+        </script>
+        <script type="text/x-kendo-template" class="notifications-feed__templates__item" data-type="JobEstimated">
+            <div class="notification notification--job-estimated" data-status="#=data.Status#">
+                <div class="notification__date">#: kendo.toString(DevGuild.Utilities.TimeZones.treatAsUtc(data.CreatedOn), "g") #</div>
+                <div class="notification__text">
+                    Estimation #: data.Payload.JobNumber # (#: data.Payload.SurgeryName #) is complete. Waiting for approval.
+                </div>
+                <div class="notification__actions">
+                    <a class="btn btn-sm btn-secondary" href="/Jobs/Edit/#= data.Payload.JobId#" target="_blank">Open Estimate</a>
+                    @if (User.IsInRole(ApplicationRoles.OfficeAdministrator) || User.IsInRole(ApplicationRoles.CompanyAdministrator))
+                    {
+                        <text># if (data.Payload.SurgeryId) { #</text>
+                        <a class="btn btn-sm btn-secondary" href="/Clients/Details/#= data.Payload.SurgeryId#" target="_blank">Open Surgery</a>
+                        <text># } #</text>
+                    }
+                </div>
+            </div>
+        </script>
+        <script type="text/x-kendo-template" class="notifications-feed__templates__item" data-type="JobApprovedForRepair">
+            <div class="notification notification--job-approved-for-repair" data-status="#=data.Status#">
+                <div class="notification__date">#: kendo.toString(DevGuild.Utilities.TimeZones.treatAsUtc(data.CreatedOn), "g") #</div>
+                <div class="notification__text">
+                    Estimate #: data.Payload.JobNumber # (#: data.Payload.SurgeryName #) is approved for repair.
+                </div>
+                <div class="notification__actions">
+                    <a class="btn btn-sm btn-secondary" href="/Jobs/Edit/#= data.Payload.JobId#" target="_blank">Open Estimate</a>
+                    @if (User.IsInRole(ApplicationRoles.OfficeAdministrator) || User.IsInRole(ApplicationRoles.CompanyAdministrator))
+                    {
+                        <text># if (data.Payload.SurgeryId) { #</text>
+                        <a class="btn btn-sm btn-secondary" href="/Clients/Details/#= data.Payload.SurgeryId#" target="_blank">Open Surgery</a>
+                        <text># } #</text>
+                    }
+                </div>
+            </div>
+        </script>
+        <script type="text/x-kendo-template" class="notifications-feed__templates__item" data-type="JobRepairComplete">
+            <div class="notification notification--job-repairs-complete" data-status="#=data.Status#">
+                <div class="notification__date">#: kendo.toString(DevGuild.Utilities.TimeZones.treatAsUtc(data.CreatedOn), "g") #</div>
+                <div class="notification__text">
+                    Estimate #: data.Payload.JobNumber # (#: data.Payload.SurgeryName #) repair is complete and ready to return.
+                </div>
+                <div class="notification__actions">
+                    <a class="btn btn-sm btn-secondary" href="/Jobs/Edit/#= data.Payload.JobId#" target="_blank">Open Estimate</a>
+                    @if (User.IsInRole(ApplicationRoles.OfficeAdministrator) || User.IsInRole(ApplicationRoles.CompanyAdministrator))
+                    {
+                        <text># if (data.Payload.SurgeryId) { #</text>
+                        <a class="btn btn-sm btn-secondary" href="/Clients/Details/#= data.Payload.SurgeryId#" target="_blank">Open Surgery</a>
+                        <text># } #</text>
+                    }
+                </div>
+            </div>
+        </script>
+        <script type="text/x-kendo-template" class="notifications-feed__templates__item" data-type="HandpieceStoreOrderCreated">
+            <div class="notification notification--handpiece-store-order-created" data-status="#=data.Status#">
+                <div class="notification__date">#: kendo.toString(DevGuild.Utilities.TimeZones.treatAsUtc(data.CreatedOn), "g") #</div>
+                <div class="notification__text">
+                    Order #: data.Payload.OrderNumber # (#: data.Payload.Brand # #: data.Payload.Model #) is created.
+                </div>
+                <div class="notification__actions">
+                    <a class="btn btn-sm btn-secondary" href="/HandpieceStoreOrders/Details/#= data.Payload.OrderId#" target="_blank">Open Order</a>
+                </div>
+            </div>
+        </script>
+    </div>
+</div>

@@ -1,0 +1,279 @@
+﻿@using DentalDrill.CRM.Extensions
+@using Kendo.Mvc.UI
+@using Kendo.Mvc.UI.Fluent
+@using DentalDrill.CRM.Models.ViewModels
+@using DevGuild.AspNetCore.Services.Uploads.Images
+@model DentalDrill.CRM.Models.ViewModels.SurgeryViewModel
+@{
+    ViewData["Title"] = Model.Client.Name;
+    ViewData["SpecificClient"] = Model.Client.Id;
+    Layout = "_SurgeryLayout";
+}
+
+@inject IImageUploadService ImageUpload
+
+<style type="text/css">
+    @if (Model.Appearance.BackgroundImage != null)
+    {
+        var imageUrl = await ImageUpload.GetImageUrlAsync(Model.Appearance.BackgroundImage, "2560");
+        <text>
+        .main--surgery {
+            background-image: url(@imageUrl);
+        }
+        </text>
+    }
+    else
+    {
+        <text>
+        .main--surgery {
+            background-image: url("/img/SurgeryDefaultBackground-2560.jpg")
+        }
+        </text>
+    }
+
+    .k-grid th, .k-grid-header, .surgery-maintenance-header {
+        background-color: @Model.Appearance.SecondaryColor !important;
+        color: @Model.Appearance.HeaderTextColor;
+    }
+
+    .search__dates .label {
+        color: @Model.Appearance.HeaderTextColor !important;
+    }
+
+    .k-grid-header-wrap {
+        border-color: @Model.Appearance.SecondaryColor !important;
+    }
+</style>
+
+<div class="container surgery-page" data-id="@Model.Client.Id" data-path="@Model.Client.UrlPath">
+    <div class="surgery__main-search">
+        <div class="surgery__search-container">
+            <div class="search">
+                @(Html.Kendo().AutoComplete()
+                      .Name("JobNumberFilter")
+                      .HtmlAttributes(new { @class = "search__input" })
+                      .Placeholder("Search by Invoice #")
+                      .MinLength(1)
+                      .Filter("contains")
+                      .DataTextField("JobNumber")
+                      .DataSource(ds => ds
+                          .Ajax()
+                          .Read(x => x.Action("ReadJobNumbers", "Surgeries", new { parentId = Model.Client.UrlPath }))
+                          .Sort(sort => sort.Add("JobNumber"))
+                          .ServerOperation(true)))
+                
+                <button type="button" class="k-button surgery-filters__search"><span class="fas fa-search"></span></button>
+            </div>
+        </div>
+        <a class="d-block mt-3 btn btn-info" asp-action="Reports" asp-controller="Surgeries" asp-route-id="@Model.Client.UrlPath">Reports <i class="fas fa-arrow-right"></i></a>
+    </div>
+    
+    <div class="filters_surgery">
+        <div class="row">
+            <div class="col-12">
+                <div class="row">
+                    <div class="col-xl-4 col-md-6 col-12 filters__filter">
+                        <div class="filters__input">
+                            @(Html.Kendo().AutoComplete()
+                                  .Name("SerialFilter")
+                                  .Placeholder("Handpiece Serial #")
+                                  .MinLength(1)
+                                  .Filter("contains")
+                                  .DataTextField("Serial")
+                                  .DataSource(ds => ds
+                                      .Ajax()
+                                      .Read(x => x.Action("ReadSerials", "Surgeries", new { parentId = Model.Client.UrlPath }))
+                                      .Sort(sort => sort.Add("Serial"))
+                                      .ServerOperation(true)))
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-md-6 col-12 filters__filter">
+                        @*<label class="filters__label">Make & Model</label>*@
+                        <div class="filters__input">
+                            @(Html.Kendo()
+                                  .DropDownList()
+                                  .Name("MakeAndModelFilter")
+                                  .HtmlAttributes(new { placeholder = "Select Make & Model" })
+                                  .BindTo(new SelectList(Model.Models.Select(x => new { Value = $"{x.Brand}||{x.Model}", Text = x.ToString() }), "Value", "Text").WithNull("Any model")))
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-md-6 col-12 filters__filter">
+                        <div class="filters__input">
+                            @(Html.Kendo()
+                                  .DropDownList()
+                                  .Name("SpeedTypeFilter")
+                                  .HtmlAttributes(new { placeholder = "All" })
+                                  .BindTo(HandpieceSpeedHelper.MakeSelectList().WithNull("All speeds")))
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-md-6 col-12 filters__filter">
+                        @*<label class="filters__label">Due Date</label>*@
+                        <div class="filters__input">
+                            @(Html.Kendo().DatePicker()
+                                  .Name("ReceivedFromFilter")
+                                  .HtmlAttributes(new { title = "datepicker", placeholder = "Received From" }))
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-md-6 col-12 filters__filter">
+                        <div class="filters__input">
+                            @(Html.Kendo().DatePicker()
+                                  .Name("ReceivedToFilter")
+                                  .HtmlAttributes(new { title = "datepicker", placeholder = "Received To" }))
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-md-6 col-12 filters__submit">
+                        <div class="row">
+                            <div class="col-6 submit-button">
+                                <button type="button" class="k-button surgery-filters__clear">Clear</button>
+                            </div>
+                            
+                            <div class="col-6 submit-button">
+                                <button type="button" class="k-button surgery-filters__search">Search</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="totals-row block-well mb-3">
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <div class="row">
+                    <div class="totals-row__item col-3 text-center" data-status="@ExternalHandpieceStatus.Received">
+                        <h4 class="totals-row__value">-</h4>
+                        <p>Received</p>
+                    </div>
+                    <div class="totals-row__item col-3 text-center" data-status="@ExternalHandpieceStatus.BeingEstimated">
+                        <h4 class="totals-row__value">-</h4>
+                        <p>Being Estimated</p>
+                    </div>
+                    <div class="totals-row__item col-3 text-center" data-status="@ExternalHandpieceStatus.WaitingForApproval">
+                        <h4 class="totals-row__value">-</h4>
+                        <p>Estimate Complete</p>
+                    </div>
+                    <div class="totals-row__item col-3 text-center" data-status="@ExternalHandpieceStatus.EstimateSent">
+                        <h4 class="totals-row__value">-</h4>
+                        <p>Estimate Sent</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="row">
+                    <div class="totals-row__item col-3 text-center" data-status="@ExternalHandpieceStatus.BeingRepaired">
+                        <h4 class="totals-row__value">-</h4>
+                        <p>Being Repaired</p>
+                    </div>
+                    <div class="totals-row__item col-3 text-center" data-status="@ExternalHandpieceStatus.ReadyForReturn">
+                        <h4 class="totals-row__value">-</h4>
+                        <p>Ready For Return</p>
+                    </div>
+                    <div class="totals-row__item col-3 text-center" data-status="@ExternalHandpieceStatus.Cancel">
+                        <h4 class="totals-row__value">-</h4>
+                        <p>Unrepaired</p>
+                    </div>
+                    <div class="totals-row__item col-3 text-center" data-status="@ExternalHandpieceStatus.SentComplete">
+                        <h4 class="totals-row__value">-</h4>
+                        <p>Sent Complete</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="surgery-page__status-grid mb-3"></div>
+
+    <div class="row surgery-maintenance">
+        <div class="col-12">
+            <div class="surgery-maintenance-header">
+                <span>Maintenance History</span>
+            </div>
+            @(Html.Kendo().ListView<SurgeryMaintenanceHandpieceViewModel>()
+                  .Name("MaintenanceHandpiecesListView")
+                  .HtmlAttributes(new { @class = "surgery-maintenance-list-view" })
+                  .ClientTemplateId("surgery-maintenance-handpiece-template")
+                  .TagName("div")
+                  .Selectable(ListViewSelectionMode.Single)
+                  .Pageable(pageable => pageable.Enabled(true).PageSizes(new int[] { 10, 25, 50, 100 }))
+                  .DataSource(dataSource => dataSource
+                      .Ajax()
+                      .PageSize(100)
+                      .Read(read => read.Action("ReadMaintenanceHandpieces", "Surgeries", new { parentId = Model.Client.UrlPath }).Data("DentalDrill.CRM.Pages.Surgeries.Index.MaintenanceHandpiecesListView.filtersData"))
+                  )
+                  .Events(events =>
+                  {
+                      events
+                          .Change("DentalDrill.CRM.Pages.Surgeries.Index.MaintenanceHandpiecesListView.handleChange")
+                          .DataBound("DentalDrill.CRM.Pages.Surgeries.Index.MaintenanceHandpiecesListView.handleDataBound");
+                  }))
+
+            <script id="surgery-maintenance-handpiece-template" type="text/kendo-tmpl">
+                <div class="surgery-maintenance-handpiece">
+                    <h4 class="surgery-maintenance-handpiece__title text-center" data-toggle="tooltip" title="#:Brand# #:MakeAndModel#">#:Brand# #:MakeAndModel#</h4>
+                    <div class="surgery-maintenance-handpiece__info text-center">
+                        <div class="surgery-maintenance-handpiece__info__serial" data-toggle="tooltip" title="#:Serial#">
+                            # if (data.OverYearAgo) { #
+                            <span class="fas fa-bell text-danger"></span>
+                            # } #
+                            #:Serial#
+                        </div>
+                    </div>
+                    <img class="surgery-maintenance-handpiece__image" src="#=ImageUrl#" alt="#:MakeAndModel#" />
+                </div>
+            </script>
+
+            <script id="surgery-maintenance__history__template" type="text/kendo-tmpl">
+                @(Html.Kendo().Grid<SurgeryMaintenanceHistoryItemViewModel>()
+                  .Name("MaintenanceHistoryGrid")
+                  .HtmlAttributes(new { style = "height: 300px" })
+                  .Columns(columns =>
+                  {
+                      columns.Bound(c => c.ImageUrl).Title(" ").Width(120).ClientTemplate("<img src=\"\\#=data.ImageUrl\\#\" alt=\"Estimate \\#:data.JobNumber\\#\" data-id=\"\\#: data.Id \\#\" class=\"handpiece-image-show-carousel\" style=\"max-width: 100px\" />");
+                      columns.Bound(c => c.JobReceived).Title("DATE").Width(110).ClientTemplate("\\#: kendo.format(\"{0:d}\", data.CompletedOn ? data.CompletedOn : data.JobReceived) \\#");
+                      columns.Bound(c => c.JobNumber).Title("EST \\#").Width(80).ClientTemplate("\\# if (data.JobType !== 'Estimate') { \\# \\#: data.JobType \\# \\# } \\# \\#: data.JobNumber \\#");
+                      columns.Bound(c => c.DiagnosticReport).Title("DIAGNOSTIC REPORT").Width(200);
+                      columns.Bound(c => c.PublicComment).Title("COMMENT").Width(200);
+                      columns.Bound(c => c.ServiceLevel).Title("SERVICE").Width(120);
+                      columns.Bound(c => c.Rating).Title("RATING").Width(80).ClientTemplate("\\#:data.Rating\\#/10");
+                      columns.Bound(c => c.CostOfRepair).Title("COST").Width(80).Format("$\\{0:0.\\#\\#\\}");
+                  })
+                  .ColumnMenu(columnMenu => columnMenu.Enabled(false))
+                  .Scrollable(scrollable => scrollable.Enabled(true).Height("auto"))
+                  .DataSource(dataSource => dataSource
+                      .Ajax()
+                      .Model(model =>
+                      {
+                          model.Id(f => f.Id);
+                      })
+                      .Sort(sort =>
+                      {
+                          sort.Add(f => f.JobReceived).Descending();
+                      })
+                      .Read(read => read.Action("ReadMaintenanceHistory", "Surgeries", new { parentid = Model.Client.UrlPath, modelName = "#=encodeURIComponent(MakeAndModel)#", brand = "#=encodeURIComponent(Brand)#", serialNo = "#=encodeURIComponent(Serial)#" })))
+                  .ToClientTemplate())
+            </script>
+        </div>
+    </div>
+</div>
+
+<script id="surgery-repair-template" type="text/kendo-tmpl">
+    <div class="surgery__repair" data-client-id="@Model.Client.UrlPath" data-id="#=Id#">
+        <h4 class="surgery__repair__title text-center" data-toggle="tooltip" title="#:Brand# #:MakeAndModel#">#:Brand# #:MakeAndModel#</h4>
+        <div class="surgery__repair__info text-center" data-toggle="tooltip" title="Serial \\##:Serial# Rating: #:Rating#/10">
+            <span class="surgery__repair__serial text-left">\\##:Serial#</span>
+            #if (Rating <= 4) {#
+            <span class="surgery__repair__rating text-right surgery__repair__rating-bad"><span class="fa fa-star"></span> #:Rating#/10</span>
+            #}else if (Rating <= 7) {#
+               <span class="surgery__repair__rating text-right surgery__repair__rating-normal"><span class="fa fa-star"></span> #:Rating#/10</span>
+            #}else{#
+                <span class="surgery__repair__rating text-right surgery__repair__rating-good"><span class="fa fa-star"></span> #:Rating#/10</span>
+            #}#
+        </div>
+        <img src="#=ImageUrl#" alt="repair photo" />
+    </div>
+</script>
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/app/pages/surgeries/index.js" asp-append-version="true"></script>
+}

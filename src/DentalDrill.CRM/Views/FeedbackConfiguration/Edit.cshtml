@@ -1,0 +1,107 @@
+﻿@model DentalDrill.CRM.Models.ViewModels.FeedbackConfigurationEditModel
+@{
+    ViewBag.Title = "Edit feedback configuration";
+}
+
+<div class="editor">
+    <div class="editor__header">
+        <div class="editor__title">
+            <h1>Edit feedback configuration</h1>
+        </div>
+        <div class="editor__actions">
+            <a asp-action="Index" class="editor__action"><span class="fas fa-external-link-alt"></span> Back</a>
+        </div>
+    </div>
+    
+    <form asp-action="Edit">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="row">
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="AutoSendFormEnabled"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        @(Html.Kendo().CheckBoxFor(x => x.AutoSendFormEnabled).Label(""))
+                        <span asp-validation-for="AutoSendFormEnabled" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="AutoSendFormDelayDays"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        <input asp-for="AutoSendFormDelayDays" class="k-textbox" />
+                        <span asp-validation-for="AutoSendFormDelayDays" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="AutoSendSkipJobs"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        <input asp-for="AutoSendSkipJobs" class="k-textbox" />
+                        <span asp-validation-for="AutoSendSkipJobs" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="PeriodLimitingEnabled"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        @(Html.Kendo().CheckBoxFor(x => x.PeriodLimitingEnabled).Label(""))
+                        <span asp-validation-for="PeriodLimitingEnabled" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="PeriodLimitingType"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        <kendo-dropdownlist for="PeriodLimitingType" bind-to="@FeedbackConfigurationPeriodTypeHelper.MakeSelectList()" value="@Model.PeriodLimitingType.ToString()" />
+                        <span asp-validation-for="PeriodLimitingType" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="PeriodLimitingLength"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        <input asp-for="PeriodLimitingLength" class="k-textbox" />
+                        <span asp-validation-for="PeriodLimitingLength" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="PeriodLimitingQuantity"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        <input asp-for="PeriodLimitingQuantity" class="k-textbox" />
+                        <span asp-validation-for="PeriodLimitingQuantity" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a asp-action="Index" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

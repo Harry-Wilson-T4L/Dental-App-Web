@@ -1,0 +1,12 @@
+﻿@{
+    this.Layout = null;
+    var ajaxPageId = this.ViewBag.HybridPageId ?? $"Page-{Guid.NewGuid():D}";
+    if (this.IsSectionDefined("Scripts"))
+    {
+        this.IgnoreSection("Scripts");
+    }
+}
+
+<div id="@ajaxPageId" data-inline-response="@ViewBag.InlineAjaxResponse">
+    @RenderBody()
+</div>

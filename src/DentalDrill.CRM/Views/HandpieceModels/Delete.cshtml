@@ -1,0 +1,63 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DevGuild.AspNetCore.Controls.HybridForms
+@model DentalDrill.CRM.Models.HandpieceModel
+@{
+    ViewBag.Title = $"Delete model {Model.Brand.Name} {Model.Name}";
+    this.ConfigureHybridPage("HandpieceModelDelete");
+}
+
+<div class="editor">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Delete model @Model.Brand.Name @Model.Name</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Index" asp-controller="HandpieceBrands" class="editor__action"><span class="fas fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+    <form asp-action="Delete" asp-route-id="@Model.Id" hybrid-form-id="HandpieceModelDelete" id="HandpieceModelDeleteForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="row">
+            <div class="col-12 col-sm-5 col-md-4 mb-2">
+                <div class="row">
+                    <div class="col-12">
+                        <label asp-for="ImageId"></label>
+                    </div>
+                    <div class="col-12">
+                        <img uploaded-id="@Model.ImageId" uploaded-variation="300" style="max-width: 300px; max-height: 300px" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-7 col-md-8 mb-2">
+                <div class="row">
+                    <div class="col-5">
+                        <label asp-for="Name"></label>
+                    </div>
+                    <div class="col-7">
+                        <input asp-for="Name" readonly="readonly" class="k-textbox w-100" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <label asp-for="Description"></label>
+                    </div>
+                    <div class="col-12">
+                        <textarea asp-for="Description" readonly="readonly" class="k-textbox w-100"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-danger">Delete</button>
+                <a asp-action="Index" asp-controller="HandpieceBrands" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

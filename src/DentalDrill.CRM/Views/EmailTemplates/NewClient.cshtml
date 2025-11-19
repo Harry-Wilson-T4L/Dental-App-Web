@@ -1,0 +1,78 @@
+﻿@using Microsoft.Extensions.DependencyInjection
+@using DevGuild.AspNetCore.Services.Permissions
+@using DentalDrill.CRM.Permissions
+@model DentalDrill.CRM.Models.ViewModels.ClientEmails.ClientEmailSendNewClientTemplateModel
+@{
+    ViewBag.Title = "Sydney Clients General Email";
+    var canEdit = await this.Context.RequestServices
+        .GetRequiredService<IPermissionsHub>()
+        .GetManager<IPermissionsManager>("/Domain/EmailTemplate")
+        .CheckPermissionAsync(ApplicationPermissions.EntityType.Create) == PermissionsResult.Allow;
+}
+
+<div class="editor mb-2">
+    <div class="editor__header">
+        <div class="editor__title">
+            <h1>Sydney Clients General Email</h1>
+        </div>
+        <div class="editor__actions">
+            <a asp-action="Index" class="editor__action"><span class="fa fa-list"></span> List</a>
+        </div>
+    </div>
+    <form asp-action="NewClient" method="post">
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-12 mb-2">
+                        <div class="row">
+                            <div class="col-3">
+                                <label asp-for="NewClientOfferText"></label>
+                            </div>
+                            <div class="col-9">
+                                <textarea asp-for="NewClientOfferText" class="k-textbox"></textarea>
+                                <span class="text-danger" asp-validation-for="NewClientOfferText"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-2">
+                        <div class="row">
+                            <div class="col-3">
+                                <label asp-for="MonthlySpecialImage"></label>
+                            </div>
+                            <div class="col-9">
+                                <image-uploader asp-for="MonthlySpecialImage" configuration="EmailImage" preview-variation="Original"></image-uploader>
+                                <span class="text-danger" asp-validation-for="MonthlySpecialImage"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-2">
+                        <div class="row">
+                            <div class="col-3">
+                                <label asp-for="PriceGuideImage"></label>
+                            </div>
+                            <div class="col-9">
+                                <image-uploader asp-for="PriceGuideImage" configuration="EmailImage" preview-variation="Original"></image-uploader>
+                                <span class="text-danger" asp-validation-for="PriceGuideImage"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <h5>Attachments</h5>
+                <file-uploader-list asp-for="Attachments" configuration="EmailAttachments" />
+            </div>
+        </div>
+        
+        @if (canEdit)
+        {
+            <div class="row">
+                <div class="col editor__submit">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+                </div>
+            </div>
+        }
+    </form>
+</div>

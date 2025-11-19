@@ -1,0 +1,18 @@
+﻿@using DevGuild.AspNetCore.Services.Storage
+@using DentalDrill.CRM.Extensions
+@using System.Text
+@model ClientEmailMessage
+@inject IStorageHub StorageHub
+@{
+    this.Layout = null;
+    var content = await StorageHub.TryGetFileTextAsync("Emails", $"{Model.EmailMessage.MessageType}/Message-{Model.EmailMessage.Id:00000000}.eml", Encoding.UTF8);
+}
+
+@if (String.IsNullOrEmpty(content))
+{
+    <div style="white-space: pre-wrap" class="text-monospace">Email content has been archived. Contact developers for more info.</div>
+}
+else
+{
+    <div style="white-space: pre-wrap" class="text-monospace">@content</div>
+}

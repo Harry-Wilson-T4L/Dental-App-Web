@@ -1,0 +1,51 @@
+﻿@using DentalDrill.CRM.Models.Permissions
+@using Kendo.Mvc.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model DentalDrill.CRM.Models.ViewModels.EmptyEmployeeIndexViewModel
+@{
+    ViewBag.Title = "Employee Roles";
+}
+
+<h1 class="header">Employee Roles</h1>
+
+<kendo-grid name="EmployeeRolesGrid" height="630">
+    <columns>
+        <column field="Name" title="Name" width="200" />
+        <column width="150">
+            <commands>
+                <column-command name="CustomDetails" click="DentalDrill.CRM.Pages.EmployeeRoles.Index.EmployeeRolesGrid.handleDetails" text="@("<span class=\"fas fa-fw fa-external-link-alt\"></span>")"></column-command>
+                @if (Model.Access.Global.CanWriteComponent(GlobalComponent.EmployeeRole))
+                {
+                    <column-command name="CustomEdit" click="DentalDrill.CRM.Pages.EmployeeRoles.Index.EmployeeRolesGrid.handleEdit" text="@("<span class=\"fas fa-fw fa-pencil-alt\"></span>")"></column-command>
+                    <column-command name="CustomDelete" click="DentalDrill.CRM.Pages.EmployeeRoles.Index.EmployeeRolesGrid.handleDelete" text="@("<span class=\"fas fa-fw fa-trash-alt\"></span>")"></column-command>
+                }
+            </commands>
+        </column>
+    </columns>
+    <toolbar>
+        @if (Model.Access.Global.CanWriteComponent(GlobalComponent.EmployeeRole))
+        {
+            <toolbar-button name="CustomCreate" text="@("<span class=\"fas fa-fw fa-plus\"></span> Create")"></toolbar-button>
+        }
+    </toolbar>
+    <column-menu enabled="false" />
+    <editable enabled="false" />
+    <pageable enabled="true" />
+    <scrollable enabled="true" />
+    <datasource type="DataSourceTagHelperType.Ajax" page-size="100">
+        <transport>
+            <read url="@Url.Action("Read", "EmployeeRoles")" />
+        </transport>
+        <schema>
+            <model id="Id">
+                <fields>
+                    <field name="Name"></field>
+                </fields>
+            </model>
+        </schema>
+    </datasource>
+</kendo-grid>
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/app/pages/employeeRoles/index.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DevGuildPackagesVersion>0.9.1</DevGuildPackagesVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DevGuild.AspNetCore.Testing" Version="$(DevGuildPackagesVersion)" />
+    <PackageReference Include="DevGuild.AspNetCore.Testing.Data" Version="$(DevGuildPackagesVersion)" />
+    <PackageReference Include="DevGuild.AspNetCore.Testing.Hosting" Version="$(DevGuildPackagesVersion)" />
+    <PackageReference Include="DevGuild.AspNetCore.Testing.Identity" Version="$(DevGuildPackagesVersion)" />
+    <PackageReference Include="DevGuild.AspNetCore.Testing.Mvc" Version="$(DevGuildPackagesVersion)" />
+    <PackageReference Include="DevGuild.AspNetCore.Testing.Storage" Version="$(DevGuildPackagesVersion)" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.16" />
+    <PackageReference Include="nunit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DentalDrill.CRM\DentalDrill.CRM.csproj" />
+  </ItemGroup>
+
+</Project>

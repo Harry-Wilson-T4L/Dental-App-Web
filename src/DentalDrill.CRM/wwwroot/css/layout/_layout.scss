@@ -1,0 +1,382 @@
+﻿@use "sass:math";
+@import "../abstracts/_variables.scss";
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-width: 320px;
+}
+
+header {
+    nav.navbar {
+        background-color: $navbar-background-color;
+        padding-top: 0;
+        padding-bottom: 0;
+        box-shadow: 0 3px 6px rgba(0,0,0,.16), 0 3px 6px rgba(0,0,0,.23);
+
+        &.navbar--slim {
+            box-shadow: none;
+            border-bottom: 1px solid rgba(0,0,0,0.16);
+            padding-top: 0.25rem;
+            padding-bottom: 0.25rem;
+
+            .nav-item {
+                padding-top: 0;
+                padding-bottom: 0;
+            }
+
+            .navbar-brand {
+                img {
+                    width: 2.5rem;
+                    height: 2.5rem;
+                }
+            }
+        }
+
+        a.navbar-brand {
+            padding-top: 0.25rem;
+            padding-bottom: 0.25rem;
+        }
+
+        .navbar-nav .nav-link {
+            color: $navbar-color;
+        }
+
+        img {
+            height: 4rem;
+        }
+
+        ul.navbar-nav.mr-auto li.nav-item {
+            margin-right: 0.5rem;
+
+            &:last-of-type {
+                margin-right: 0;
+            }
+        }
+
+        .dropdown-menu {
+            background-color: $navbar-dropdown-background-color;
+            color: $navbar-dropdown-color;
+
+            .dropdown-item {
+                color: $navbar-dropdown-color;
+
+                &:hover {
+                    background-color: #17a2b8;
+                    color: #ffffff;
+
+                    > a {
+                        background-color: #17a2b8;
+                        color: #ffffff;
+                        text-decoration: none;
+                    }
+                }
+
+                > a {
+                    color: $navbar-dropdown-color;
+
+                    &:hover {
+                        background-color: #17a2b8;
+                        color: #ffffff;
+                        text-decoration: none;
+                    }
+                }
+            }
+        }
+
+        .dropdown-submenu {
+            position: relative;
+
+            .dropdown-menu {
+                top: 0;
+                left: 98%;
+                margin-top: -1px;
+            }
+
+            &:hover {
+                > .dropdown-menu {
+                    display: block;
+                }
+            }
+        }
+    }
+}
+
+main {
+    background-image: $main-background-image;
+    background-color: $main-background-color;
+    color: $main-color;
+    display: flex;
+    flex: 1 0 auto;
+    padding-top: 4.5rem;
+    position: relative;
+
+    &.main--slim {
+        padding-top: 3rem;
+    }
+
+    > .container {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        background-color: $main-background-color;
+    }
+
+    > .container-fluid {
+        background-color: $main-background-color;
+    }
+
+    &.main--headerless {
+        padding-top: 0;
+    }
+
+    &.main--courier > .container {
+        background-color: transparent;
+    }
+
+    &.main--surgery > .container {
+        background-color: transparent;
+    }
+}
+
+.footer {
+    background-color: $footer-background-color;
+    color: $footer-color;
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+
+    .link {
+        color: $footer-link-color;
+    }
+
+    &__column {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        &_title, &_item {
+            margin-bottom: 0.3rem;
+
+            .btn.btn-outline-light {
+                a.nav-link {
+                    padding: 0.25rem !important;
+                }
+
+                &:hover {
+                    a.text-light {
+                        color: #007bff !important;
+                    }
+                }
+            }
+        }
+
+        @media (min-width: 992px) {
+            &_title, &_item {
+                margin-bottom: 0.3rem;
+            }
+        }
+    }
+
+    &__copyright {
+        font-size: 0.75rem;
+    }
+}
+
+main > .container,
+footer > .container {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+@mixin col-base {
+    position: relative;
+    width: 100%;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+@for $i from 0 through 11 {
+    .col-#{$i}_0 {
+        @include col-base;
+        -ms-flex: 0 0 percentage(math.div($i + 0.0, 12));
+        flex: 0 0 percentage(math.div($i + 0.0, 12));
+        max-width: percentage(math.div($i + 0.0, 12));
+    }
+
+    .col-#{$i}_5 {
+        @include col-base;
+        -ms-flex: 0 0 percentage(math.div($i + 0.5, 12));
+        flex: 0 0 percentage(math.div($i + 0.5, 12));
+        max-width: percentage(math.div($i + 0.5, 12));
+    }
+
+    .col-#{$i}_25 {
+        @include col-base;
+        -ms-flex: 0 0 percentage(math.div($i + 0.25, 12));
+        flex: 0 0 percentage(math.div($i + 0.25, 12));
+        max-width: percentage(math.div($i + 0.25, 12));
+    }
+
+    .col-#{$i}_75 {
+        @include col-base;
+        -ms-flex: 0 0 percentage(math.div($i + 0.75, 12));
+        flex: 0 0 percentage(math.div($i + 0.75, 12));
+        max-width: percentage(math.div($i + 0.75, 12));
+    }
+}
+
+@for $i from 0 through 11 {
+    .col-sm-#{$i}_0 {
+        @media (min-width: 576px) {
+            @include col-base;
+            -ms-flex: 0 0 percentage(math.div($i + 0.0, 12));
+            flex: 0 0 percentage(math.div($i + 0.0, 12));
+            max-width: percentage(math.div($i + 0.0, 12));
+        }
+    }
+
+    .col-sm-#{$i}_5 {
+        @media (min-width: 576px) {
+            @include col-base;
+            -ms-flex: 0 0 percentage(math.div($i + 0.5, 12));
+            flex: 0 0 percentage(math.div($i + 0.5, 12));
+            max-width: percentage(math.div($i + 0.5, 12));
+        }
+    }
+
+    .col-sm-#{$i}_25 {
+        @media (min-width: 576px) {
+            @include col-base;
+            -ms-flex: 0 0 percentage(math.div($i + 0.25, 12));
+            flex: 0 0 percentage(math.div($i + 0.25, 12));
+            max-width: percentage(math.div($i + 0.25, 12));
+        }
+    }
+
+    .col-sm-#{$i}_75 {
+        @media (min-width: 576px) {
+            @include col-base;
+            -ms-flex: 0 0 percentage(math.div($i + 0.75, 12));
+            flex: 0 0 percentage(math.div($i + 0.75, 12));
+            max-width: percentage(math.div($i + 0.75, 12));
+        }
+    }
+}
+
+@for $i from 0 through 11 {
+    .col-md-#{$i}_0 {
+        @media (min-width: 768px) {
+            @include col-base;
+            -ms-flex: 0 0 percentage(math.div($i + 0.0, 12));
+            flex: 0 0 percentage(math.div($i + 0.0, 12));
+            max-width: percentage(math.div($i + 0.0, 12));
+        }
+    }
+
+    .col-md-#{$i}_5 {
+        @media (min-width: 768px) {
+            @include col-base;
+            -ms-flex: 0 0 percentage(math.div($i + 0.5, 12));
+            flex: 0 0 percentage(math.div($i + 0.5, 12));
+            max-width: percentage(math.div($i + 0.5, 12));
+        }
+    }
+
+    .col-md-#{$i}_25 {
+        @media (min-width: 768px) {
+            @include col-base;
+            -ms-flex: 0 0 percentage(math.div($i + 0.25, 12));
+            flex: 0 0 percentage(math.div($i + 0.25, 12));
+            max-width: percentage(math.div($i + 0.25, 12));
+        }
+    }
+
+    .col-md-#{$i}_75 {
+        @media (min-width: 768px) {
+            @include col-base;
+            -ms-flex: 0 0 percentage(math.div($i + 0.75, 12));
+            flex: 0 0 percentage(math.div($i + 0.75, 12));
+            max-width: percentage(math.div($i + 0.75, 12));
+        }
+    }
+}
+
+@for $i from 0 through 11 {
+    .col-lg-#{$i}_0 {
+        @media (min-width: 992px) {
+            @include col-base;
+            -ms-flex: 0 0 percentage(math.div($i + 0.0, 12));
+            flex: 0 0 percentage(math.div($i + 0.0, 12));
+            max-width: percentage(math.div($i + 0.0, 12));
+        }
+    }
+
+    .col-lg-#{$i}_5 {
+        @media (min-width: 992px) {
+            @include col-base;
+            -ms-flex: 0 0 percentage(math.div($i + 0.5, 12));
+            flex: 0 0 percentage(math.div($i + 0.5, 12));
+            max-width: percentage(math.div($i + 0.5, 12));
+        }
+    }
+
+    .col-lg-#{$i}_25 {
+        @media (min-width: 992px) {
+            @include col-base;
+            -ms-flex: 0 0 percentage(math.div($i + 0.25, 12));
+            flex: 0 0 percentage(math.div($i + 0.25, 12));
+            max-width: percentage(math.div($i + 0.25, 12));
+        }
+    }
+
+    .col-lg-#{$i}_75 {
+        @media (min-width: 992px) {
+            @include col-base;
+            -ms-flex: 0 0 percentage(math.div($i + 0.75, 12));
+            flex: 0 0 percentage(math.div($i + 0.75, 12));
+            max-width: percentage(math.div($i + 0.75, 12));
+        }
+    }
+}
+
+@for $i from 0 through 11 {
+    .col-xl-#{$i}_0 {
+        @media (min-width: 1200px) {
+            @include col-base;
+            -ms-flex: 0 0 percentage(math.div($i + 0.0, 12));
+            flex: 0 0 percentage(math.div($i + 0.0, 12));
+            max-width: percentage(math.div($i + 0.0, 12));
+        }
+    }
+
+    .col-xl-#{$i}_5 {
+        @media (min-width: 1200px) {
+            @include col-base;
+            -ms-flex: 0 0 percentage(math.div($i + 0.5, 12));
+            flex: 0 0 percentage(math.div($i + 0.5, 12));
+            max-width: percentage(math.div($i + 0.5, 12));
+        }
+    }
+
+    .col-xl-#{$i}_25 {
+        @media (min-width: 1200px) {
+            @include col-base;
+            -ms-flex: 0 0 percentage(math.div($i + 0.25, 12));
+            flex: 0 0 percentage(math.div($i + 0.25, 12));
+            max-width: percentage(math.div($i + 0.25, 12));
+        }
+    }
+
+    .col-xl-#{$i}_75 {
+        @media (min-width: 1200px) {
+            @include col-base;
+            -ms-flex: 0 0 percentage(math.div($i + 0.75, 12));
+            flex: 0 0 percentage(math.div($i + 0.75, 12));
+            max-width: percentage(math.div($i + 0.75, 12));
+        }
+    }
+}

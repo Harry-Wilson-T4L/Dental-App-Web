@@ -1,0 +1,126 @@
+﻿@using DevGuild.AspNetCore.Controls.HybridForms
+@using Kendo.Mvc.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using DentalDrill.CRM.Extensions
+@using DentalDrill.CRM.Models.Permissions
+@model DentalDrill.CRM.Models.ViewModels.WorkshopRoleJobTypeStatuses.WorkshopRoleJobTypeStatusEditModel
+@{
+    ViewBag.Title = $"Edit workshop role {Model.Parent.JobType.Name} status {Model.Original.JobStatus.ToDisplayString()} permissions";
+    this.ConfigureHybridPage("WorkshopRoleJobTypeStatusesEdit");
+}
+
+<div class="editor">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Edit workshop role @Model.Parent.JobType.Name status @Model.Original.JobStatus.ToDisplayString() permissions</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Details" asp-controller="WorkshopRoleJobTypes" asp-route-id="@Model.Parent.Id" class="editor__action"><span class="fas fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+    <form asp-action="Edit" asp-route-id="@Model.Original.Id" hybrid-form-id="WorkshopRoleJobTypeStatusesEdit" id="WorkshopRoleJobTypeStatusesEditForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="row">
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label asp-for="Original.JobStatus"></label>
+                    </div>
+                    <div class="col-sm-7">
+                        <p class="form-control-plaintext">@Model.Original.JobStatus.ToDisplayString()</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 mb-2">
+                <h5>Job Transitions</h5>
+                <table class="table mb-2">
+                    <colgroup><col style="width: 90%" /><col style="width: 10%" /></colgroup>
+                    <thead>
+                    <tr>
+                        <th>Transition</th>
+                        <th>Enabled</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @for (var i = 0; i < Model.JobTransitions.Count; i++)
+                    {
+                        var index = i;
+                        <tr>
+                            <td>
+                                @Model.JobTransitions[index].Object.ToDisplayString()
+                                <input asp-for="JobTransitions[index].Object" type="hidden"/>
+                            </td>
+                            <td>
+                                <input asp-for="JobTransitions[index].Enabled" type="checkbox"/>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-md-12 mb-2">
+                <h5>Handpiece Transitions</h5>
+                <table class="table mb-2">
+                    <colgroup><col style="width: 90%" /><col style="width: 10%" /></colgroup>
+                    <thead>
+                    <tr>
+                        <th>From</th>
+                        <th>Enabled</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @for (var i = 0; i < Model.HandpieceTransitionsFrom.Count; i++)
+                    {
+                        var index = i;
+                        <tr>
+                            <td>
+                                @Model.HandpieceTransitionsFrom[index].Object.ToDisplayString()
+                                <input asp-for="HandpieceTransitionsFrom[index].Object" type="hidden"/>
+                            </td>
+                            <td>
+                                <input asp-for="HandpieceTransitionsFrom[index].Enabled" type="checkbox"/>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+                <table class="table mb-2">
+                    <colgroup><col style="width: 90%" /><col style="width: 10%" /></colgroup>
+                    <thead>
+                    <tr>
+                        <th>To</th>
+                        <th>Enabled</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @for (var i = 0; i < Model.HandpieceTransitionsTo.Count; i++)
+                    {
+                        var index = i;
+                        <tr>
+                            <td>
+                                @Model.HandpieceTransitionsTo[index].Object.ToDisplayString()
+                                <input asp-for="HandpieceTransitionsTo[index].Object" type="hidden"/>
+                            </td>
+                            <td>
+                                <input asp-for="HandpieceTransitionsTo[index].Enabled" type="checkbox"/>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a asp-action="Details" asp-controller="WorkshopRoleJobTypes" asp-route-id="@Model.Parent.Id" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

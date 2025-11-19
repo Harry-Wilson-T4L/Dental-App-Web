@@ -1,0 +1,37 @@
+﻿@model HandpieceStoreListing
+@{
+    this.Layout = null;
+    var selectedImage = this.ViewBag.SelectedImage as Guid?;
+    var images = Model.Images.OrderBy(x => x.OrderNo).ToList();
+    var page = 0;
+    var index = 0;
+    if (selectedImage.HasValue)
+    {
+        page = images.FindIndex(x => x.Id == selectedImage);
+        if (page < 0 || page >= images.Count)
+        {
+            page = 0;
+        }
+    }
+}
+
+@if (images.Count > 0)
+{
+    <kendo-scrollview name="@($"HandpieceStoreListing_{Model.Id:N}_Images")" enable-pager="true" content-height="100%" page="page" class="handpiece-image-carousel">
+        <items>
+            @foreach (var image in images)
+            {
+                <scrollview-item>
+                    <content class="handpiece-image-carousel__page" data-index="@index" data-id="@image.Id">
+                        <img uploaded-ref="@image.Image" uploaded-variation="2560" alt="@Model.Model.Brand.Name @Model.Model.Name" />
+                    </content>
+                </scrollview-item>
+                index++;
+            }
+        </items>
+    </kendo-scrollview>
+}
+else
+{
+    <p>No images</p>
+}

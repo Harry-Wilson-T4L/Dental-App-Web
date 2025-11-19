@@ -1,0 +1,39 @@
+﻿@using DevGuild.AspNetCore.Controls.HybridForms
+@model DentalDrill.CRM.Models.ViewModels.HandpieceImageEditVideoViewModel
+@{
+    ViewBag.Title = "Attach video";
+    this.ConfigureHybridPage("CreateVideo");
+}
+
+<div class="editor">
+    <form asp-action="CreateVideo" asp-route-parentId="@Model.ParentId" method="post" hybrid-form-id="CreateVideo" id="CreateVideoForm">
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+        
+        <div class="row">
+            <div class="col">
+                <file-uploader asp-for="VideoId" configuration="HandpieceVideo" />
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col">
+                @Html.LabelFor(x => x.Description)
+                @Html.TextAreaFor(x => x.Description, new { @class = "k-textbox" })
+                @Html.ValidationMessageFor(x => x.Description)
+                
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                @Html.LabelFor(x => x.Display)
+                @Html.CheckBoxFor(x => x.Display)
+                @Html.ValidationMessageFor(x => x.Display)
+            </div>
+
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-primary">Add</button>
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,267 @@
+﻿@using DentalDrill.CRM.Models.ViewModels
+@model DentalDrill.CRM.Models.ViewModels.Reports.Global.GlobalReportsViewModel
+@{
+    ViewData["Title"] = "Global Reports";
+    Layout = "_SurgeryLayout";
+}
+
+<style type="text/css">
+    .main--surgery {
+        background-image: url("/img/SurgeryDefaultBackground-2560.jpg")
+    }
+
+    .k-grid th, .k-grid-header, .surgery-maintenance-header {
+        background-color: #ffffff !important;
+        color: #333333;
+    }
+
+    .search__dates .label {
+        color: #333333 !important;
+    }
+
+    .k-grid-header-wrap {
+        border-color: #ffffff !important;
+    }
+</style>
+
+<div class="container reports">
+    <div class="surgery__main-search pt-3 pt-lg-5">
+        <h1>DDS Reports </h1>
+    </div>
+
+    <div class="row reports__container mt-3 py-3">
+        <div class="col-12">
+            <div class="row mb-2">
+                <div class="col-lg-3 mb-2 mb-lg-0">
+                    <div class="dropdown filters__container">
+                        <button class="btn btn-secondary dropdown-toggle w-100" type="button" id="FiltersDatesPreset" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Select dates
+                        </button>
+                        <div class="dropdown-menu reports__dates-range date-range-selector" aria-labeledby="FiltersDatesPreset"
+                             data-range-target-from="#FilterDateFrom" data-range-target-to="#FilterDateTo"
+                             data-range-default-from="@Model.DefaultDateRange.From.ToString("yyyy-MM-dd")" data-range-default-to="@Model.DefaultDateRange.To.ToString("yyyy-MM-dd")">
+                            @for (var groupIndex = 0; groupIndex < Model.DateRanges.Count; groupIndex++)
+                            {
+                                if (groupIndex > 0)
+                                {
+                                    <div class="dropdown-divider"></div>
+                                }
+
+                                foreach (var item in Model.DateRanges[groupIndex])
+                                {
+                                    <button class="dropdown-item date-range-selector__item" data-range-from="@item.From.ToString("yyyy-MM-dd")" data-range-to="@item.To.ToString("yyyy-MM-dd")" type="button">@item.Title</button>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 mb-2 mb-lg-0">
+                    @(Html.Kendo().DatePicker()
+                        .HtmlAttributes(new { @class = "reports__dates-from w-100" })
+                        .Value(Model.DefaultDateRange.From)
+                        .Name("FilterDateFrom"))
+                </div>
+
+                <div class="col-lg-3 mb-2 mb-lg-0">
+                    @(Html.Kendo().DatePicker()
+                        .HtmlAttributes(new { @class = "reports__dates-to w-100" })
+                        .Value(Model.DefaultDateRange.To)
+                        .Name("FilterDateTo"))
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="btn-toolbar justify-content-between" role="group">
+                        <button class="reports__clear btn btn-danger" style="width: 48%">Clear</button>
+                        <button class="reports__search btn btn-primary" style="width: 48%">Search</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-12">
+                    <kendo-tabstrip name="GlobalReportsTabStrip">
+                        <items>
+                            <tabstrip-item text="General Stats" selected="true" style="width: 33%">
+                                <content>
+                                    <div class="reports__general-stats">
+                                        <div class="row">
+                                            <div class="col-lg-8">
+                                                <span>Display</span>
+                                                <div class="reports__tab__fields toggle-list d-inline-block">
+                                                    <button class="toggle-list__item toggle-list__item--active btn btn-sm btn-secondary mb-2" data-key="HandpiecesCount">No. repaired</button>
+                                                    <button class="toggle-list__item toggle-list__item--active btn btn-sm btn-secondary mb-2" data-key="UnrepairedPercent">Unrepairable</button>
+                                                    <button class="toggle-list__item toggle-list__item--active btn btn-sm btn-secondary mb-2" data-key="ReturnUnrepairedPercent">Ret. Unrepaired</button>
+                                                    <button class="toggle-list__item toggle-list__item--active btn btn-sm btn-secondary mb-2" data-key="TurnaroundAverage">Avg. turnaround</button>
+                                                    <button class="toggle-list__item toggle-list__item--active btn btn-sm btn-secondary mb-2" data-key="WarrantyCount">Warranty jobs</button>
+                                                    <button class="toggle-list__item toggle-list__item--active btn btn-sm btn-secondary mb-2" data-key="CostSum">Total Cost</button>
+                                                    <button class="toggle-list__item toggle-list__item--active btn btn-sm btn-secondary mb-2" data-key="CostAverage">Average Cost</button>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <div class="row mb-2">
+                                                    <div class="col-12">
+                                                        <span>Date aggregate</span>
+                                                        @(Html.Kendo().DropDownList()
+                                                            .Name("GeneralStatsFilterDateAggregate")
+                                                            .HtmlAttributes(new { @class = "reports__tab__date-aggregate" })
+                                                            .BindTo(ReportDateAggregateHelper.MakeSelectList()))
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-2">
+                                                    <div class="col-12">
+                                                        <button class="toggle-button toggle-button--active reports__tab__insights btn btn-sm btn-secondary"><span class="fas fa-fw fa-chart-bar"></span> Insights</button>
+                                                        <button disabled="disabled" class="reports__tab__export__pdf btn btn-sm btn-secondary"><span class="fas fa-fw fa-file-pdf"></span> Export pdf</button>
+                                                        <button disabled="disabled" class="reports__tab__export__excel btn btn-sm btn-secondary"><span class="fas fa-fw fa-file-excel"></span> Export xlsx</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-12 reports__tab__insights-container py-2"></div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-12 reports__tab__grid-container"></div>
+                                        </div>
+                                    </div>
+                                </content>
+                            </tabstrip-item>
+                            <tabstrip-item text="Service Levels" style="width: 33%">
+                                <content>
+                                    <div class="reports__service-levels">
+                                        <div class="row">
+                                            <div class="col-lg-8">
+                                                <span>Display</span>
+                                                <div class="reports__tab__fields toggle-list d-inline-block">
+                                                    <button class="toggle-list__item toggle-list__item--active btn btn-sm btn-secondary mb-2" data-key="HandpiecesCount">No. repaired</button>
+                                                    <button class="toggle-list__item toggle-list__item--active btn btn-sm btn-secondary mb-2" data-key="UnrepairedPercent">Unrepairable</button>
+                                                    <button class="toggle-list__item toggle-list__item--active btn btn-sm btn-secondary mb-2" data-key="ReturnUnrepairedPercent">Ret. Unrepaired</button>
+                                                    <button class="toggle-list__item toggle-list__item--active btn btn-sm btn-secondary mb-2" data-key="TurnaroundAverage">Avg. turnaround</button>
+                                                    <button class="toggle-list__item toggle-list__item--active btn btn-sm btn-secondary mb-2" data-key="WarrantyCount">Warranty jobs</button>
+                                                    <button class="toggle-list__item toggle-list__item--active btn btn-sm btn-secondary mb-2" data-key="CostSum">Total Cost</button>
+                                                    <button class="toggle-list__item toggle-list__item--active btn btn-sm btn-secondary mb-2" data-key="CostAverage">Average Cost</button>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <div class="row mb-2">
+                                                    <div class="col-12">
+                                                        <span>Date aggregate</span>
+                                                        @(Html.Kendo().DropDownList()
+                                                            .Name("ServiceLevelsFilterDateAggregate")
+                                                            .HtmlAttributes(new { @class = "reports__tab__date-aggregate" })
+                                                            .BindTo(ReportDateAggregateHelper.MakeSelectList()))
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-2">
+                                                    <div class="col-12">
+                                                        <button class="toggle-button toggle-button--active reports__tab__insights btn btn-sm btn-secondary"><span class="fas fa-fw fa-chart-bar"></span> Insights</button>
+                                                        <button disabled="disabled" class="reports__tab__export__pdf btn btn-sm btn-secondary"><span class="fas fa-fw fa-file-pdf"></span> Export pdf</button>
+                                                        <button disabled="disabled" class="reports__tab__export__excel btn btn-sm btn-secondary"><span class="fas fa-fw fa-file-excel"></span> Export xlsx</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-12 reports__tab__insights-container py-2"></div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-12 reports__tab__grid-container"></div>
+                                        </div>
+                                    </div>
+                                </content>
+                            </tabstrip-item>
+                            <tabstrip-item text="Other" style="width: 33%">
+                                <content>
+                                    <div class="reports__other">
+                                        <div class="row">
+                                            <div class="col-lg-8">
+                                                <span>Reports</span>
+                                                <div class="reports__tab__grids-list toggle-list d-inline-block">
+                                                    <button class="toggle-list__item toggle-list__item--active btn btn-sm btn-secondary mb-2" data-key="TechWarranty">Tech Warranty</button>
+                                                    <button class="toggle-list__item toggle-list__item--active btn btn-sm btn-secondary mb-2" data-key="BatchReturns">Batch Returns</button>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <div class="row mb-2">
+                                                    <div class="col-12 text-right">
+                                                        <button disabled="disabled" class="reports__tab__export__pdf btn btn-sm btn-secondary"><span class="fas fa-fw fa-file-pdf"></span> Export pdf</button>
+                                                        <button disabled="disabled" class="reports__tab__export__excel btn btn-sm btn-secondary"><span class="fas fa-fw fa-file-excel"></span> Export xlsx</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12 reports__tab__grid-container"></div>
+                                        </div>
+                                    </div>
+                                </content>
+                            </tabstrip-item>
+                            @*<tabstrip-item text="Custom" style="width: 25%">
+                                <content>
+                                    <div class="reports__handpieces">
+                                        <div class="row">
+                                            <div class="col-lg-8">
+                                                <span>Display</span>
+                                                <div class="reports__tab__fields toggle-list d-inline-block">
+                                                    <button class="toggle-list__item toggle-list__item--active btn btn-sm btn-secondary mb-2" data-key="HandpiecesCount">No. repaired</button>
+                                                    <button class="toggle-list__item toggle-list__item--active btn btn-sm btn-secondary mb-2" data-key="RatingAverage">Avg. Rating</button>
+                                                    <button class="toggle-list__item toggle-list__item--active btn btn-sm btn-secondary mb-2" data-key="UnrepairedPercent">Unrepairable</button>
+                                                    <button class="toggle-list__item toggle-list__item--active btn btn-sm btn-secondary mb-2" data-key="ReturnUnrepairedPercent">Ret. Unrepaired</button>
+                                                    <button class="toggle-list__item toggle-list__item--active btn btn-sm btn-secondary mb-2" data-key="TurnaroundAverage">Avg. turnaround</button>
+                                                    <button class="toggle-list__item toggle-list__item--active btn btn-sm btn-secondary mb-2" data-key="WarrantyCount">Warranty jobs</button>
+                                                    <button class="toggle-list__item toggle-list__item--active btn btn-sm btn-secondary mb-2" data-key="CostSum">Total Cost</button>
+                                                    <button class="toggle-list__item toggle-list__item--active btn btn-sm btn-secondary mb-2" data-key="CostAverage">Average Cost</button>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <div class="row mb-2">
+                                                    <div class="col-12">
+                                                        <span>Date aggregate</span>
+                                                        @(Html.Kendo().DropDownList()
+                                                            .Name("HandpiecesFilterDateAggregate")
+                                                            .HtmlAttributes(new { @class = "reports__tab__date-aggregate" })
+                                                            .BindTo(ReportDateAggregateHelper.MakeSelectList()))
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-2">
+                                                    <div class="col-12">
+                                                        <button disabled="disabled" class="toggle-button reports__tab__insights btn btn-sm btn-secondary"><span class="fas fa-fw fa-chart-bar"></span> Insights</button>
+                                                        <button disabled="disabled" class="reports__tab__export__pdf btn btn-sm btn-secondary"><span class="fas fa-fw fa-file-pdf"></span> Export pdf</button>
+                                                        <button disabled="disabled" class="reports__tab__export__excel btn btn-sm btn-secondary"><span class="fas fa-fw fa-file-excel"></span> Export xlsx</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-12 reports__tab__insights-container py-2"></div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-12 reports__tab__grid-container"></div>
+                                        </div>
+                                    </div>
+                                </content>
+                            </tabstrip-item>*@
+                        </items>
+                    </kendo-tabstrip>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <scripts-bundle path="/js/app/pages/globalReports/reports.min.js" />
+    <script type="text/javascript">
+        $(function () {
+            var page = new DentalDrill.CRM.Pages.GlobalReports.Reports.GlobalReportsPage($(".reports"));
+            page.initialize();
+            window.__page = page;
+        });
+    </script>
+}

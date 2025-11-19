@@ -1,0 +1,82 @@
+﻿@using DevGuild.AspNetCore.Controls.HybridForms
+@model DentalDrill.CRM.Models.ViewModels.HandpieceImageBatchCreateViewModel
+@{
+    ViewBag.Title = "Attach multiple images";
+    this.ConfigureHybridPage("HandpieceImageBatchCreate");
+}
+
+<div class="editor">
+
+    <form asp-action="BatchCreate" asp-route-parentId="@Model.Parent.Id" method="post" hybrid-form-id="HandpieceImageBatchCreate">
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+
+        <div class="row">
+            <div class="col">
+                <div class="image-uploader-multiple" data-name="@Html.NameFor(x => x.Images)">
+                    <div class="image-uploader-multiple__ids">
+                        @foreach (var image in Model.Images)
+                        {
+                            <input type="hidden" class="image-uploader-multiple__ids__id" name="@Html.NameFor(x => x.Images)" value="@image" />
+                        }
+                    </div>
+                    <div class="image-uploader-multiple__previews">
+                        @foreach (var image in Model.Images)
+                        {
+                            <div class="image-uploader-multiple__previews__preview" data-id="@image">
+                                <img uploaded-id="@image" uploaded-variation="300" />
+                                <div class="image-uploader-multiple__previews__preview__remove"><span class="fas fa-fw fa-times"></span></div>
+                            </div>
+                        }
+                    </div>
+                    @(Html.Kendo().Upload()
+                        .Name($"image-uploader-multiple__instance-{Guid.NewGuid():N}")
+                        .HtmlAttributes(new { @class = "image-uploader-multiple__upload" })
+                        .Async(a => a
+                            .SaveField("file")
+                            .Save("Image", "Upload", new
+                            {
+                                configuration = "HandpieceImage",
+                                previewVariation = "300"
+                            }))
+                        .ShowFileList(false)
+                        .Events(events => events
+                            .Success(@"function (e) {
+    var file = e.response;
+    var $container = e.sender.wrapper.closest("".image-uploader-multiple"");
+    var modelName = $container.attr(""data-name"");
+
+    var $ids = $container.find("".image-uploader-multiple__ids"");
+    var $id = $(""<input type=\""hidden\"" class=\""image-uploader-multiple__ids__id\"" />"");
+    $id.attr(""name"", modelName);
+    $id.val(file.id);
+    $ids.append($id);
+
+    var $previews = $container.find("".image-uploader-multiple__previews"");    
+    var $preview = $(""<div class=\""image-uploader-multiple__previews__preview\""></div>"");
+    $preview.attr(""data-id"", file.id);
+    $preview.append($(""<img />"").attr(""src"", file.previewUrl));
+    $preview.append($(""<div class=\""image-uploader-multiple__previews__preview__remove\""><span class=\""fas fa-fw fa-times\""></span></div>""));
+    $previews.append($preview);
+}")
+                            .Error(@"function (e) { alert(""Failed to upload selected images!""); }")))
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col">
+                @Html.LabelFor(x => x.Display)
+                @Html.CheckBoxFor(x => x.Display)
+                @Html.ValidationMessageFor(x => x.Display)
+            </div>
+
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-primary">Add</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    
+}

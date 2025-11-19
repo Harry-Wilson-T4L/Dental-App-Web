@@ -1,0 +1,93 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DentalDrill.CRM.Models.Permissions
+@using DevGuild.AspNetCore.Controls.HybridForms
+@using DevGuild.AspNetCore.Services.Uploads.Images.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model DentalDrill.CRM.Models.ViewModels.HandpieceModelSchematicDetailsModel
+@{
+    ViewBag.Title = $"Schematic {Model.Entity.Title}";
+    this.ConfigureHybridPage("HandpieceModelSchematicDetails");
+}
+
+<div class="details">
+    @if (!Context.Request.IsAjaxRequest())
+    {
+        <div class="details__header">
+            <div class="details__title">
+                <h1>Schematic @Model.Entity.Title</h1>
+            </div>
+            <div class="details__actions">
+                <a asp-action="Details" asp-route-id="@Model.Entity.ModelId" asp-controller="HandpieceModels" class="details__action"><span class="fas fa-list"></span> List</a>
+                @if (Model.Access.Global.CanWriteComponent(GlobalComponent.HandpiecesDirectory))
+                {
+                    switch (Model.Entity.Type)
+                    {
+                        case HandpieceModelSchematicType.Text:
+                            <a asp-action="EditText" asp-route-id="@Model.Id" class="details__action"><span class="fas fa-pencil-alt"></span> Edit</a>
+                            break;
+                        case HandpieceModelSchematicType.Attachment:
+                            <a asp-action="EditAttachment" asp-route-id="@Model.Id" class="details__action"><span class="fas fa-pencil-alt"></span> Edit</a>
+                            break;
+                        case HandpieceModelSchematicType.Image:
+                            <a asp-action="EditImage" asp-route-id="@Model.Id" class="details__action"><span class="fas fa-pencil-alt"></span> Edit</a>
+                            break;
+                    }
+                    <a asp-action="Delete" asp-route-id="@Model.Id" class="details__action details__action_color_red"><span class="fas fa-trash-alt"></span> Delete</a>
+                }
+            </div>
+        </div>
+    }
+    
+    @switch (Model.Entity.Type)
+    {
+        case HandpieceModelSchematicType.Text:
+            <div class="row" style="@(Context.Request.IsAjaxRequest() ? "min-height: 400px" : "")">
+                <div class="col-12">
+                    @Html.Raw(Model.Entity.Text)
+                </div>
+            </div>
+            break;
+        case HandpieceModelSchematicType.Attachment:
+            <div class="row w-100">
+                <div class="col-12">
+                    @(Html.Kendo().PDFViewer()
+                        .Name("HandpieceModelSchematicPdfContent")
+                        .PdfjsProcessing(pdf => pdf.File(Url.Action("DownloadAttachment", new { id = Model.Id })))
+                        .Width(940)
+                        .Height(800))
+                </div>
+            </div>
+            break;
+        case HandpieceModelSchematicType.Image:
+            <div class="row">
+                <div class="col-12">
+                    <img uploaded-ref="Model.Entity.Image" uploaded-variation="1024" alt="@Model.Entity.Title" />
+                </div>
+            </div>
+            break;
+    }
+    
+    <div class="row">
+        <div class="col editor__submit">
+            @if (Context.Request.IsAjaxRequest())
+            {
+                <a asp-action="Details" asp-route-id="@Model.Entity.ModelId" asp-controller="HandpieceModels" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Close</a>
+            }
+            else
+            {
+                <a asp-action="Details" asp-route-id="@Model.Entity.ModelId" asp-controller="HandpieceModels" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Back</a>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts 
+{
+    @if (Model.Entity.Type == HandpieceModelSchematicType.Attachment)
+    {
+        <script type="text/javascript" src="/vendor/pdfjs.min.js" asp-append-version="true"></script>
+        <script type="text/javascript">
+            window.PDFJS.workerSrc = "/vendor/pdfjs.workier.min.js";
+        </script>
+    }
+}

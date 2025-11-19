@@ -1,0 +1,10 @@
+{
+  "parserOptions": {
+    "sourceType": "script",
+    "ecmaFeatures": {
+    }
+  },
+  "rules": {
+    "@typescript-eslint/no-namespace": "off"
+  }
+}

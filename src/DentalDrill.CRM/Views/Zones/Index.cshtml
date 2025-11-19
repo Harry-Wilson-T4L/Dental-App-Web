@@ -1,0 +1,55 @@
+﻿@using Kendo.Mvc.UI
+@using DentalDrill.CRM.Models.ViewModels
+@using DentalDrill.CRM.Models.Permissions
+@model DentalDrill.CRM.Models.ViewModels.EmptyEmployeeIndexViewModel
+@{
+    ViewBag.Title = "Zones";
+}
+
+<h1 class="header">Zones</h1>
+
+@(Html.Kendo().Grid<DentalDrill.CRM.Models.ViewModels.ZoneViewModel>()
+      .Name("ZonesGrid")
+      .HtmlAttributes(new { @class = "k-grid-commandicons2", style = "height: 630px" })
+      .Columns(columns =>
+      {
+          columns.Bound(c => c.Name);
+          columns.Bound(c => c.Description);
+          columns.Command(command =>
+          {
+              if (Model.Access.Global.CanWriteComponent(GlobalComponent.Zone))
+              {
+                  command.Edit().Text("<span></span>").IconClass("fas fa-fw fa-pencil-alt");
+                  command.Destroy().Text("<span></span>").IconClass("fas fa-fw fa-trash-alt");
+              }
+          });
+      })
+      .ToolBar(toolbar =>
+      {
+          if (Model.Access.Global.CanWriteComponent(GlobalComponent.Zone))
+          {
+              toolbar.Create();
+          }
+      })
+      .ColumnMenu(cm => cm.Enabled(false))
+      .Editable(editable => editable.Mode(GridEditMode.InLine))
+      .Pageable()
+      .Scrollable(scrollable => scrollable.Enabled(true).Height("auto"))
+      .DataSource(dataSource => dataSource
+          .Ajax()
+          .Model(model =>
+          {
+              model.Id(f => f.Id);
+              model.Field(f => f.Id).DefaultValue(default(Guid));
+              model.Field(f => f.Name);
+              model.Field(f => f.Description);
+          })
+          .Read(read => read.Action("Read", "Zones"))
+          .Create(create => create.Action("Create", "Zones"))
+          .Update(update => update.Action("Update", "Zones"))
+          .Destroy(destroy => destroy.Action("Destroy", "Zones"))
+          .Events(events => events.Error("DevGuild.AspNet.Controls.Grids.Errors.GridErrorHandler.handleGridError").RequestStart("DevGuild.AspNet.Controls.Grids.Errors.GridErrorHandler.handleRequestStart"))))
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/app/pages/zones/index.js" asp-append-version="true"></script>
+}

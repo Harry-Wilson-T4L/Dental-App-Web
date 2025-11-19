@@ -1,0 +1,23 @@
+﻿@using DevGuild.AspNetCore.Controls.HybridForms
+@model DentalDrill.CRM.Models.ViewModels.HandpieceStoreDetailsModel
+@{
+    this.ConfigureHybridPage("HandpieceStoreBuy");
+}
+
+<div class="row">
+    <div class="col-12">
+        <h2 class="text-center">Thank you for your order!</h2>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="text-center">
+            We will contact you by sending an email to @Model.ContactEmail to provide the payment and shipping details.
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="text-center text-success h2"><span class="fas fa-fw fa-check"></span></div>
+    </div>
+</div>

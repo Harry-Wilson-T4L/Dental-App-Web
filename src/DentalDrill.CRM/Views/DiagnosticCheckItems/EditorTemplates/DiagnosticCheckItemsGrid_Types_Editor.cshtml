@@ -1,0 +1,10 @@
+﻿@model List<Guid>
+@{
+    var types = (List<DiagnosticCheckType>)ViewData["Types"];
+}
+
+@(Html.Kendo().MultiSelectFor(x => x)
+      .BindTo(types)
+      .ValuePrimitive(true)
+      .DataValueField("Id")
+      .DataTextField("Name"))

@@ -1,0 +1,37 @@
+﻿@using Kendo.Mvc.UI
+@using DentalDrill.CRM.Extensions
+@using DentalDrill.CRM.Models.ViewModels
+@using DevGuild.AspNetCore.Controls.HybridForms
+@model DentalDrill.CRM.Models.ViewModels.ClientEditViewModel
+@{
+    ViewData["Title"] = "Create Client";
+    this.ConfigureHybridPage("CreateClients");
+}
+<div class="editor">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Create Client</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Index" class="editor__action"><span class="fa fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+
+    <form asp-action="Create" method="post" hybrid-form-id="CreateClients" id="CreateClientsForm">
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+        <partial name="_Editor" model="@Model" />
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a asp-action="Index" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    
+}

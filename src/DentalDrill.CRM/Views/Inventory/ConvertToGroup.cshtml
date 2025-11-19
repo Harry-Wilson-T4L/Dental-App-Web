@@ -1,0 +1,78 @@
+﻿@using DevGuild.AspNetCore.Controls.HybridForms
+@using DentalDrill.CRM.Extensions
+@model DentalDrill.CRM.Models.ViewModels.Inventory.InventorySKUConvertToGroupModel
+@{
+    ViewBag.Title = "Convert SKU to group";
+    this.ConfigureHybridPage("InventoryConvertToGroup");
+    var uniqueId = Guid.NewGuid().ToString("N");
+}
+
+<div class="editor" id="InventoryConvertToGroupEditor_@uniqueId">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Convert SKU to group</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Index" asp-controller="Inventory" class="editor__action"><span class="fas fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+
+    <form asp-action="ConvertToGroup" asp-route-id="@Model.Entity.Id" hybrid-form-id="InventoryConvertToGroup" id="InventoryConvertToGroupForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="row">
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-12">
+                        @Html.Kendo().CheckBoxFor(x => x.CreateNewGroup).Label("Create new group and move this SKU to its children")
+                        <span asp-validation-for="CreateNewGroup" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-12">
+                        <label asp-for="GroupName"></label>
+                    </div>
+                    <div class="col-12">
+                        <input asp-for="GroupName" class="k-textbox" placeholder="Enter Name of Group SKU"/>
+                        <span asp-validation-for="GroupName" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 mb-2">
+                <div class="row">
+                    <div class="col-12">
+                        <label asp-for="LeafName"></label>
+                    </div>
+                    <div class="col-12">
+                        <input asp-for="LeafName" class="k-textbox" placeholder="Enter Name of Leaf SKU"/>
+                        <span asp-validation-for="LeafName" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 editor__submit">
+                <button type="submit" class="btn btn-primary">Convert</button>
+                <a asp-action="Index" asp-controller="Inventory" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+    <script>
+        $(function() {
+            var editor = new DentalDrill.CRM.Pages.Inventory.ConvertToGroup.InventoryConvertToGroupEditor(document.getElementById("InventoryConvertToGroupEditor_@uniqueId"));
+            editor.init();
+        });
+    </script>
+</div>
+
+@section Scripts {
+    <script type="text/javascript" src="/js/app/pages/inventory/convertToGroup.js" asp-append-version="true"></script>
+} 

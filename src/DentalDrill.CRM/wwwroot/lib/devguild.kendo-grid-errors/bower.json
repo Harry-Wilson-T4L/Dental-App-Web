@@ -1,0 +1,17 @@
+{
+  "name": "devguild.kendo-grid-errors",
+  "authors": [
+    "DevGuild <info@devguild.ru>"
+  ],
+  "description": "Provides the ability to handle errors during grid editing.",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "homepage": "https://devguild.ru/",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

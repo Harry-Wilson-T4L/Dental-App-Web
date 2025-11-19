@@ -1,0 +1,83 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DentalDrill.CRM.Services.Theming
+@using DevGuild.AspNetCore.Controls.HybridForms
+@model Employee
+@{
+    ViewBag.Title = $"Employee {Model.FirstName} {Model.LastName}";
+    this.ConfigureHybridPage("EmployeesDetails");
+}
+
+@inject IThemesService ThemeService
+
+<div class="details">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="details__header">
+            <div class="details__title">
+                <h1>Employee @Model.FirstName @Model.LastName</h1>
+            </div>
+            <div class="details__actions">
+                <a asp-action="Index" class="details__action"><span class="fas fa-list"></span> List</a>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="details__action"><span class="fas fa-pencil-alt"></span> Edit</a>
+                <a asp-action="Delete" asp-route-id="@Model.Id" class="details__action details__action_color_red"><span class="fas fa-trash-alt"></span> Delete</a>
+            </div>
+        </div>
+    }
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row details__field">
+                <div class="details__label">First Name</div>
+                <div class="details__value">@Model.FirstName</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row details__field">
+                <div class="details__label">Last Name</div>
+                <div class="details__value">@Model.LastName</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row details__field">
+                <div class="details__label">Role</div>
+                <div class="details__value">@Model.Role.Name</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row details__field">
+                <div class="details__label">Type</div>
+                <div class="details__value">@Model.Type.ToDisplayString()</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row details__field">
+                <div class="details__label">Appearance Theme</div>
+                <div class="details__value">@ThemeService.FindTheme(Model.AppearanceTheme).Name</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row details__field">
+                <div class="details__label">Appearance Background</div>
+                @if (Model.AppearanceBackgroundId.HasValue)
+                {
+                    <div class="details__value">@Model.AppearanceBackground.OriginalName.@Model.AppearanceBackground.Extension</div>
+                }
+                else
+                {
+                    <div class="details__value">(default)</div>
+                }
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row details__field">
+                <div class="details__label">Appearance Opacity</div>
+                <div class="details__value">@Model.AppearanceOpacity</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row details__field">
+                <div class="details__label">User Name</div>
+                <div class="details__value"><a asp-action="Details" asp-controller="Users" asp-route-id="@Model.ApplicationUser.Id">@Model.ApplicationUser.UserName</a></div>
+            </div>
+        </div>
+    </div>
+</div>

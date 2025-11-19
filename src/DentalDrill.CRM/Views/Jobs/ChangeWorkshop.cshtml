@@ -1,0 +1,66 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DevGuild.AspNetCore.Controls.HybridForms
+@model DentalDrill.CRM.Models.ViewModels.JobChangeWorkshopModel
+@{
+    ViewBag.Title = $"Change workshop of {Model.Entity.JobType.Name} #{Model.Entity.JobNumber}";
+    this.ConfigureHybridPage("JobsChangeWorkshop");
+}
+
+<div class="editor">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Change workshop of @Model.Entity.JobType.Name #@Model.Entity.JobNumber</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Edit" asp-route-id="@Model.Entity.Id" class="editor__action"><span class="fas fa-arrow-left"></span> Back</a>
+            </div>
+        </div>
+    }
+
+    <form asp-action="ChangeWorkshop" asp-route-id="@Model.Entity.Id" hybrid-form-id="JobsChangeWorkshop" id="JobsChangeWorkshopForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="row">
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-sm-2_5">
+                        <label asp-for="CurrentWorkshopId">Current workshop</label>
+                    </div>
+                    <div class="col-sm-9_5">
+                        <p class="form-control-plaintext">@Model.Entity.Workshop.Name</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-sm-2_5">
+                        <label asp-for="NewWorkshopId">New workshop</label>
+                    </div>
+                    <div class="col-sm-9_5">
+                        @(Html.Kendo().DropDownListFor(x => x.NewWorkshopId)
+                            .HtmlAttributes(new { @class = "w-100" })
+                            .BindTo(new SelectList(Model.Workshops.Where(x => x.Id != Model.Entity.WorkshopId), "Id", "Name").WithNull("(None)")))
+                        @Html.ValidationMessageFor(x => x.NewWorkshopId)
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-12 mb-2">
+                <div class="alert alert-warning" role="alert">
+                    <strong>Warning:</strong> changing workshop of a job will result in reset of the allocation state of all required parts. <br />
+                    If any of handpieces within the job is in "Sent Complete" state, required parts must be in stock in the destination workshop before the change.
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a asp-action="Edit" asp-route-id="@Model.Entity.Id" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

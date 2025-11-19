@@ -1,0 +1,6 @@
+﻿@using DentalDrill.CRM.Models
+@using DentalDrill.CRM.Services.Theming
+@inject IThemesService Theme
+@{
+    Theme.SetCurrentTheme(Themes.Dark);
+}

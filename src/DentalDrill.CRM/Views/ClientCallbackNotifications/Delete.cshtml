@@ -1,0 +1,47 @@
+﻿@using DentalDrill.CRM.Extensions
+@using DevGuild.AspNetCore.Controls.HybridForms
+@model ClientCallbackNotification
+@{
+    ViewBag.Title = "Delete Callback";
+    this.ConfigureHybridPage("DeleteCallbackNotification");
+}
+
+<div class="editor">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Delete Callback</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Details" asp-controller="Clients" asp-route-id="@Model.ClientId" asp-route-Tab="Callback" class="editor__action"><span class="fas fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+
+    <form asp-action="Delete" asp-route-id="@Model.Id" hybrid-form-id="DeleteCallbackNotification">
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+
+        <div class="row">
+            <div class="col-6 mb-2">
+                @Html.LabelFor(x => x.AssignedToId)
+                @Html.Kendo().TextBox().Name("AssignedToId").Value(Model.AssignedTo?.GetFullName() ?? "(none)").Enable(false)
+            </div>
+            <div class="col-6 mb-2">
+                @Html.LabelFor(x => x.CallDateTime)
+                @Html.Kendo().DateTimePicker().Name("CallDateTime").Value(Model.CallDateTime).HtmlAttributes(new { @class = "w-100" }).Enable(false)
+            </div>
+            <div class="col-12 mb-2">
+                @Html.LabelFor(x => x.Note)
+                @Html.Kendo().TextBox().Name("Note").Value(Model.Note).Enable(false)
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-danger">Delete</button>
+                <a asp-action="Details" asp-controller="Clients" asp-route-id="@Model.ClientId" asp-route-Tab="Callback" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>

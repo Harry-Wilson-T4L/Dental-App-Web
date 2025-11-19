@@ -1,0 +1,66 @@
+﻿@using DentalDrill.CRM.Models.ViewModels
+@using DentalDrill.CRM.Models.Permissions
+@model TutorialPageDetailsModel
+@{
+    ViewBag.Title = $"Tutorial Videos - {Model.Entity.Title}";
+}
+
+<div class="grid-wrapper">
+    <h1 class="grid-wrapper__header">Tutorial Videos - @Model.Entity.Title</h1>
+    <div class="grid-wrapper__grid">
+        @(Html.Kendo().Grid<TutorialVideoViewModel>()
+            .Name("TutorialVideosGrid")
+            .HtmlAttributes(new { @class = "k-grid-commandicons2 k-grid--dense k-grid--small-text k-grid--auto-resize", style = "height: 100%" })
+            .Columns(columns =>
+            {
+                columns.Bound(c => c.Title).Width(200);
+                columns.Bound(c => c.VideoUrl).Width(200);
+                columns.Bound(c => c.AvailableForClients).Title("Clients").Width(60);
+                columns.Bound(c => c.AvailableForCorporates).Title("Corporates").Width(60);
+                columns.Bound(c => c.AvailableForStaff).Title("Staff").Width(60);
+                columns.Command(command =>
+                {
+                    if (Model.Access.Global.CanWriteComponent(GlobalComponent.Tutorial))
+                    {
+                        command.Edit().Text("<span></span>").IconClass("fas fa-fw fa-pencil-alt");
+                        command.Destroy().Text("<span></span>").IconClass("fas fa-fw fa-trash-alt");
+                        command.Custom("CustomMoveUp").IconClass("fas fa-fw fa-arrow-up").Text("<span></span>").Click("DentalDrill.CRM.Pages.TutorialVideos.Index.TutorialVideosGrid.handleMoveUp");
+                        command.Custom("CustomMoveDown").IconClass("fas fa-fw fa-arrow-down").Text("<span></span>").Click("DentalDrill.CRM.Pages.TutorialVideos.Index.TutorialVideosGrid.handleMoveDown");
+                    }
+                }).Width(100);
+            })
+            .ToolBar(toolbar =>
+            {
+                if (Model.Access.Global.CanWriteComponent(GlobalComponent.Tutorial))
+                {
+                    toolbar.Create();
+                }
+            })
+            .ColumnMenu(cm => cm.Enabled(false))
+            .Editable(editable => editable.Mode(GridEditMode.InLine).CreateAt(GridInsertRowPosition.Bottom))
+            .Pageable()
+            .Scrollable(scrollable => scrollable.Enabled(true).Height("auto"))
+            .DataSource(dataSource => dataSource
+                .Ajax()
+                .Model(model =>
+                {
+                    model.Id(f => f.Id);
+                    model.Field(f => f.Id).DefaultValue(default(Guid));
+                    model.Field(f => f.Title);
+                    model.Field(f => f.VideoUrl);
+                    model.Field(f => f.AvailableForClients);
+                    model.Field(f => f.AvailableForCorporates);
+                    model.Field(f => f.AvailableForStaff);
+                })
+                .Sort(sort => sort.Add(f => f.OrderNo))
+                .Read(read => read.Action("Read", "TutorialVideos", new { parentId = Model.Id }))
+                .Create(create => create.Action("Create", "TutorialVideos", new { parentId = Model.Id }))
+                .Update(update => update.Action("Update", "TutorialVideos"))
+                .Destroy(destroy => destroy.Action("Destroy", "TutorialVideos"))
+                .Events(events => events.Error("DevGuild.AspNet.Controls.Grids.Errors.GridErrorHandler.handleGridError").RequestStart("DevGuild.AspNet.Controls.Grids.Errors.GridErrorHandler.handleRequestStart"))))
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/app/pages/tutorialVideos/index.js" asp-append-version="true"></script>
+}

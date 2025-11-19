@@ -1,0 +1,92 @@
+﻿@using DevGuild.AspNetCore.Controls.HybridForms
+@using DentalDrill.CRM.Extensions
+@model DentalDrill.CRM.Models.ViewModels.InventoryMovements.InventoryMovementOrderMissingModel
+@{
+    ViewBag.Title = "Order Move";
+    this.ConfigureHybridPage("InventoryMovementsOrderMissing");
+}
+
+<div class="editor">
+    @if (!this.Context.IsAjaxRequest())
+    {
+        <div class="editor__header">
+            <div class="editor__title">
+                <h1>Order Move</h1>
+            </div>
+            <div class="editor__actions">
+                <a asp-action="Index" asp-controller="InventoryMovements" class="editor__action"><span class="fas fa-list"></span> List</a>
+            </div>
+        </div>
+    }
+
+    <form asp-action="OrderMissing" asp-route-sku="@Model.SKU.Id" asp-route-workshop="@Model.Workshop.Id" hybrid-form-id="InventoryMovementsOrderMissing" id="InventoryMovementsOrderMissingForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="row">
+            <div class="col-12 mb-2">
+                <div class="row">
+                    <div class="col-12">
+                        <label>SKU</label>
+                    </div>
+                    <div class="col-12">
+                        <p class="form-control-plaintext">[@Model.SKU.Type.Name] @Model.SKU.Name</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 mb-2">
+                <div class="row">
+                    <div class="col-12">
+                        <label>Type</label>
+                    </div>
+                    <div class="col-12">
+                        <p class="form-control-plaintext">Order</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 mb-2">
+                <div class="row">
+                    <div class="col-12">
+                        <label>Quantity</label>
+                    </div>
+                    <div class="col-12">
+                        <p class="form-control-plaintext">@Model.MissingQuantity.ToString("#,##0.##")</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 mb-2">
+                <div class="row">
+                    <div class="col-12">
+                        <label>Average Price</label>
+                    </div>
+                    <div class="col-12">
+                        <p class="form-control-plaintext">@Model.SKU.AveragePrice?.ToString("'$'#,##0.##")</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 mb-2">
+                <div class="row">
+                    <div class="col-12">
+                        <label asp-for="Price"></label>
+                    </div>
+                    <div class="col-12">
+                        <input asp-for="Price" class="k-textbox" placeholder="Enter Price" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="row">
+            <div class="col editor__submit">
+                <button type="submit" class="btn btn-primary">Order</button>
+                <a asp-action="Index" asp-controller="InventoryMovements" class="btn btn-outline-secondary ml-2 editor__submit__cancel">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>
