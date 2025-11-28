@@ -92,10 +92,23 @@ namespace DentalDrill.CRM
                 .RegisterContainer("Files")
                 .RegisterContainer("Emails");
 
-            services.AddSqlConnectionFactory(options => options.ConnectionString = this.Configuration.GetConnectionString("DefaultConnection"));
-            services.AddDbContext<ApplicationDbContext>(
-                options => options.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection")),
-                optionsLifetime: ServiceLifetime.Singleton);
+            // FIX #1: Add correct SQL connection factory 
+            services.AddSqlConnectionFactory(options =>
+                options.ConnectionString = this.Configuration.GetConnectionString("DefaultConnection"));
+
+            // FIX #2: DbContext must be Scoped + SQL Retry enabled
+            services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                options.UseSqlServer(
+                    this.Configuration.GetConnectionString("DefaultConnection"),
+                    sqlOptions => sqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 5,
+                        maxRetryDelay: TimeSpan.FromSeconds(10),
+                        errorNumbersToAdd: null
+                    )
+                );
+            },
+            optionsLifetime: ServiceLifetime.Scoped);
             services.AddEntityDataServices<ApplicationDbContext>(options => new ApplicationDbContext(options));
             services.AddScoped<IDataTransactionService, DataTransactionService>();
 
