@@ -17,6 +17,24 @@ This product is built using [Telerik & Kendo UI](https://www.telerik.com/). Lice
 
 ## Building with Visual Studio
 
+> **📖 Troubleshooting:** If you encounter build errors, see [BUILD_FIXES.md](BUILD_FIXES.md) for detailed solutions and step-by-step fix instructions.
+
+### Quick Setup (Recommended for New Developers)
+
+**After cloning the repository, simply double-click `setup.bat` in the root directory.**
+
+This automated script will:
+- ✓ Check prerequisites (.NET SDK, Node.js, npm)
+- ✓ Install all npm packages (Kendo UI, TypeScript, and dependencies)
+- ✓ Restore all NuGet packages
+- ✓ Build the solution to verify everything works
+
+After the script completes, you can open the solution in Visual Studio and build without errors.
+
+### Manual Setup (Alternative)
+
+If you prefer to set up manually or the automated script doesn't work:
+
 1. **Install prerequisites**
    - .NET 6 SDK (`winget install Microsoft.DotNet.SDK.6`)
    - Node.js 18 LTS (`winget install OpenJS.NodeJS.LTS`)
@@ -24,7 +42,7 @@ This product is built using [Telerik & Kendo UI](https://www.telerik.com/). Lice
    - SQL Server Developer edition and SQL Server Management Studio
 2. **Clone and open the solution**
    - `git clone <repo>`
-   - Open `DentalDrill.CRM.sln` in Visual Studio (Solution Explorer view)
+   - Open `src/DentalDrill.CRM.sln` in Visual Studio (Solution Explorer view)
 3. **Restore .NET dependencies**
    - `Build > Restore NuGet Packages`
 4. **Restore TypeScript/Kendo assets (two supported options)**
@@ -58,3 +76,7 @@ dotnet build DentalDrill.CRM.sln
 ```
 
 If the build succeeds here, Visual Studio will also succeed (same MSBuild pipeline). Address any warnings reported during the build (e.g., outdated target framework or vulnerable NuGet packages) before promoting to higher environments.
+
+## Deployment
+
+- **AWS (Docker/ECS):** see [DEPLOYMENT_AWS_DOCKER.md](DEPLOYMENT_AWS_DOCKER.md) for step-by-step guidance on building the Docker image, publishing to ECR, and running on ECS/Fargate with persistent storage and secrets.

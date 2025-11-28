@@ -1,7 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-require("@progress/kendo-ui/js/cultures/kendo.culture.en-AU");
 (function () {
-    kendo.culture("en-AU");
+    // Kendo culture file is already loaded in the bundle before this file
+    if (typeof kendo !== 'undefined') {
+        kendo.culture("en-AU");
+    }
 })();
 //# sourceMappingURL=culture.js.map
